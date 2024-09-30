@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Input, Form, message, Button } from 'antd';
 import 'antd/dist/reset.css';
 
-function PaceCalculatorPage() {
+function PaceForm() {
   const [distance, setDistance] = useState('');
   const [hours, setHours] = useState('');
   const [minutes, setMinutes] = useState('');
@@ -10,24 +10,22 @@ function PaceCalculatorPage() {
   const [pace, setPace] = useState('');
 
   const calculatePace = () => {
-    if (!hours && !minutes && seconds === '') {
-      message.error('Please enter a time');
+    if (!distance) {
+      message.error('Please enter a distance.');
       return;
-    } else if (!distance) {
-      message.error('Please enter distance.');
+    }
+
+    if (!hours && !minutes && !seconds) {
+      message.error('Please enter a time.');
+      return;
     }
 
     const distanceKm = parseFloat(distance);
-    const hoursValue = parseInt(hours, 10);
-    const minutesValue = parseInt(minutes, 10);
-    const secondsValue = parseInt(seconds, 10);
+    const hoursValue = parseInt(hours, 10) || 0;
+    const minutesValue = parseInt(minutes, 10) || 0;
+    const secondsValue = parseInt(seconds, 10) || 0;
 
-    if (
-      distanceKm <= 0 ||
-      hoursValue < 0 ||
-      minutesValue < 0 ||
-      secondsValue < 0
-    ) {
+    if (distanceKm <= 0 || hoursValue < 0 || minutesValue < 0 || secondsValue < 0) {
       message.error('Distance and time values must be positive.');
       return;
     }
@@ -42,13 +40,20 @@ function PaceCalculatorPage() {
     const paceMinutes = totalMinutes / distanceKm;
     const paceMinutesRounded = Math.floor(paceMinutes);
     const paceSeconds = Math.round((paceMinutes - paceMinutesRounded) * 60);
-    
+
     setPace(`${paceMinutesRounded}m ${paceSeconds}s per km`);
+  };
+
+  const handleInputChange = (setter) => (e) => {
+    const value = e.target.value;
+    if (/^\d*\.?\d*$/.test(value)) {
+      setter(value);
+    }
   };
 
   return (
     <div className="main-page p-6 flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 shadow-lg rounded-lg w-full sm:w-1/2 lg:w-1/3">
+      <div className="w-full sm:w-1/2 lg:w-1/3">
         <h1 className="text-2xl font-bold mb-6 text-center">Pace Calculator</h1>
 
         <Form layout="vertical" onFinish={calculatePace} className="mb-4">
@@ -59,7 +64,7 @@ function PaceCalculatorPage() {
             <Input
               placeholder="Enter distance in km"
               value={distance}
-              onChange={(e) => setDistance(e.target.value)}
+              onChange={handleInputChange(setDistance)}
               size="large"
             />
           </Form.Item>
@@ -69,7 +74,7 @@ function PaceCalculatorPage() {
               <Input
                 placeholder="Hours"
                 value={hours}
-                onChange={(e) => setHours(e.target.value)}
+                onChange={handleInputChange(setHours)}
                 size="large"
                 style={{ flex: 1 }}
               />
@@ -77,7 +82,7 @@ function PaceCalculatorPage() {
               <Input
                 placeholder="Minutes"
                 value={minutes}
-                onChange={(e) => setMinutes(e.target.value)}
+                onChange={handleInputChange(setMinutes)}
                 size="large"
                 style={{ flex: 1 }}
               />
@@ -85,7 +90,7 @@ function PaceCalculatorPage() {
               <Input
                 placeholder="Seconds"
                 value={seconds}
-                onChange={(e) => setSeconds(e.target.value)}
+                onChange={handleInputChange(setSeconds)}
                 size="large"
                 style={{ flex: 1 }}
               />
@@ -101,7 +106,6 @@ function PaceCalculatorPage() {
 
         {pace && (
           <div className="text-center mt-4">
-            <p className="text-lg">Your pace is:</p>
             <strong className="text-xl">{pace}</strong>
           </div>
         )}
@@ -110,4 +114,4 @@ function PaceCalculatorPage() {
   );
 }
 
-export default PaceCalculatorPage;
+export default PaceForm;
