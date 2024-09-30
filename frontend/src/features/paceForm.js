@@ -16,7 +16,7 @@ function PaceForm() {
     }
 
     if (!hours && !minutes && !seconds) {
-      message.error('Please enter a time.');
+      message.error('Please enter a time!');
       return;
     }
 
