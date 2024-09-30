@@ -2,26 +2,40 @@ import React, { useState } from 'react';
 import { Input, Form, message, Button } from 'antd';
 import 'antd/dist/reset.css';
 
-
-
-function MainPage() {
+function PaceCalculatorPage() {
   const [distance, setDistance] = useState('');
-  const [time, setTime] = useState('');
+  const [hours, setHours] = useState('');
+  const [minutes, setMinutes] = useState('');
+  const [seconds, setSeconds] = useState('');
   const [pace, setPace] = useState('');
 
   const calculatePace = () => {
-    if (!distance || !time) {
-      message.error('Please enter both distance and time.');
+    if (!hours && !minutes && seconds === '') {
+      message.error('Please enter a time');
+      return;
+    } else if (!distance) {
+      message.error('Please enter distance.');
+    }
+
+    const distanceKm = parseFloat(distance);
+    const hoursValue = parseInt(hours, 10);
+    const minutesValue = parseInt(minutes, 10);
+    const secondsValue = parseInt(seconds, 10);
+
+    // if (isNaN(distanceKm) || isNaN(hoursValue) || isNaN(minutesValue) || isNaN(secondsValue)) {
+    //   message.error('Please enter valid numbers.');
+    //   return;
+    // }
+
+    if (distanceKm <= 0 || hoursValue < 0 || minutesValue < 0 || secondsValue < 0) {
+      message.error('Distance and time values must be positive.');
       return;
     }
 
-    // Convert distance to kilometers and time to minutes
-    const distanceKm = parseFloat(distance);
-    const [hours, minutes] = time.split(':').map(Number);
-    const totalMinutes = hours * 60 + minutes;
+    const totalMinutes = hoursValue * 60 + minutesValue + secondsValue / 60;
 
-    if (distanceKm <= 0 || totalMinutes <= 0) {
-      message.error('Distance and time must be positive numbers.');
+    if (totalMinutes <= 0) {
+      message.error('Total time must be greater than zero.');
       return;
     }
 
@@ -37,13 +51,11 @@ function MainPage() {
       <div className="bg-white p-8 shadow-lg rounded-lg w-full sm:w-1/2 lg:w-1/3">
         <h1 className="text-2xl font-bold mb-6 text-center">Pace Calculator</h1>
 
-        {/* Ant Design Form for Inputs */}
         <Form
           layout="vertical"
           onFinish={calculatePace}
           className="mb-4"
         >
-          {/* Distance Input */}
           <Form.Item
             label="Distance (km)"
             rules={[{ required: true, message: 'Please enter the distance.' }]}
@@ -56,20 +68,34 @@ function MainPage() {
             />
           </Form.Item>
 
-          {/* Time Input */}
-          <Form.Item
-            label="Time (hh:mm)"
-            rules={[{ required: true, message: 'Please enter the time in hh:mm format.' }]}
-          >
-            <Input
-              placeholder="Enter time (hh:mm)"
-              value={time}
-              onChange={(e) => setTime(e.target.value)}
-              size="large"
-            />
+          <Form.Item label="Time">
+            <div className="flex gap-4">
+              <Input
+                placeholder="Hours"
+                value={hours}
+                onChange={(e) => setHours(e.target.value)}
+                size="large"
+                style={{ flex: 1 }}
+              />
+
+              <Input
+                placeholder="Minutes"
+                value={minutes}
+                onChange={(e) => setMinutes(e.target.value)}
+                size="large"
+                style={{ flex: 1 }}
+              />
+
+              <Input
+                placeholder="Seconds"
+                value={seconds}
+                onChange={(e) => setSeconds(e.target.value)}
+                size="large"
+                style={{ flex: 1 }}
+              />
+            </div>
           </Form.Item>
 
-          {/* Calculate Button */}
           <Form.Item>
             <Button type="primary" htmlType="submit" block size="large">
               Calculate Pace
@@ -77,7 +103,6 @@ function MainPage() {
           </Form.Item>
         </Form>
 
-        {/* Display the Pace Result */}
         {pace && (
           <div className="text-center mt-4">
             <p className="text-lg">Your pace is:</p>
@@ -89,4 +114,4 @@ function MainPage() {
   );
 }
 
-export default MainPage;
+export default PaceCalculatorPage;

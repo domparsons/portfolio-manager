@@ -1,12 +1,12 @@
 import React from 'react';
 import './App.css';
-import MainPage from './MainPage';
+import PaceCalculatorPage from './features/paceCalculatorPage';
 import 'antd/dist/reset.css';
 function App() {
   return (
     <div className="App">
-      {/* Render the MainPage component here */}
-      <MainPage />
+      {/* Render the PaceCalculatorPage component here */}
+      <PaceCalculatorPage />
     </div>
   );
 }
