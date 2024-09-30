@@ -22,12 +22,12 @@ function PaceCalculatorPage() {
     const minutesValue = parseInt(minutes, 10);
     const secondsValue = parseInt(seconds, 10);
 
-    // if (isNaN(distanceKm) || isNaN(hoursValue) || isNaN(minutesValue) || isNaN(secondsValue)) {
-    //   message.error('Please enter valid numbers.');
-    //   return;
-    // }
-
-    if (distanceKm <= 0 || hoursValue < 0 || minutesValue < 0 || secondsValue < 0) {
+    if (
+      distanceKm <= 0 ||
+      hoursValue < 0 ||
+      minutesValue < 0 ||
+      secondsValue < 0
+    ) {
       message.error('Distance and time values must be positive.');
       return;
     }
@@ -42,7 +42,7 @@ function PaceCalculatorPage() {
     const paceMinutes = totalMinutes / distanceKm;
     const paceMinutesRounded = Math.floor(paceMinutes);
     const paceSeconds = Math.round((paceMinutes - paceMinutesRounded) * 60);
-
+    
     setPace(`${paceMinutesRounded}m ${paceSeconds}s per km`);
   };
 
@@ -51,11 +51,7 @@ function PaceCalculatorPage() {
       <div className="bg-white p-8 shadow-lg rounded-lg w-full sm:w-1/2 lg:w-1/3">
         <h1 className="text-2xl font-bold mb-6 text-center">Pace Calculator</h1>
 
-        <Form
-          layout="vertical"
-          onFinish={calculatePace}
-          className="mb-4"
-        >
+        <Form layout="vertical" onFinish={calculatePace} className="mb-4">
           <Form.Item
             label="Distance (km)"
             rules={[{ required: true, message: 'Please enter the distance.' }]}
