@@ -113,12 +113,12 @@ function PaceForm() {
         <Button type="primary" block size="large" onClick={async () => {
           try {
             const response = await fetch('http://127.0.0.1:8000/personal_bests/', {
-              method: 'POST',  // Specify the method
+              method: 'POST',
               headers: {
-                'Content-Type': 'application/json', // Set content type to JSON
+                'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                time: 123.45,     // Replace with actual values from your input
+                time: 123.45,
                 distance: 10.0,
                 pace: 12.3,
               }),
@@ -129,7 +129,7 @@ function PaceForm() {
             }
 
             const data = await response.json();
-            console.log(data); // Log the response from the server
+            console.log(data);
 
           } catch (error) {
             console.error('Error:', error);
