@@ -1,26 +1,23 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.api_v1.api import api_router
+from app.config import settings
+
 app = FastAPI()
 
-# Define the allowed origins
 origins = [
-    "http://localhost:3000",  # React app's origin
-    "http://127.0.0.1:3000",  # You can add multiple origins if needed
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
 ]
 
-# Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # Allows requests from these origins
+    allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods (GET, POST, etc.)
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
+app = FastAPI(title="Personal Best Tracker")
 
-
-@app.get("/")
-async def read_root():
-    return {"message": "Hello from FastAPI!"}
-
-# Run the app using: uvicorn filename:app --reload
+app.include_router(api_router, prefix=settings.API_V1_STR)

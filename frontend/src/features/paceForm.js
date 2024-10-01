@@ -112,14 +112,27 @@ function PaceForm() {
         {/*Access root api and print message*/}
         <Button type="primary" block size="large" onClick={async () => {
           try {
-            const response = await fetch('http://127.0.0.1:8000/');
+            const response = await fetch('http://127.0.0.1:8000/personal_bests/', {
+              method: 'POST',  // Specify the method
+              headers: {
+                'Content-Type': 'application/json', // Set content type to JSON
+              },
+              body: JSON.stringify({
+                time: 123.45,     // Replace with actual values from your input
+                distance: 10.0,
+                pace: 12.3,
+              }),
+            });
+
             if (!response.ok) {
               throw new Error('Network response was not ok');
             }
+
             const data = await response.json();
-            console.log(data.message);
+            console.log(data); // Log the response from the server
+
           } catch (error) {
-            console.error('There was a problem with the fetch operation:', error);
+            console.error('Error:', error);
           }
         }}>
           Button
