@@ -4,27 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dcd5a658-d691-4850-af26-e1f0452ca300" name="Changes" comment="push">
-      <change afterPath="$PROJECT_DIR$/backend/app/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/app/api/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/app/api/api_v1/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/app/api/api_v1/api.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/app/api/api_v1/endpoints/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/app/api/api_v1/endpoints/personal_best.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/app/config.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/app/core/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/app/crud/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/app/crud/personal_best.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/app/database.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/app/dependencies.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/app/models/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/app/models/personal_best.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/app/schemas/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/app/schemas/personal_best.py" afterDir="false" />
+    <list default="true" id="dcd5a658-d691-4850-af26-e1f0452ca300" name="Changes" comment="remove comments">
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/common/menu.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/features/watchlist/watchlist.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/services/alphaVantage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/PaceCalculator.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/PaceCalculator.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/api/api_v1/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/api/api_v1/api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/api/api_v1/endpoints/personal_best.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/crud/personal_best.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/features/paceForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/features/paceForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/models/personal_best.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/features/paceForm.js" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,6 +31,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Python Script" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -72,7 +69,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "main",
-    "last_opened_file_path": "/Users/domparsons/Developer/Projects/pace-calculator",
+    "last_opened_file_path": "/Users/domparsons/Developer/Projects/portfolio-manager",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -80,22 +77,21 @@
     "nodejs_package_manager_path": "npm",
     "npm.frontend.executor": "Run",
     "npm.run.executor": "Run",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "settings.editor.selected.configurable": "com.intellij.pycharm.community.ide.impl.configuration.PythonContentEntriesConfigurable",
     "ts.external.directory.path": "/Applications/PyCharm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/backend/app/api/api_v1/endpoints" />
-      <recent name="$PROJECT_DIR$/backend/app/models" />
-      <recent name="$PROJECT_DIR$/frontend/src/features" />
+      <recent name="$PROJECT_DIR$/frontend/src/components/features/watchlist" />
+      <recent name="$PROJECT_DIR$/frontend/src/components/common" />
+      <recent name="$PROJECT_DIR$/frontend/src/components" />
+      <recent name="$PROJECT_DIR$/frontend/src/components/features" />
+      <recent name="$PROJECT_DIR$/frontend" />
     </key>
   </component>
-  <component name="RunManager" selected="FastAPI.backend">
-    <configuration name="pace_calculator-endpoints | #1" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$APPLICATION_CONFIG_DIR$/scratches/pace_calculator-endpoints.http" requestIdentifier="#1" runType="Run single request">
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="npm.frontend">
     <configuration name="backend" type="Python.FastAPI">
       <option name="file" value="$PROJECT_DIR$/backend/app/main.py" />
       <module name="PaceCalculator" />
@@ -124,14 +120,8 @@
     </configuration>
     <list>
       <item itemvalue="FastAPI.backend" />
-      <item itemvalue="HTTP Request.pace_calculator-endpoints | #1" />
       <item itemvalue="npm.frontend" />
     </list>
-    <recent_temporary>
-      <list>
-        <item itemvalue="HTTP Request.pace_calculator-endpoints | #1" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -153,7 +143,9 @@
       <workItem from="1727724819753" duration="255000" />
       <workItem from="1727725083092" duration="671000" />
       <workItem from="1727725760802" duration="4755000" />
-      <workItem from="1727730760967" duration="4968000" />
+      <workItem from="1727730760967" duration="5739000" />
+      <workItem from="1727767004080" duration="6257000" />
+      <workItem from="1728222700972" duration="8122000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <option name="closed" value="true" />
@@ -203,7 +195,23 @@
       <option name="project" value="LOCAL" />
       <updated>1727732275774</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="backend first commit">
+      <option name="closed" value="true" />
+      <created>1727764817380</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1727764817380</updated>
+    </task>
+    <task id="LOCAL-00008" summary="remove comments">
+      <option name="closed" value="true" />
+      <created>1727765496596</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1727765496596</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -217,10 +225,13 @@
     <MESSAGE value="first commit" />
     <MESSAGE value="commit" />
     <MESSAGE value="push" />
-    <option name="LAST_COMMIT_MESSAGE" value="push" />
+    <MESSAGE value="backend first commit" />
+    <MESSAGE value="remove comments" />
+    <option name="LAST_COMMIT_MESSAGE" value="remove comments" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/pace_calculator$backend.coverage" NAME="backend Coverage Results" MODIFIED="1727733229306" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/pace_calculator$backend.coverage" NAME="backend Coverage Results" MODIFIED="1727767042534" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/portfolio_manager$backend.coverage" NAME="backend Coverage Results" MODIFIED="1728226009967" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/PaceCalculator$backend.coverage" NAME="backend Coverage Results" MODIFIED="1727727373948" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
 </project>

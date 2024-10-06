@@ -9,7 +9,7 @@ build/
 out/
 
 # Environment files
-.env
+frontend/.env
 .env.local
 .env.development.local
 .env.test.local
@@ -62,3 +62,6 @@ docs/.DS_Store
 *.so
 *.dmg
 *.pkg
+
+./.idea
+.workspace.xml

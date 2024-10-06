@@ -1,15 +1,29 @@
 import React from 'react';
-import './App.css';
-import PaceForm from './features/paceForm';
-import 'antd/dist/reset.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Layout } from 'antd';
+import Menu from './components/common/menu';
+import Watchlist from './components/features/watchlist/watchlist';
 
-function App() {
+const { Sider, Content, Header, Footer } = Layout;
+
+const App = () => {
   return (
-    <div className="App">
-      {/* Render the PaceForm component here */}
-      <PaceForm />
-    </div>
+    <Router>
+      <Layout style={{ minHeight: '100vh' }}>
+        <Sider>
+          <Menu />
+        </Sider>
+
+        <Layout>
+          <Content style={{ margin: '0px', padding: '85px', background: '#fff' }}>
+            <Routes>
+              <Route path="/watchlist" element={<Watchlist />} />
+            </Routes>
+          </Content>
+        </Layout>
+      </Layout>
+    </Router>
   );
-}
+};
 
 export default App;
