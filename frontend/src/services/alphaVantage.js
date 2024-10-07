@@ -7,9 +7,8 @@ export const fetchStockData = async (symbol) => {
   try {
     const response = await axios.get(BASE_URL, {
       params: {
-        function: 'TIME_SERIES_INTRADAY',
+        function: 'TIME_SERIES_DAILY',
         symbol: symbol,
-        interval: '15min',
         apikey: ALPHA_VANTAGE_API_KEY,
       },
     });

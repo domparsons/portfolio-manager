@@ -1,6 +1,6 @@
 import React from 'react';
-import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
 import { Menu } from 'antd';
+import { MailOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 
 const items = [
@@ -23,14 +23,39 @@ const SidebarMenu = () => {
   };
 
   return (
-    <Menu
-      onClick={onClick}
-      style={{ width: 256, height: '100vh' }}
-      defaultSelectedKeys={['watchlist']}
-      mode="inline"
-      items={items}
-    />
+    <div style={{ width: 256, height: '100vh', background: '#001529' }}>
+      <div style={styles.logoContainer}>
+        {/* Placeholder Text for Logo */}
+        <h2 style={styles.logoTitle}>Stock Watchlist</h2>
+      </div>
+
+      <Menu
+        onClick={onClick}
+        style={{ height: 'calc(100% - 64px)' }}
+        defaultSelectedKeys={['watchlist']}
+        mode="inline"
+        items={items}
+        theme="dark"
+      />
+    </div>
   );
+};
+
+const styles = {
+  logoContainer: {
+    height: '64px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    background: '#001529',
+    marginBottom: '16px',
+  },
+  logoTitle: {
+    fontSize: '20px',
+    fontWeight: 'bold',
+    color: 'white',
+    margin: 0,
+  },
 };
 
 export default SidebarMenu;
