@@ -65,3 +65,5 @@ docs/.DS_Store
 
 ./.idea
 .workspace.xml
+./backend/.env
+./backend/sql_app.db
