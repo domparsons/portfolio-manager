@@ -4,8 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.api import api_router
 from app.config.settings import settings
 
-# Create a single FastAPI instance
-app = FastAPI(title="Personal Best Tracker")
+app = FastAPI(title="Portfolio Manager")
 
 # CORS settings
 origins = [
@@ -22,5 +21,4 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include routers after middleware is set up
 app.include_router(api_router, prefix=settings.API_V1_STR)
