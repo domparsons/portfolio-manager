@@ -10,8 +10,9 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from 'recharts';
-import { Card, Input, Button, Form, Spin, Typography, Row, Col, Statistic } from 'antd';
+import { Card, Input, Button, Form, Spin, Typography, Row, Col, Statistic, List } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
+import axios from 'axios';
 
 const { Title, Text } = Typography;
 
@@ -21,6 +22,22 @@ const Watchlist = () => {
   const [error, setError] = useState(null);
   const [symbol, setSymbol] = useState('AAPL');
   const [stockInput, setStockInput] = useState('');
+  const [watchlist, setWatchlist] = useState([]);
+
+  const userId = 1;
+
+  useEffect(() => {
+    const fetchWatchlist = async () => {
+      try {
+        const response = await axios.get(`/api/watchlist/${userId}`);
+        setWatchlist(response.data);
+      } catch (error) {
+        console.error('Error fetching watchlist:', error);
+      }
+    };
+
+    fetchWatchlist();
+  }, [userId]);
 
   useEffect(() => {
     const getData = async () => {
@@ -34,16 +51,20 @@ const Watchlist = () => {
         setLoading(false);
       }
     };
+
     getData();
   }, [symbol]);
 
-  // Format chart data using dayjs
+  useEffect(() => {
+    localStorage.setItem('watchlist', JSON.stringify(watchlist));
+  }, [watchlist]);
+
   const formatChartData = () => {
     if (!data || !data['Time Series (Daily)']) return [];
 
     const timeSeries = data['Time Series (Daily)'];
     const formattedData = Object.keys(timeSeries).map((date) => ({
-      date: dayjs(date).format('MMM D, YYYY'), // Format date as "Oct 6, 2023"
+      date: dayjs(date).format('MMM D, YYYY'), // Format date
       price: parseFloat(timeSeries[date]['4. close']),
     }));
 
@@ -52,7 +73,6 @@ const Watchlist = () => {
 
   const chartData = formatChartData();
 
-  // Get latest stock information from the most recent trading day
   const getStockInfo = () => {
     if (!data || !data['Time Series (Daily)']) return null;
 
@@ -70,12 +90,33 @@ const Watchlist = () => {
 
   const stockInfo = getStockInfo();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    if (stockInput) {
-      setSymbol(stockInput.toUpperCase());
-      setStockInput('');
+    const newSymbol = stockInput.toUpperCase().trim();
+
+    if (newSymbol && !watchlist.includes(newSymbol)) {
+      try {
+        const response = await axios.post('/api/watchlist', {
+          symbol: newSymbol,
+          user_id: userId,
+        });
+
+        setWatchlist([...watchlist, newSymbol]);
+        setSymbol(newSymbol);
+        setStockInput('');
+      } catch (error) {
+        console.error('Error adding to watchlist:', error);
+      }
     }
+  };
+
+  const removeFromWatchlist = (stock) => {
+    setWatchlist(watchlist.filter((s) => s !== stock)); // Remove stock from watchlist
+  };
+
+  // Function to set clicked stock symbol
+  const handleWatchlistClick = (stock) => {
+    setSymbol(stock);
   };
 
   return (
@@ -107,71 +148,103 @@ const Watchlist = () => {
         </Form.Item>
       </Form>
 
-      {loading ? (
-        <Spin size="large" style={styles.spinner} />
-      ) : error ? (
-        <Text type="danger" style={styles.error}>
-          {error}
-        </Text>
-      ) : (
-        data && chartData.length > 0 && (
-          <Row gutter={24} style={styles.row}>
-            {/* Chart Card */}
-            <Col span={16}>
-              <Card title={`Stock Data for ${symbol}`} style={styles.card}>
-                <ResponsiveContainer width="100%" height={400}>
-                  <LineChart data={chartData}>
-                    <XAxis dataKey="date" />
-                    <YAxis domain={['dataMin', 'dataMax']} />
-                    <Tooltip formatter={(value) => `$${value.toFixed(2)}`}
-                             labelFormatter={(label) => `Date: ${label}`} />
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <Line type="monotone" dataKey="price" stroke="#82ca9d" />
-                  </LineChart>
-                </ResponsiveContainer>
-              </Card>
-            </Col>
+      <div>
+        {loading ? (
+          <Spin size="large" style={styles.spinner} />
+        ) : error ? (
+          <Text type="danger" style={styles.error}>
+            {error}
+          </Text>
+        ) : (
+          <>
+            {/* Full-width Watchlist */}
+            <Row>
+              <Col span={24}>
+                <Card title="Your Watchlist" style={{ ...styles.card, marginBottom: '20px' }}>
+                  <List
+                    dataSource={watchlist}
+                    renderItem={(item) => (
+                      <List.Item
+                        actions={[
+                          <Button onClick={() => removeFromWatchlist(item)}>Remove</Button>,
+                        ]}
+                      >
+                  <span
+                    onClick={() => handleWatchlistClick(item)}
+                    style={{ cursor: 'pointer', fontWeight: 'bold' }}
+                  >
+                    {item}
+                  </span>
+                      </List.Item>
+                    )}
+                  />
+                </Card>
+              </Col>
+            </Row>
 
-            {/* Stock Information Card */}
-            <Col span={8}>
-              <Card title="Stock Information" style={styles.infoCard}>
-                {stockInfo ? (
-                  <>
-                    <Statistic
-                      title="Latest Close Price"
-                      value={`$${stockInfo.close.toFixed(2)}`}
-                      precision={2}
-                      style={styles.stat}
-                    />
-                    <Statistic
-                      title="High Price (Daily)"
-                      value={`$${stockInfo.high.toFixed(2)}`}
-                      precision={2}
-                      style={styles.stat}
-                    />
-                    <Statistic
-                      title="Low Price (Daily)"
-                      value={`$${stockInfo.low.toFixed(2)}`}
-                      precision={2}
-                      style={styles.stat}
-                    />
-                    <Statistic
-                      title="Trading Volume"
-                      value={stockInfo.volume.toLocaleString()}
-                      style={styles.stat}
-                    />
-                    <Text type="secondary" style={styles.date}>
-                      Data as of {dayjs(stockInfo.date).format('MMM D, YYYY')}
-                    </Text>
-                  </>
-                ) : (
-                  <Text>No stock data available</Text>
+            {/* Row for Chart and Stock Information */}
+            <Row gutter={16}>
+              {/* Stock Chart */}
+              <Col xs={24} lg={12}>
+                {data && chartData.length > 0 && (
+                  <Card title={`Stock Data for ${symbol}`} style={styles.card}>
+                    <ResponsiveContainer width="100%" height={400}>
+                      <LineChart data={chartData}>
+                        <XAxis dataKey="date" />
+                        <YAxis domain={['dataMin', 'dataMax']} />
+                        <Tooltip
+                          formatter={(value) => `$${value.toFixed(2)}`}
+                          labelFormatter={(label) => `Date: ${label}`}
+                        />
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <Line type="monotone" dataKey="price" stroke="#82ca9d" />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </Card>
                 )}
-              </Card>
-            </Col>
-          </Row>
-        )
-      )}
+              </Col>
+
+              {/* Stock Information */}
+              <Col xs={24} lg={12}>
+                <Card title="Stock Information" style={styles.infoCard}>
+                  {stockInfo ? (
+                    <>
+                      <Statistic
+                        title="Latest Close Price"
+                        value={`$${stockInfo.close.toFixed(2)}`}
+                        precision={2}
+                        style={styles.stat}
+                      />
+                      <Statistic
+                        title="High Price (Daily)"
+                        value={`$${stockInfo.high.toFixed(2)}`}
+                        precision={2}
+                        style={styles.stat}
+                      />
+                      <Statistic
+                        title="Low Price (Daily)"
+                        value={`$${stockInfo.low.toFixed(2)}`}
+                        precision={2}
+                        style={styles.stat}
+                      />
+                      <Statistic
+                        title="Trading Volume"
+                        value={stockInfo.volume.toLocaleString()}
+                        style={styles.stat}
+                      />
+                      <Text type="secondary" style={styles.date}>
+                        Data as of {dayjs(stockInfo.date).format('MMM D, YYYY')}
+                      </Text>
+                    </>
+                  ) : (
+                    <Text>No stock data available</Text>
+                  )}
+                </Card>
+              </Col>
+            </Row>
+          </>
+        )}
+      </div>
     </div>
   );
 };

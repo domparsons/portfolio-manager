@@ -4,12 +4,29 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dcd5a658-d691-4850-af26-e1f0452ca300" name="Changes" comment="git ignore">
+    <list default="true" id="dcd5a658-d691-4850-af26-e1f0452ca300" name="Changes" comment="styles">
+      <change afterPath="$PROJECT_DIR$/backend/app/api/api.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/app/api/endpoints/asset.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/app/api/endpoints/user.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/app/api/endpoints/watchlist.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/app/models/user.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/app/models/watchlist.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/app/schemas.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/api/asset.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/api/user.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/api/watchlist.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/common/menu.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/common/menu.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/api/api_v1/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/api/endpoints/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/api/api_v1/api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/api/api_v1/endpoints/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/config/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/config/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/crud/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/crud.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/database.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/models/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/schemas/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/models/asset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/schemas/personal_best.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/features/watchlist/watchlist.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/features/watchlist/watchlist.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/services/alphaVantage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/services/alphaVantage.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,8 +36,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Script" />
         <option value="JavaScript File" />
+        <option value="SQL File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -38,7 +56,7 @@
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/domparsons/pace-calculator.git&quot;,
+    &quot;url&quot;: &quot;https://github.com/domparsons/portfolio-manager.git&quot;,
     &quot;accountId&quot;: &quot;c9c83ce3-24e7-461b-b0ca-57994e0465f5&quot;
   }
 }</component>
@@ -48,39 +66,57 @@
   <component name="ProjectId" id="2mhTjxU4BNDvqqtVmdVOsbhfp0o" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="autoscrollToSource" value="true" />
     <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="openDirectoriesWithSingleClick" value="true" />
+    <option name="showExcludedFiles" value="false" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;FastAPI.backend.executor&quot;: &quot;Run&quot;,
-    &quot;HTTP Request.pace_calculator-endpoints | #1.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/domparsons/Developer/Projects/portfolio-manager&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;npm.frontend.executor&quot;: &quot;Run&quot;,
-    &quot;npm.run.executor&quot;: &quot;Run&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.intellij.pycharm.community.ide.impl.configuration.PythonContentEntriesConfigurable&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/Applications/PyCharm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "FastAPI.backend.executor": "Run",
+    "HTTP Request.pace_calculator-endpoints | #1.executor": "Run",
+    "JavaScript Debug.debugger.executor": "Debug",
+    "Python.main.executor": "Run",
+    "Python.test.executor": "Debug",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "/Users/domparsons/Developer/Projects/portfolio-manager",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "npm.frontend.executor": "Run",
+    "npm.run.executor": "Run",
+    "settings.editor.selected.configurable": "Errors",
+    "ts.external.directory.path": "/Applications/PyCharm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "sqlite"
+    ],
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "JSON"
+    ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/backend/app/api" />
+      <recent name="$PROJECT_DIR$/backend/app/config" />
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/backend" />
       <recent name="$PROJECT_DIR$/frontend/src/components/features/watchlist" />
-      <recent name="$PROJECT_DIR$/frontend/src/components/common" />
-      <recent name="$PROJECT_DIR$/frontend/src/components" />
-      <recent name="$PROJECT_DIR$/frontend/src/components/features" />
     </key>
   </component>
-  <component name="RunManager" selected="FastAPI.backend">
+  <component name="RunManager">
+    <configuration name="debugger" type="JavascriptDebugType" uri="http://localhost:3000/">
+      <method v="2" />
+    </configuration>
     <configuration name="backend" type="Python.FastAPI">
       <option name="file" value="$PROJECT_DIR$/backend/app/main.py" />
       <module name="PaceCalculator" />
@@ -109,6 +145,7 @@
     </configuration>
     <list>
       <item itemvalue="FastAPI.backend" />
+      <item itemvalue="JavaScript Debug.debugger" />
       <item itemvalue="npm.frontend" />
     </list>
   </component>
@@ -135,7 +172,14 @@
       <workItem from="1727730760967" duration="5739000" />
       <workItem from="1727767004080" duration="6257000" />
       <workItem from="1728222700972" duration="8620000" />
-      <workItem from="1728334132688" duration="1378000" />
+      <workItem from="1728334132688" duration="1673000" />
+      <workItem from="1728335838771" duration="635000" />
+      <workItem from="1728506598941" duration="41000" />
+      <workItem from="1728506690559" duration="2757000" />
+      <workItem from="1728597413430" duration="2532000" />
+      <workItem from="1729328648615" duration="1000" />
+      <workItem from="1731964436161" duration="61000" />
+      <workItem from="1732739518973" duration="2471000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <option name="closed" value="true" />
@@ -225,7 +269,15 @@
       <option name="project" value="LOCAL" />
       <updated>1728334328991</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="styles">
+      <option name="closed" value="true" />
+      <created>1728335601180</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1728335601180</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -255,11 +307,14 @@
     <MESSAGE value="feature: watchlist and menu" />
     <MESSAGE value="refactor" />
     <MESSAGE value="git ignore" />
-    <option name="LAST_COMMIT_MESSAGE" value="git ignore" />
+    <MESSAGE value="styles" />
+    <option name="LAST_COMMIT_MESSAGE" value="styles" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/pace_calculator$backend.coverage" NAME="backend Coverage Results" MODIFIED="1727767042534" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/portfolio_manager$backend.coverage" NAME="backend Coverage Results" MODIFIED="1728334360746" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/portfolio_manager$main.coverage" NAME="main Coverage Results" MODIFIED="1728336388892" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend/app" />
+    <SUITE FILE_PATH="coverage/portfolio_manager$test.coverage" NAME="test Coverage Results" MODIFIED="1732741270183" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend/app/core" />
+    <SUITE FILE_PATH="coverage/portfolio_manager$backend.coverage" NAME="backend Coverage Results" MODIFIED="1732740113997" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/PaceCalculator$backend.coverage" NAME="backend Coverage Results" MODIFIED="1727727373948" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
 </project>
