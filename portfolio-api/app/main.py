@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
+from app.config import database
 
 from app.api.api import api_router
 from app.config.settings import settings

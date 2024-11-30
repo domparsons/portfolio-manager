@@ -9,6 +9,7 @@ import {
   Tooltip,
   CartesianGrid,
   ResponsiveContainer,
+  AreaChart
 } from 'recharts';
 import { Card, Input, Button, Form, Spin, Typography, Row, Col, Statistic, List } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
@@ -23,6 +24,16 @@ const Watchlist = () => {
   const [symbol, setSymbol] = useState('AAPL');
   const [stockInput, setStockInput] = useState('');
   const [watchlist, setWatchlist] = useState([]);
+
+  const [strokeColour, setStrokeColour] = useState('#602e7f');
+  // const dataMin = Math.min(...data.map(d => d.value)); // Replace with your actual data min
+  // const dataMax = Math.max(...data.map(d => d.value)); // Replace with your actual data max
+  //
+  // // Calculate 5% leeway
+  // const padding = 0.05; // 5% padding
+  //
+  // const adjustedMin = dataMin - (dataMax - dataMin) * padding;
+  // const adjustedMax = dataMax + (dataMax - dataMin) * padding;
 
   const userId = 1;
 
@@ -191,13 +202,13 @@ const Watchlist = () => {
                     <ResponsiveContainer width="100%" height={400}>
                       <LineChart data={chartData}>
                         <XAxis dataKey="date" />
-                        <YAxis domain={['dataMin', 'dataMax']} />
+                        {/*<YAxis domain={[adjustedMin, adjustedMax]} />*/}
                         <Tooltip
                           formatter={(value) => `$${value.toFixed(2)}`}
                           labelFormatter={(label) => `Date: ${label}`}
                         />
                         <CartesianGrid strokeDasharray="3 3" />
-                        <Line type="monotone" dataKey="price" stroke="#82ca9d" />
+                        <Line type="monotone" dataKey="price" stroke={strokeColour} dot={false}/>
                       </LineChart>
                     </ResponsiveContainer>
                   </Card>
