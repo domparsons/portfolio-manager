@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchStockData } from '../../../services/alphaVantage';
+import { formatChartData, getData, getStockInfo } from '../../../services/alphaVantage';
 import dayjs from 'dayjs';
 import {
   LineChart,
@@ -9,125 +9,48 @@ import {
   Tooltip,
   CartesianGrid,
   ResponsiveContainer,
-  AreaChart
 } from 'recharts';
 import { Card, Input, Button, Form, Spin, Typography, Row, Col, Statistic, List } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import axios from 'axios';
 
 const { Title, Text } = Typography;
 
 const Watchlist = () => {
-  const [data, setData] = useState(null);
+  const [rawData, setRawData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [symbol, setSymbol] = useState('AAPL');
   const [stockInput, setStockInput] = useState('');
-  const [watchlist, setWatchlist] = useState([]);
-
   const [strokeColour, setStrokeColour] = useState('#602e7f');
-  // const dataMin = Math.min(...data.map(d => d.value)); // Replace with your actual data min
-  // const dataMax = Math.max(...data.map(d => d.value)); // Replace with your actual data max
-  //
-  // // Calculate 5% leeway
-  // const padding = 0.05; // 5% padding
-  //
-  // const adjustedMin = dataMin - (dataMax - dataMin) * padding;
-  // const adjustedMax = dataMax + (dataMax - dataMin) * padding;
-
-  const userId = 1;
+  const [timeframe, setTimeframe] = useState('week');
 
   useEffect(() => {
-    const fetchWatchlist = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get(`/api/watchlist/${userId}`);
-        setWatchlist(response.data);
+        setLoading(true);
+
+        const result = await getData(symbol, setError, setLoading);
+        setRawData(result);
+
       } catch (error) {
-        console.error('Error fetching watchlist:', error);
-      }
-    };
-
-    fetchWatchlist();
-  }, [userId]);
-
-  useEffect(() => {
-    const getData = async () => {
-      setLoading(true);
-      try {
-        const stockData = await fetchStockData(symbol);
-        setData(stockData);
-      } catch (err) {
-        setError('Failed to fetch stock data.');
+        setError('Failed to fetch data');
       } finally {
         setLoading(false);
       }
     };
 
-    getData();
-  }, [symbol]);
+    if (symbol) {
+      fetchData();
+    }
+  }, [symbol, timeframe]);
 
-  useEffect(() => {
-    localStorage.setItem('watchlist', JSON.stringify(watchlist));
-  }, [watchlist]);
 
-  const formatChartData = () => {
-    if (!data || !data['Time Series (Daily)']) return [];
-
-    const timeSeries = data['Time Series (Daily)'];
-    const formattedData = Object.keys(timeSeries).map((date) => ({
-      date: dayjs(date).format('MMM D, YYYY'), // Format date
-      price: parseFloat(timeSeries[date]['4. close']),
-    }));
-
-    return formattedData.reverse();
-  };
-
-  const chartData = formatChartData();
-
-  const getStockInfo = () => {
-    if (!data || !data['Time Series (Daily)']) return null;
-
-    const latestDate = Object.keys(data['Time Series (Daily)'])[0];
-    const latestData = data['Time Series (Daily)'][latestDate];
-
-    return {
-      date: latestDate,
-      close: parseFloat(latestData['4. close']),
-      high: parseFloat(latestData['2. high']),
-      low: parseFloat(latestData['3. low']),
-      volume: parseInt(latestData['5. volume'], 10),
-    };
-  };
+  const chartData = formatChartData(rawData, timeframe);
 
   const stockInfo = getStockInfo();
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const newSymbol = stockInput.toUpperCase().trim();
-
-    if (newSymbol && !watchlist.includes(newSymbol)) {
-      try {
-        const response = await axios.post('/api/watchlist', {
-          symbol: newSymbol,
-          user_id: userId,
-        });
-
-        setWatchlist([...watchlist, newSymbol]);
-        setSymbol(newSymbol);
-        setStockInput('');
-      } catch (error) {
-        console.error('Error adding to watchlist:', error);
-      }
-    }
-  };
-
-  const removeFromWatchlist = (stock) => {
-    setWatchlist(watchlist.filter((s) => s !== stock)); // Remove stock from watchlist
-  };
-
-  // Function to set clicked stock symbol
-  const handleWatchlistClick = (stock) => {
-    setSymbol(stock);
+  const handleOptionClick = (option) => {
+    setTimeframe(option); // Update the selected timeframe
   };
 
   return (
@@ -136,7 +59,7 @@ const Watchlist = () => {
         Stock Watchlist
       </Title>
 
-      <Form layout="inline" onSubmitCapture={handleSubmit} style={styles.form}>
+      <Form layout="inline" style={styles.form}>
         <Form.Item>
           <Input
             value={stockInput}
@@ -168,54 +91,41 @@ const Watchlist = () => {
           </Text>
         ) : (
           <>
-            {/* Full-width Watchlist */}
-            <Row>
-              <Col span={24}>
-                <Card title="Your Watchlist" style={{ ...styles.card, marginBottom: '20px' }}>
-                  <List
-                    dataSource={watchlist}
-                    renderItem={(item) => (
-                      <List.Item
-                        actions={[
-                          <Button onClick={() => removeFromWatchlist(item)}>Remove</Button>,
-                        ]}
-                      >
-                  <span
-                    onClick={() => handleWatchlistClick(item)}
-                    style={{ cursor: 'pointer', fontWeight: 'bold' }}
-                  >
-                    {item}
-                  </span>
-                      </List.Item>
-                    )}
-                  />
-                </Card>
-              </Col>
-            </Row>
+
 
             {/* Row for Chart and Stock Information */}
             <Row gutter={16}>
               {/* Stock Chart */}
-              <Col xs={24} lg={12}>
-                {data && chartData.length > 0 && (
-                  <Card title={`Stock Data for ${symbol}`} style={styles.card}>
-                    <ResponsiveContainer width="100%" height={400}>
-                      <LineChart data={chartData}>
-                        <XAxis dataKey="date" />
-                        {/*<YAxis domain={[adjustedMin, adjustedMax]} />*/}
-                        <Tooltip
-                          formatter={(value) => `$${value.toFixed(2)}`}
-                          labelFormatter={(label) => `Date: ${label}`}
-                        />
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <Line type="monotone" dataKey="price" stroke={strokeColour} dot={false}/>
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </Card>
-                )}
-              </Col>
-
-              {/* Stock Information */}
+              {rawData && chartData.length > 0 && (
+                <Card
+                  title={
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span>{`Stock Data for ${symbol}`}</span>
+                      <div>
+                        <button style={styles.optionButton} onClick={() => handleOptionClick('24h')}>24h</button>
+                        <button style={styles.optionButton} onClick={() => handleOptionClick('7d')}>7d</button>
+                        <button style={styles.optionButton} onClick={() => handleOptionClick('30d')}>30d</button>
+                      </div>
+                    </div>
+                  }
+                  style={styles.card}
+                > <ResponsiveContainer width="100%" height={400}>
+                  <LineChart data={chartData}>
+                    <XAxis dataKey="date" />
+                    <YAxis domain={['dataMin', 'dataMax']} />
+                    <Tooltip
+                      formatter={(value) => `$${value.toFixed(2)}`}
+                      labelFormatter={(label) => `Date: ${label}`}
+                    />
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <Line type="monotone" dataKey="price" stroke={strokeColour} dot={false} />
+                  </LineChart>
+                </ResponsiveContainer>
+                </Card>
+              )}
+            </Row>
+            <Row gutter={16} style={styles.row}>
+              Stock Information
               <Col xs={24} lg={12}>
                 <Card title="Stock Information" style={styles.infoCard}>
                   {stockInfo ? (
