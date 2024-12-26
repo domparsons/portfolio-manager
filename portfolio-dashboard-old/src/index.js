@@ -6,8 +6,10 @@ import reportWebVitals from './reportWebVitals';
 import 'antd/dist/reset.css';
 
 
+// Import Font Awesome core
 import { library } from '@fortawesome/fontawesome-svg-core';
 
+// Import specific icons
 import { fas } from '@fortawesome/free-solid-svg-icons';
 
 library.add(fas);

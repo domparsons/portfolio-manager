@@ -1,6 +1,13 @@
 from pydantic import BaseModel
 
-
-class Watchlist(BaseModel):
-    id: int
+class WatchlistBase(BaseModel):
     ticker: str
+
+class WatchlistCreate(WatchlistBase):
+    pass
+
+class Watchlist(WatchlistBase):
+    id: int
+
+    class Config:
+        orm_mode = True

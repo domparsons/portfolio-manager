@@ -12,6 +12,8 @@ import {
 } from 'recharts';
 import { Card, Input, Button, Form, Spin, Typography, Row, Col, Statistic, List } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 
 const { Title, Text } = Typography;
 
@@ -81,6 +83,8 @@ const Watchlist = () => {
           </Button>
         </Form.Item>
       </Form>
+
+
 
       <div>
         {loading ? (

@@ -1,31 +1,29 @@
-# app/api/api_v1/endpoints/watchlist.py
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app import schemas, crud
+from app.schemas.watchlist import Watchlist, WatchlistCreate
 from app.config.database import get_db
+from app.crud.watchlist import get_watchlist, get_watchlist_item, create_watchlist_item, delete_watchlist_item
 
-router = APIRouter()
+router = APIRouter(prefix="/watchlist", tags=["watchlist"])
 
+@router.get("/", response_model=list[Watchlist])
+def read_watchlist(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+    return get_watchlist(db, skip=skip, limit=limit)
 
-@router.post("/", response_model=schemas.Watchlist)
-def add_to_watchlist(watchlist: schemas.Watchlist, db: Session = Depends(get_db)):
-    """Add a stock symbol to a user's watchlist."""
-    return crud.add_to_watchlist(db=db, watchlist=watchlist)
+@router.get("/{watchlist_id}", response_model=Watchlist)
+def read_watchlist_item(watchlist_id: int, db: Session = Depends(get_db)):
+    db_item = get_watchlist_item(db, watchlist_id=watchlist_id)
+    if not db_item:
+        raise HTTPException(status_code=404, detail="Watchlist item not found")
+    return db_item
 
+@router.post("/", response_model=Watchlist)
+def create_watchlist(watchlist: WatchlistCreate, db: Session = Depends(get_db)):
+    return create_watchlist_item(db, watchlist=watchlist)
 
-# @router.get("/{user_id}", response_model=list[schemas.Watchlist])
-# def read_watchlist(user_id: int, db: Session = Depends(get_db)):
-#     """Get all watchlist for a user"""
-#     db_watchlist = crud.get_watchlist_by_user(db, user_id=user_id)
-#     if not db_watchlist:
-#         raise HTTPException(status_code=404, detail="No watchlists found for user")
-#     return db_watchlist
-#
-#
-# @router.delete("/{watchlist_id}", response_model=schemas.Watchlist)
-# def delete_watchlist(watchlist_id: int, db: Session = Depends(get_db)):
-#     """Delete a watchlist by ID"""
-#     watchlist = crud.get_watchlist(db, watchlist_id=watchlist_id)
-#     if watchlist is None:
-#         raise HTTPException(status_code=404, detail="Watchlist not found")
-#     return crud.delete_watchlist(db=db, watchlist_id=watchlist_id)
+@router.delete("/{watchlist_id}", response_model=Watchlist)
+def delete_watchlist(watchlist_id: int, db: Session = Depends(get_db)):
+    db_item = delete_watchlist_item(db, watchlist_id=watchlist_id)
+    if not db_item:
+        raise HTTPException(status_code=404, detail="Watchlist item not found")
+    return db_item

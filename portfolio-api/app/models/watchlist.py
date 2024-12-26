@@ -1,9 +1,8 @@
 from sqlalchemy import Column, Integer, String
 from app.config.database import Base
 
-
 class Watchlist(Base):
-    __tablename__ = 'watchlist'
+    __tablename__ = "watchlist"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    symbol = Column(String, nullable=False)
+    id = Column(Integer, primary_key=True, index=True)
+    ticker = Column(String, unique=True, index=True)
