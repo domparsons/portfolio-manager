@@ -10,12 +10,12 @@ function App() {
     {
       key: 'watchlist',
       label: 'Watchlist',
-      // icon: <FontAwesomeIcon icon={['fas', 'chart-line']} />,
+      icon: <FontAwesomeIcon icon={['fas', 'chart-line']} />,
     },
     {
       key: 'projects',
       label: 'Projects',
-      // icon: <FontAwesomeIcon icon={['fas', 'chart-line']} />,
+      icon: <FontAwesomeIcon icon={['fas', 'chart-line']} />,
     },
   ];
   return (

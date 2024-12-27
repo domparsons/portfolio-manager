@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "node-core-lib": "^0.11.11",
+    "process": "^0.11.10"
+  }
+}
