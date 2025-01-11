@@ -1,6 +1,6 @@
-import { Button, Form, Input } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
-import React from 'react';
+import { Button, Form, Input } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
+import React from "react";
 
 const StockSearch = () => {
   return (
@@ -26,7 +26,7 @@ const StockSearch = () => {
         </Button>
       </Form.Item>
     </Form>
-  )
-}
+  );
+};
 
 export default StockSearch;

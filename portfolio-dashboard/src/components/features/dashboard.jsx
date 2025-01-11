@@ -1,19 +1,35 @@
-import React, { useEffect, useState } from 'react';
-import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
-import { Card, Typography, Row, Spin, Button, Select } from 'antd';
-import { getData, getStockInfo } from '../../services/alphaVantage.js';
+import React, { useEffect, useState } from "react";
+import { Line } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Card, Typography, Row, Spin, Button, Select } from "antd";
+import { getData, getStockInfo } from "../../services/alphaVantage.js";
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+);
 
 const { Title: AntTitle, Text } = Typography;
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [ticker, setTicker] = useState('AAPL');
-  const [chartData, setChartData] = useState(null)
-
+  const [ticker, setTicker] = useState("AAPL");
+  const [chartData, setChartData] = useState(null);
 
   const fetchData = async () => {
     try {
@@ -34,14 +50,14 @@ const Dashboard = () => {
           {
             label: `${ticker} Closing Prices`,
             data,
-            borderColor: 'rgba(75,192,192,1)',
-            backgroundColor: 'rgba(75,192,192,0.2)',
+            borderColor: "rgba(75,192,192,1)",
+            backgroundColor: "rgba(75,192,192,0.2)",
             tension: 0.2,
           },
         ],
       });
     } catch (err) {
-      setError('Failed to fetch stock data. Please try again.');
+      setError("Failed to fetch stock data. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -56,7 +72,7 @@ const Dashboard = () => {
     plugins: {
       legend: {
         display: true,
-        position: 'top',
+        position: "top",
       },
       tooltip: {
         callbacks: {
@@ -68,20 +84,20 @@ const Dashboard = () => {
       x: {
         title: {
           display: true,
-          text: 'Date',
+          text: "Date",
         },
       },
       y: {
         title: {
           display: true,
-          text: 'Price (USD)',
+          text: "Price (USD)",
         },
       },
     },
   };
 
   useEffect(() => {
-    fetchData().then(r => console.log(r));
+    fetchData().then((r) => console.log(r));
   }, [ticker]);
 
   return (
@@ -95,10 +111,11 @@ const Dashboard = () => {
         style={{ width: 120 }}
         onChange={handleTickerChange}
         options={[
-        { value: 'AAPL', label: <span>Apple</span> },
-        { value: 'TSLA', label: <span>Tesla</span> },
-        { value: 'NVDA', label: <span>NVIDIA</span> }
-      ]} />
+          { value: "AAPL", label: <span>Apple</span> },
+          { value: "TSLA", label: <span>Tesla</span> },
+          { value: "NVDA", label: <span>NVIDIA</span> },
+        ]}
+      />
 
       <div>
         {loading ? (
@@ -161,39 +178,39 @@ const Dashboard = () => {
 
 const styles = {
   container: {
-    display: 'flex',
-    flexDirection: 'column',
-    padding: '20px',
+    display: "flex",
+    flexDirection: "column",
+    padding: "20px",
   },
   title: {
-    marginBottom: '20px',
+    marginBottom: "20px",
   },
   form: {
-    marginBottom: '20px',
+    marginBottom: "20px",
   },
   input: {
-    width: '300px',
+    width: "300px",
   },
   button: {
-    marginLeft: '10px',
+    marginLeft: "10px",
   },
   spinner: {
-    marginTop: '50px',
+    marginTop: "50px",
   },
   error: {
-    marginTop: '20px',
-    fontSize: '16px',
+    marginTop: "20px",
+    fontSize: "16px",
   },
   card: {
-    width: '100%',
-    marginTop: '20px',
+    width: "100%",
+    marginTop: "20px",
   },
   stat: {
-    marginBottom: '16px',
+    marginBottom: "16px",
   },
   date: {
-    marginTop: '16px',
-    display: 'block',
+    marginTop: "16px",
+    display: "block",
   },
 };
 

@@ -1,78 +1,80 @@
-import React from 'react';
-import { Menu, Tooltip } from 'antd';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React from "react";
+import { Menu, Tooltip } from "antd";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const SidebarMenu = ({ selectedKey, onMenuClick }) => {
   const items = [
     {
-      key: 'dashboard',
+      key: "dashboard",
       label: (
         <Tooltip title="View overall portfolio performance" placement="right">
           Dashboard
         </Tooltip>
       ),
-      icon: <FontAwesomeIcon icon={['fas', 'tachometer-alt']} />,
+      icon: <FontAwesomeIcon icon={["fas", "tachometer-alt"]} />,
     },
     {
-      key: 'backtesting',
+      key: "backtesting",
       label: (
         <Tooltip title="Run backtesting strategies" placement="right">
           Backtesting
         </Tooltip>
       ),
-      icon: <FontAwesomeIcon icon={['fas', 'flask']} />,
+      icon: <FontAwesomeIcon icon={["fas", "flask"]} />,
     },
     {
-      key: 'portfolio',
+      key: "portfolio",
       label: (
         <Tooltip title="Manage your portfolio assets" placement="right">
           Portfolio Management
         </Tooltip>
       ),
-      icon: <FontAwesomeIcon icon={['fas', 'wallet']} />,
+      icon: <FontAwesomeIcon icon={["fas", "wallet"]} />,
     },
     {
-      key: 'market-data',
+      key: "market-data",
       label: (
         <Tooltip title="View live and historical market data" placement="right">
           Market Data
         </Tooltip>
       ),
-      icon: <FontAwesomeIcon icon={['fas', 'chart-line']} />,
+      icon: <FontAwesomeIcon icon={["fas", "chart-line"]} />,
     },
     {
-      key: 'risk-analysis',
+      key: "risk-analysis",
       label: (
         <Tooltip title="Analyze portfolio risk" placement="right">
           Risk Analysis
         </Tooltip>
       ),
-      icon: <FontAwesomeIcon icon={['fas', 'exclamation-triangle']} />,
+      icon: <FontAwesomeIcon icon={["fas", "exclamation-triangle"]} />,
     },
     {
-      key: 'reports',
+      key: "reports",
       label: (
         <Tooltip title="Generate and view detailed reports" placement="right">
           Reports
         </Tooltip>
       ),
-      icon: <FontAwesomeIcon icon={['fas', 'file-alt']} />,
+      icon: <FontAwesomeIcon icon={["fas", "file-alt"]} />,
     },
     {
-      key: 'settings',
+      key: "settings",
       label: (
         <Tooltip title="Configure app settings" placement="right">
           Settings
         </Tooltip>
       ),
-      icon: <FontAwesomeIcon icon={['fas', 'cog']} />,
+      icon: <FontAwesomeIcon icon={["fas", "cog"]} />,
     },
   ];
 
   return (
     <div>
       <div className="p-5">
-        <div className="sidebar-title font-bold text-lg">Portfolio Dashboard</div>
+        <div className="sidebar-title font-bold text-lg">
+          Portfolio Dashboard
+        </div>
       </div>
       <Menu
         selectedKeys={[selectedKey]}
