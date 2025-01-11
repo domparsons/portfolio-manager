@@ -23,3 +23,5 @@ dist-ssr
 *.sln
 *.sw?
 .idea/
+portfolio-api/portfolio.db
+portfolio-dashboard/.env
