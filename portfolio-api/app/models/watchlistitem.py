@@ -3,8 +3,8 @@ from sqlalchemy.orm import relationship
 from app.database import Base
 
 
-class Watchlist(Base):
-    __tablename__ = "watchlists"
+class WatchlistItem(Base):
+    __tablename__ = "watchlist_items"
 
     id = Column(Integer, primary_key=True, index=True)
     symbol = Column(String, nullable=False)
@@ -13,4 +13,4 @@ class Watchlist(Base):
     owner = relationship("User", back_populates="watchlists")
 
     def __repr__(self):
-        return f"<Stock(id={self.id}, symbol={self.symbol}, watchlist_id={self.watchlist_id})>"
+        return f"<WatchlistItem(id={self.id}, symbol={self.symbol}, user_id={self.user_id})>"

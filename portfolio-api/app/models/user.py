@@ -1,6 +1,8 @@
 from sqlalchemy import Column, Integer, String
 from app.database import Base
 from passlib.context import CryptContext
+from sqlalchemy.orm import relationship
+
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -13,11 +15,12 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     password = Column(String)
 
-    # Method to hash the password before saving
+    # Relationship to WatchlistItem (a user can have multiple stock symbols in their watchlist)
+    watchlists = relationship("WatchlistItem", back_populates="owner")
+
     def set_password(self, password: str):
         self.password = pwd_context.hash(password)
 
-    # Method to verify if a given password matches the hashed one
     def verify_password(self, password: str) -> bool:
         return pwd_context.verify(password, self.password)
 
