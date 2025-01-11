@@ -10,4 +10,4 @@ from app.database import Base
 #     symbol = Column(String, nullable=False)
 #     watchlist_id = Column(Integer, ForeignKey('watchlist.id'))
 #
-#     watchlist = relationship('Watchlist', back_populates='assets')
+#     watchlist = relationship('Dashboard', back_populates='assets')

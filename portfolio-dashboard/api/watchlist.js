@@ -20,7 +20,7 @@ export const getWatchlistById = async (watchlistId) => {
   const response = await fetch(`${API_URL}/${watchlistId}`);
 
   if (!response.ok) {
-    throw new Error('Watchlist not found');
+    throw new Error('Dashboard not found');
   }
 
   return await response.json();

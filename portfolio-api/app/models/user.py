@@ -12,7 +12,7 @@ from app.database import Base
 #     password = Column(String, nullable=False)
 #
 #     # One-to-Many relationship with Watchlists
-#     watchlists = relationship('Watchlist', back_populates='user')
+#     watchlists = relationship('Dashboard', back_populates='user')
 #
 #     def __repr__(self):
 #         return f"<User(username={self.username}, email={self.email})>"

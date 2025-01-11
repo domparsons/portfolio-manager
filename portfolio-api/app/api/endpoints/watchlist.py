@@ -14,7 +14,7 @@ def read_watchlist(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)
 def read_watchlist_item(watchlist_id: int, db: Session = Depends(get_db)):
     db_item = get_watchlist_item(db, watchlist_id=watchlist_id)
     if not db_item:
-        raise HTTPException(status_code=404, detail="Watchlist item not found")
+        raise HTTPException(status_code=404, detail="Dashboard item not found")
     return db_item
 
 @router.post("/", response_model=Watchlist)
@@ -25,5 +25,5 @@ def create_watchlist(watchlist: WatchlistCreate, db: Session = Depends(get_db)):
 def delete_watchlist(watchlist_id: int, db: Session = Depends(get_db)):
     db_item = delete_watchlist_item(db, watchlist_id=watchlist_id)
     if not db_item:
-        raise HTTPException(status_code=404, detail="Watchlist item not found")
+        raise HTTPException(status_code=404, detail="Dashboard item not found")
     return db_item
