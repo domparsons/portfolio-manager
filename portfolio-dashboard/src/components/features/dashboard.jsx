@@ -10,8 +10,8 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Card, Typography, Row, Spin, Button, Select } from "antd";
-import { getData, getStockInfo } from "../../services/alphaVantage.js";
+import { Card, Typography, Row, Spin, Select } from "antd";
+import { getData } from "../../services/alphaVantage.js";
 
 ChartJS.register(
   CategoryScale,
@@ -28,7 +28,7 @@ const { Title: AntTitle, Text } = Typography;
 const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [ticker, setTicker] = useState("AAPL");
+  const [symbol, setSymbol] = useState("AAPL");
   const [chartData, setChartData] = useState(null);
 
   const fetchData = async () => {
@@ -36,7 +36,7 @@ const Dashboard = () => {
       setLoading(true);
       setError(null);
 
-      const rawData = await getData(ticker, setError, setLoading);
+      const rawData = await getData(symbol, setError, setLoading);
 
       const labels = Object.keys(rawData);
       const data = Object.values(rawData);
@@ -48,7 +48,7 @@ const Dashboard = () => {
         labels,
         datasets: [
           {
-            label: `${ticker} Closing Prices`,
+            label: `${symbol} Closing Prices`,
             data,
             borderColor: "rgba(75,192,192,1)",
             backgroundColor: "rgba(75,192,192,0.2)",
@@ -63,8 +63,8 @@ const Dashboard = () => {
     }
   };
 
-  const handleTickerChange = (value) => {
-    setTicker(value);
+  const handleSymbolChange = (value) => {
+    setSymbol(value);
   };
 
   const chartOptions = {
@@ -98,7 +98,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchData().then((r) => console.log(r));
-  }, [ticker]);
+  }, [symbol]);
 
   return (
     <div style={styles.container}>
@@ -109,7 +109,7 @@ const Dashboard = () => {
       <Select
         defaultValue="AAPL"
         style={{ width: 120 }}
-        onChange={handleTickerChange}
+        onChange={handleSymbolChange}
         options={[
           { value: "AAPL", label: <span>Apple</span> },
           { value: "TSLA", label: <span>Tesla</span> },

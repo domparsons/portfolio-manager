@@ -11,3 +11,6 @@ class Watchlist(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
 
     owner = relationship("User", back_populates="watchlists")
+
+    def __repr__(self):
+        return f"<Stock(id={self.id}, symbol={self.symbol}, watchlist_id={self.watchlist_id})>"
