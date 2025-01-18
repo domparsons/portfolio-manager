@@ -1,27 +1,26 @@
-const API_URL = "http://127.0.0.1:8000/api/watchlists";
+const fetchWatchlist = async (token, userId) => {
+  const API_BASE_URL = "http://127.0.0.1:8000";
+  const endpoint = `${API_BASE_URL}/api/v1/watchlist/watchlist/user/${userId}`;
 
-export const createWatchlist = async (watchlistData) => {
-  const response = await fetch(API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(watchlistData),
-  });
+  try {
+    const response = await fetch(endpoint, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
 
-  if (!response.ok) {
-    throw new Error("Failed to create watchlist");
+    if (!response.ok) {
+      throw new Error(`Failed to fetch watchlist: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching watchlist:", error);
+    throw error;
   }
-
-  return await response.json();
 };
 
-export const getWatchlistById = async (watchlistId) => {
-  const response = await fetch(`${API_URL}/${watchlistId}`);
-
-  if (!response.ok) {
-    throw new Error("Dashboard not found");
-  }
-
-  return await response.json();
-};
+export { fetchWatchlist };

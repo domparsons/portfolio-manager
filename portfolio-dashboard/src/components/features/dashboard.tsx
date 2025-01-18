@@ -10,8 +10,9 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Card, Typography, Row, Spin, Select } from "antd";
+import { Card, Typography, Row, Spin } from "antd";
 import { getData } from "../../services/alphaVantage.js";
+import WatchlistItemSelector from "./watchlistItemSelector.tsx";
 
 ChartJS.register(
   CategoryScale,
@@ -106,15 +107,22 @@ const Dashboard = () => {
         Dashboard
       </AntTitle>
 
-      <Select
-        defaultValue="AAPL"
-        style={{ width: 120 }}
-        onChange={handleSymbolChange}
-        options={[
-          { value: "AAPL", label: <span>Apple</span> },
-          { value: "TSLA", label: <span>Tesla</span> },
-          { value: "NVDA", label: <span>NVIDIA</span> },
-        ]}
+      {/*<Select*/}
+      {/*  defaultValue="AAPL"*/}
+      {/*  style={{ width: 120 }}*/}
+      {/*  onChange={handleSymbolChange}*/}
+      {/*  options={[*/}
+      {/*    { value: "AAPL", label: <span>Apple</span> },*/}
+      {/*    { value: "TSLA", label: <span>Tesla</span> },*/}
+      {/*    { value: "NVDA", label: <span>NVIDIA</span> },*/}
+      {/*  ]}*/}
+      {/*/>*/}
+
+      <WatchlistItemSelector
+        token="946348f066d3c569397cb1e370ab6bb2b56c5c1ffa0bd60925555213ae6532db"
+        userId={1}
+        defaultSymbol={symbol}
+        onSymbolChange={handleSymbolChange}
       />
 
       <div>

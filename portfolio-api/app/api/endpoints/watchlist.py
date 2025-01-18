@@ -1,38 +1,34 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.schemas.watchlist import Watchlist, WatchlistCreate
-from app.config.database import get_db
-from app.crud.watchlist import (
-    get_watchlist,
-    get_watchlist_item,
-    create_watchlist_item,
-    delete_watchlist_item,
-)
+from app import schemas, security
+from app.database import get_db
+from app.crud import watchlist
 
 router = APIRouter(prefix="/watchlist", tags=["watchlist"])
 
+@router.post("/", response_model=schemas.WatchlistItem)
+def create_watchlist_item(watchlist_item: schemas.WatchlistItemCreate, db: Session = Depends(get_db), current_user: security.User = Depends(security.get_current_user)):
+    return watchlist.create_watchlist_item(db=db, watchlist_item=watchlist_item, user_id=current_user.id)
 
-@router.get("/", response_model=list[Watchlist])
-def read_watchlist(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    return get_watchlist(db, skip=skip, limit=limit)
+@router.get("/", response_model=list[schemas.WatchlistItem])
+def get_watchlist_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), current_user: security.User = Depends(
+    security.get_current_user)):
+    return watchlist.get_watchlist_items(db=db, user_id=current_user.id, skip=skip, limit=limit)
 
+@router.get("/{watchlist_item_id}", response_model=schemas.WatchlistItem)
+def get_watchlist_item(watchlist_item_id: int, db: Session = Depends(get_db)):
+    db_watchlist_item = watchlist.get_watchlist_item(db, watchlist_item_id=watchlist_item_id)
+    if db_watchlist_item is None:
+        raise HTTPException(status_code=404, detail="Watchlist item not found")
+    return db_watchlist_item
 
-@router.get("/{watchlist_id}", response_model=Watchlist)
-def read_watchlist_item(watchlist_id: int, db: Session = Depends(get_db)):
-    db_item = get_watchlist_item(db, watchlist_id=watchlist_id)
-    if not db_item:
-        raise HTTPException(status_code=404, detail="Dashboard item not found")
-    return db_item
+@router.delete("/{watchlist_item_id}", response_model=schemas.WatchlistItem)
+def delete_watchlist_item(watchlist_item_id: int, db: Session = Depends(get_db)):
+    db_watchlist_item = watchlist.delete_watchlist_item(db, watchlist_item_id=watchlist_item_id)
+    if db_watchlist_item is None:
+        raise HTTPException(status_code=404, detail="Watchlist item not found")
+    return db_watchlist_item
 
-
-@router.post("/", response_model=Watchlist)
-def create_watchlist(watchlist: WatchlistCreate, db: Session = Depends(get_db)):
-    return create_watchlist_item(db, watchlist=watchlist)
-
-
-@router.delete("/{watchlist_id}", response_model=Watchlist)
-def delete_watchlist(watchlist_id: int, db: Session = Depends(get_db)):
-    db_item = delete_watchlist_item(db, watchlist_id=watchlist_id)
-    if not db_item:
-        raise HTTPException(status_code=404, detail="Dashboard item not found")
-    return db_item
+@router.get("/user/{user_id}", response_model=list[schemas.WatchlistItem])
+def get_watchlist_items_by_user_id(user_id: int, db: Session = Depends(get_db)):
+    return watchlist.get_watchlist_items_by_user_id(db=db, user_id=user_id)

@@ -1,1 +1,2 @@
-from .watchlist import Watchlist
+from .watchlist import WatchlistItem, WatchlistItemBase, WatchlistItemCreate
+from.user import User, UserBase, UserCreate

@@ -25,3 +25,4 @@ dist-ssr
 .idea/
 portfolio-api/portfolio.db
 portfolio-dashboard/.env
+portfolio-api/.env
