@@ -48,10 +48,22 @@ const data = {
   ],
   navMain: [
     {
+      title: "General",
+      url: "#",
+      icon: Frame,
+      isActive: true,
+      items: [
+        {
+          title: "Stocks List",
+          url: "#",
+        },
+      ],
+    },
+    {
       title: "Watchlist",
       url: "#",
       icon: Bookmark,
-      isActive: true,
+      isActive: false,
       items: [
         {
           title: "Tesla",
