@@ -6,14 +6,16 @@ import {
   Command,
   Frame,
   GalleryVerticalEnd,
+  Heading1,
+  Heading3Icon,
   Map,
   PieChart,
   Settings2,
   SquareTerminal,
+  Bookmark,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
-import { NavProjects } from "@/components/nav-projects";
 import { NavUser } from "@/components/nav-user";
 import { TeamSwitcher } from "@/components/team-switcher";
 import {
@@ -23,17 +25,18 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { Header } from "antd/es/layout/layout";
 
 // This is sample data.
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
+    name: "Dom P",
+    email: "example@icloud.com",
     avatar: "/avatars/shadcn.jpg",
   },
   teams: [
     {
-      name: "Acme Inc",
+      name: "Team",
       logo: GalleryVerticalEnd,
       plan: "Enterprise",
     },
@@ -42,29 +45,44 @@ const data = {
       logo: AudioWaveform,
       plan: "Startup",
     },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
   ],
   navMain: [
     {
-      title: "Playground",
+      title: "Watchlist",
       url: "#",
-      icon: SquareTerminal,
+      icon: Bookmark,
       isActive: true,
       items: [
         {
-          title: "History",
+          title: "Tesla",
           url: "#",
         },
         {
-          title: "Starred",
+          title: "Apple",
           url: "#",
         },
         {
-          title: "Settings",
+          title: "NVIDIA",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Analytics",
+      url: "#",
+      icon: PieChart,
+      isActive: false,
+      items: [
+        {
+          title: "Dashboard",
+          url: "#",
+        },
+        {
+          title: "Backtesting",
+          url: "#",
+        },
+        {
+          title: "Portfolio",
           url: "#",
         },
       ],
@@ -78,18 +96,6 @@ const data = {
           title: "Introduction",
           url: "#",
         },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
       ],
     },
     {
@@ -99,14 +105,6 @@ const data = {
       items: [
         {
           title: "General",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
           url: "#",
         },
       ],
