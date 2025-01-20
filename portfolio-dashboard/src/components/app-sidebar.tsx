@@ -1,18 +1,10 @@
 import * as React from "react";
 import {
   AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
   GalleryVerticalEnd,
-  Heading1,
-  Heading3Icon,
-  Map,
   PieChart,
-  Settings2,
-  SquareTerminal,
   Bookmark,
+  House,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -25,9 +17,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { Header } from "antd/es/layout/layout";
 
-// This is sample data.
 const data = {
   user: {
     name: "Dom P",
@@ -48,34 +38,18 @@ const data = {
   ],
   navMain: [
     {
-      title: "General",
+      title: "Home",
       url: "#",
-      icon: Frame,
+      icon: House,
       isActive: true,
       items: [
         {
-          title: "Stocks List",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Watchlist",
-      url: "#",
-      icon: Bookmark,
-      isActive: false,
-      items: [
-        {
-          title: "Tesla",
-          url: "#",
+          title: "Dashboard",
+          url: "/",
         },
         {
-          title: "Apple",
-          url: "#",
-        },
-        {
-          title: "NVIDIA",
-          url: "#",
+          title: "Asset List",
+          url: "/asset-list",
         },
       ],
     },
@@ -83,41 +57,40 @@ const data = {
       title: "Analytics",
       url: "#",
       icon: PieChart,
-      isActive: false,
+      isActive: true,
       items: [
-        {
-          title: "Dashboard",
-          url: "#",
-        },
-        {
-          title: "Backtesting",
-          url: "#",
-        },
         {
           title: "Portfolio",
-          url: "#",
+          url: "portfolio",
+        },
+
+        {
+          title: "Backtesting",
+          url: "backtesting",
+        },
+        {
+          title: "Monte Carlo Simulation",
+          url: "monte-carlo-simulation",
         },
       ],
     },
     {
-      title: "Documentation",
+      title: "Watchlist",
       url: "#",
-      icon: BookOpen,
+      icon: Bookmark,
+      isActive: true,
       items: [
         {
-          title: "Introduction",
-          url: "#",
+          title: "Tesla",
+          url: "watchlist/tesla",
         },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
         {
-          title: "General",
-          url: "#",
+          title: "Apple",
+          url: "watchlist/apple",
+        },
+        {
+          title: "NVIDIA",
+          url: "watchlist/nvidia",
         },
       ],
     },
