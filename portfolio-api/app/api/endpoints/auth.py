@@ -6,8 +6,11 @@ from app.database import get_db
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
+
 @router.post("/token")
-def login_for_access_token(form_data: schemas.UserCreate, db: Session = Depends(get_db)):
+def login_for_access_token(
+    form_data: schemas.UserCreate, db: Session = Depends(get_db)
+):
     user = user_crud.get_user_by_username(db, username=form_data.username)
     if user is None or not user.verify_password(form_data.password):
         raise HTTPException(

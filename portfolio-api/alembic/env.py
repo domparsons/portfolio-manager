@@ -3,8 +3,11 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from alembic import context
 from app.database import Base
+from app.models import Asset  # noqa: F401
 from app.models import User  # noqa: F401
 from app.models import WatchlistItem  # noqa: F401
+from app.models import Timeseries  # noqa: F401
+from app.models import Portfolio  # noqa: F401
 
 # Set the target metadata to your models' Base metadata
 target_metadata = Base.metadata
