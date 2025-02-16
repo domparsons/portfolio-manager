@@ -18,3 +18,13 @@ class AssetSchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class AssetListSchema(AssetSchema):
+    latest_price: Optional[float] = None
+    price_change: Optional[float] = None
+    percentage_change: Optional[float] = None
+    timestamp: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True

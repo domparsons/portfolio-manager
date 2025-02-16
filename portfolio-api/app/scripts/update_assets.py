@@ -3,8 +3,26 @@ from datetime import datetime
 from app.database import SessionLocal
 from app.models import Asset
 
-tickers = ["AAPL", "GOOGL", "AMZN", "MSFT", "TSLA"]
+tickers = [
+    # Tech Companies
+    "AAPL",  # Apple Inc.
+    "GOOGL",  # Alphabet Inc. (Google)
+    "AMZN",  # Amazon.com, Inc.
+    "MSFT",  # Microsoft Corporation
+    "TSLA",  # Tesla, Inc.
+    "META",  # Meta Platforms, Inc. (formerly Facebook)
+    "NVDA",  # NVIDIA Corporation
+    "INTC",  # Intel Corporation
+    "AMD",  # Advanced Micro Devices, Inc.
+    "CSCO",  # Cisco Systems, Inc.
 
+    # Commodities
+    "GC=F",  # Gold Futures (COMEX)
+    "SI=F",  # Silver Futures (COMEX)
+    "CL=F",  # Crude Oil Futures (WTI)
+    "NG=F",  # Natural Gas Futures (NYMEX)
+    "HG=F",  # Copper Futures (COMEX)
+]
 db = SessionLocal()
 
 def get_asset_info(ticker):

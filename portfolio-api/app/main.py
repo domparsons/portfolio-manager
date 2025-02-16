@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.api import api_router
 from app.config.settings import settings
-from app.api.endpoints import user, watchlist, auth, asset
+from app.api.endpoints import user, watchlist, auth, asset, timeseries
 from pydantic import BaseModel
 from fastapi.security import OAuth2PasswordBearer
 
@@ -31,6 +31,7 @@ app.include_router(user.router)
 app.include_router(watchlist.router)
 app.include_router(auth.router)
 app.include_router(asset.router)
+app.include_router(timeseries.router)
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
