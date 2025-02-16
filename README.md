@@ -1,24 +1,54 @@
 # Portfolio Manager
 
-This project was developed as part of my Computer Science Final Year Project. It features a portfolio management solution, with features such as backtesting trading strategies, analysing portfolio performance, and Monte Carlo simulations.
+Portfolio Manager is a full-featured investment tracking and analysis tool, built as my final-year Computer Science project. It enables users to track, backtest, and optimise their investment portfolios with advanced analytics and simulations.
 
-The core functionality of the program includes:
-- **Portfolio Management**: Users can create and manage portfolios, add assets, and set allocations.
-- **Backtesting**: Trading strategies can be backtested using historical data to evaluate performance.
-- **Performance Analysis**: Various metrics are calculated to analyze the performance of the portfolio.
-- **Monte Carlo Simulation**: Simulates the future performance of the portfolio using Monte Carlo methods.
 
-### Features:
+## Key Features  
 
-- **Portfolio Management**: Create and manage portfolios with different assets and allocations.
-- **Backtesting**: Evaluate trading strategies using historical data.
-- **Performance Metrics**: Calculate key performance metrics like Sharpe ratio, drawdowns, and volatility.
-- **Monte Carlo Simulation**: Simulate future portfolio performance based on historical data.
-- **Data Visualization**: Interactive charts and graphs to visualize portfolio performance.
-- **Risk Analysis**: Analyze the risk profile of the portfolio using various risk metrics.
-- **Asset Allocation Optimization**: Optimize asset allocation based on user-defined criteria.
-- **User Authentication**: Secure user authentication and authorization for data privacy.
-- **Export Reports**: Export portfolio performance reports in various formats.
+### 🔹 Portfolio & Asset Management  
+- Create and manage investment portfolios.  
+- Track performance, asset allocations, and risk exposure.  
+- Maintain a **watchlist** to monitor key assets.  
+
+### 🔹 Advanced Backtesting  
+- Run backtests using **historical stock data** (via Yahoo Finance).  
+- Implement and evaluate strategies (e.g., moving averages, momentum).  
+- View **detailed performance metrics** (Sharpe ratio, max drawdown, volatility).  
+
+### 🔹 Monte Carlo Simulations  
+- Predict potential portfolio performance under different market conditions.  
+- Model **volatility, asset correlations, and risk-adjusted returns**.  
+- Visualize probability distributions of future outcomes.  
+
+### 🔹 Interactive Analytics & Reporting  
+- Generate **performance reports** (export to CSV, PDF).  
+- View data through **interactive charts** and visualizations.  
+- Optimize **asset allocations** for better risk-reward balance.  
+
+### 🔹 Secure & Scalable Architecture  
+- User authentication & authorization.  
+- Backend built with **FastAPI & SQLite** (support for future DB migration).  
+- Caching mechanism to optimize API usage.  
+
+
+## Prerequisites  
+
+Before installing, ensure you have:  
+
+- **Python 3.12+** installed. [Download here](https://www.python.org/downloads/)  
+- **Node.js (v18+) & npm** installed. [Download here](https://nodejs.org/)  
+- **A valid API key** (if required for Yahoo Finance or other data sources).  
+- **Git** installed for cloning the repository.  
+
+You can check your versions by running:  
+
+```bash
+python --version  # Should be 3.12+
+node -v           # Should be v18+
+npm -v            # Should match Node.js version
+git --version     # Ensure Git is installed
+```
+
 
 ## Installation
 
