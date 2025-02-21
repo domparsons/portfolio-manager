@@ -8,6 +8,7 @@ from app.core.asset import generate_asset_list
 
 router = APIRouter(prefix="/asset", tags=["asset"])
 
+
 @router.get("/asset_list", response_model=list[AssetListSchema])
 def get_asset_list(db: Session = Depends(get_db)):
     assets = get_all_assets(db)

@@ -4,26 +4,44 @@ from app.database import SessionLocal
 from app.models import Asset
 
 tickers = [
-    # Tech Companies
-    "AAPL",  # Apple Inc.
-    "GOOGL",  # Alphabet Inc. (Google)
-    "AMZN",  # Amazon.com, Inc.
-    "MSFT",  # Microsoft Corporation
-    "TSLA",  # Tesla, Inc.
-    "META",  # Meta Platforms, Inc. (formerly Facebook)
-    "NVDA",  # NVIDIA Corporation
-    "INTC",  # Intel Corporation
-    "AMD",  # Advanced Micro Devices, Inc.
-    "CSCO",  # Cisco Systems, Inc.
-
-    # Commodities
-    "GC=F",  # Gold Futures (COMEX)
-    "SI=F",  # Silver Futures (COMEX)
-    "CL=F",  # Crude Oil Futures (WTI)
-    "NG=F",  # Natural Gas Futures (NYMEX)
-    "HG=F",  # Copper Futures (COMEX)
+    # Tech & Growth Stocks
+    "NFLX",  # Netflix, Inc.
+    "PYPL",  # PayPal Holdings, Inc.
+    "ADBE",  # Adobe Inc.
+    "ORCL",  # Oracle Corporation
+    "CRM",  # Salesforce, Inc.
+    "UBER",  # Uber Technologies, Inc.
+    "SQ",  # Block, Inc. (formerly Square)
+    "SHOP",  # Shopify Inc.
+    "SNOW",  # Snowflake Inc.
+    "PLTR",  # Palantir Technologies Inc.
+    # Financial & Banking
+    "JPM",  # JPMorgan Chase & Co.
+    "BAC",  # Bank of America Corporation
+    "GS",  # Goldman Sachs Group, Inc.
+    "MS",  # Morgan Stanley
+    "V",  # Visa Inc.
+    "MA",  # Mastercard Incorporated
+    "AXP",  # American Express Company
+    # Energy & Utilities
+    "XOM",  # Exxon Mobil Corporation
+    "CVX",  # Chevron Corporation
+    "BP",  # BP p.l.c.
+    "TOT",  # TotalEnergies SE
+    "ENB",  # Enbridge Inc.
+    "DUK",  # Duke Energy Corporation
+    "NEE",  # NextEra Energy, Inc.
+    # Industrials & Consumer Goods
+    "BA",  # The Boeing Company
+    "CAT",  # Caterpillar Inc.
+    "DE",  # Deere & Company
+    "NKE",  # Nike, Inc.
+    "MCD",  # McDonald's Corporation
+    "KO",  # The Coca-Cola Company
+    "PEP",  # PepsiCo, Inc.
 ]
 db = SessionLocal()
+
 
 def get_asset_info(ticker):
     asset = yf.Ticker(ticker)
@@ -56,8 +74,9 @@ def get_asset_info(ticker):
         "country": country,
         "market_cap": market_cap,
         "asset_class": asset_class,
-        "description": description
+        "description": description,
     }
+
 
 for ticker in tickers:
     asset_info = get_asset_info(ticker)
@@ -80,7 +99,7 @@ for ticker in tickers:
             market_cap=asset_info["market_cap"],
             asset_class=asset_info["asset_class"],
             description=asset_info["description"],
-            last_updated=datetime.utcnow()
+            last_updated=datetime.utcnow(),
         )
         db.add(new_asset)
         db.commit()
