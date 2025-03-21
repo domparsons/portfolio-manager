@@ -7,7 +7,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-portfolio-dashboard/node_modules
+dashboard/node_modules
 dist
 dist-ssr
 *.local
@@ -23,6 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 .idea/
-portfolio-api/portfolio.db
-portfolio-dashboard/.env
-portfolio-api/.env
+backend/portfolio.db
+dashboard/.env
+backend/.env

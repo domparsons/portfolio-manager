@@ -61,14 +61,14 @@ git --version     # Ensure Git is installed
 2. Set up a virtual environment and install the required API dependencies:
 
     ```bash
-    cd portfolio-api
+    cd backend
     uv sync
     ```
 
 3. Install the required frontend dependencies:
 
     ```bash
-    cd portfolio-dashboard 
+    cd dashboard 
     npm install
     ```
 

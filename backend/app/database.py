@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 SQLALCHEMY_DATABASE_URL = (
-    "sqlite:////Users/domparsons/Developer/portfolio-manager/portfolio-api/portfolio.db"
+    "sqlite:////Users/domparsons/Developer/portfolio-manager/backend/portfolio.db"
 )
 
 engine = create_engine(
