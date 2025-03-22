@@ -28,12 +28,6 @@ interface Asset {
   timestamp: string;
 }
 
-// Type for timeseries data
-interface Portfolio {
-  id: number;
-  close: number;
-  timestamp: string;
-}
 interface AssetTableProps {
   filteredAssets: Asset[];
   setHoveredRow: React.Dispatch<React.SetStateAction<number | null>>;

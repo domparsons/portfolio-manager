@@ -27,6 +27,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { MonteCarloSimulation } from "@/app/monte-carlo-simulation/monte-carlo-simulation";
+import { Toaster } from "@/components/ui/sonner";
 
 const App = () => {
   return (
@@ -56,6 +57,7 @@ const App = () => {
           </div>
         </SidebarInset>
       </SidebarProvider>
+      <Toaster />
     </Router>
   );
 };
