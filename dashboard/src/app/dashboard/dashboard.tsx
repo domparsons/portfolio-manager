@@ -39,7 +39,7 @@ const Dashboard = () => {
   return (
     <div className="dashboard">
       <h1 className="text-2xl font-semibold">Dashboard</h1>
-      <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-3">
         <Card className={"mt-4"}>
           <CardHeader>
             <CardTitle>Portfolio</CardTitle>
@@ -89,6 +89,16 @@ const Dashboard = () => {
               Trending up by 5.2% this week <TrendingUp className="h-4 w-4" />
             </div>
           </CardFooter>
+        </Card>
+        <Card className={"mt-4"}>
+          <CardHeader>
+            <CardTitle>Total Portfolio Value</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <h1 className="text-3xl font-semibold">
+              ${chartData[chartData.length - 1].value}
+            </h1>
+          </CardContent>
         </Card>
         <Card className={"mt-4"}>
           <CardHeader>

@@ -5,6 +5,7 @@ import {
   PieChart,
   Bookmark,
   House,
+  Heading,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -21,7 +22,7 @@ import {
 const data = {
   user: {
     name: "Dom P",
-    email: "example@icloud.com",
+    email: "domparso@icloud.com",
     avatar: "/avatars/shadcn.jpg",
   },
   teams: [
