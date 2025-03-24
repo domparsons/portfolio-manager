@@ -5,7 +5,7 @@ Portfolio Manager is a full-featured investment tracking and analysis tool, buil
 
 ## Key Features  
 
-### 🔹 Portfolio & Asset Management  
+### 🔹 Portfolio & Asset Management
 - Create and manage investment portfolios.  
 - Track performance, asset allocations, and risk exposure.  
 - Maintain a **watchlist** to monitor key assets.  
