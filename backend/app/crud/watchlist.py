@@ -3,9 +3,7 @@ from app.models.watchlistitem import WatchlistItem
 from app.schemas.watchlist import WatchlistItemCreate
 
 
-def create_watchlist_item(
-    db: Session, watchlist_item: WatchlistItemCreate, user_id: int
-):
+def create_watchlist_item(db: Session, watchlist_item: WatchlistItemCreate, user_id: int):
     db_watchlist_item = WatchlistItem(symbol=watchlist_item.symbol, user_id=user_id)
     db.add(db_watchlist_item)
     db.commit()

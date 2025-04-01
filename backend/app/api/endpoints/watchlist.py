@@ -13,9 +13,7 @@ def create_watchlist_item(
     watchlist_item: schemas.WatchlistItemCreate,
     db: Session = Depends(get_db),
 ):
-    return watchlist.create_watchlist_item(
-        db=db, watchlist_item=watchlist_item, user_id=1
-    )
+    return watchlist.create_watchlist_item(db=db, watchlist_item=watchlist_item, user_id=1)
 
 
 # Todo: auth
@@ -25,16 +23,12 @@ def get_watchlist_items(
     limit: int = 100,
     db: Session = Depends(get_db),
 ):
-    return watchlist.get_watchlist_items(
-        db=db, user_id=1, skip=skip, limit=limit
-    )
+    return watchlist.get_watchlist_items(db=db, user_id=1, skip=skip, limit=limit)
 
 
 @router.get("/{watchlist_item_id}", response_model=schemas.WatchlistItem)
 def get_watchlist_item(watchlist_item_id: int, db: Session = Depends(get_db)):
-    db_watchlist_item = watchlist.get_watchlist_item(
-        db, watchlist_item_id=watchlist_item_id
-    )
+    db_watchlist_item = watchlist.get_watchlist_item(db, watchlist_item_id=watchlist_item_id)
     if db_watchlist_item is None:
         raise HTTPException(status_code=404, detail="Watchlist item not found")
     return db_watchlist_item
@@ -42,9 +36,7 @@ def get_watchlist_item(watchlist_item_id: int, db: Session = Depends(get_db)):
 
 @router.delete("/{watchlist_item_id}", response_model=schemas.WatchlistItem)
 def delete_watchlist_item(watchlist_item_id: int, db: Session = Depends(get_db)):
-    db_watchlist_item = watchlist.delete_watchlist_item(
-        db, watchlist_item_id=watchlist_item_id
-    )
+    db_watchlist_item = watchlist.delete_watchlist_item(db, watchlist_item_id=watchlist_item_id)
     if db_watchlist_item is None:
         raise HTTPException(status_code=404, detail="Watchlist item not found")
     return db_watchlist_item

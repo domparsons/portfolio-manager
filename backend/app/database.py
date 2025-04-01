@@ -6,9 +6,7 @@ SQLALCHEMY_DATABASE_URL = (
     "sqlite:////Users/domparsons/Developer/portfolio-manager/backend/portfolio.db"
 )
 
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
-)
+engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
 
 Base = declarative_base()
 

@@ -51,9 +51,7 @@ for asset in assets:
             db.commit()
             print(f"Added new timeseries data for {asset.ticker} on {timestamp}")
         else:
-            print(
-                f"Timeseries data for {asset.ticker} on {timestamp} already exists. Skipping."
-            )
+            print(f"Timeseries data for {asset.ticker} on {timestamp} already exists. Skipping.")
 
 db.close()
 

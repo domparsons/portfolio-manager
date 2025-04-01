@@ -8,6 +8,7 @@ db = SessionLocal()
 tickers = [asset.ticker for asset in db.query(Asset).all()]
 tickers = [ticker for ticker in tickers if "." not in ticker]
 
+
 def get_asset_info(ticker):
     asset = yf.Ticker(ticker)
     asset_info = asset.info
