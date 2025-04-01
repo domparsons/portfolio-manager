@@ -1,32 +1,32 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app import schemas, security
+from app import schemas
 from app.database import get_db
 from app.crud import watchlist
 
 router = APIRouter(prefix="/watchlist", tags=["watchlist"])
 
 
+# Todo: auth
 @router.post("/", response_model=schemas.WatchlistItem)
 def create_watchlist_item(
     watchlist_item: schemas.WatchlistItemCreate,
     db: Session = Depends(get_db),
-    current_user: security.User = Depends(security.get_current_user),
 ):
     return watchlist.create_watchlist_item(
-        db=db, watchlist_item=watchlist_item, user_id=current_user.id
+        db=db, watchlist_item=watchlist_item, user_id=1
     )
 
 
+# Todo: auth
 @router.get("/", response_model=list[schemas.WatchlistItem])
 def get_watchlist_items(
     skip: int = 0,
     limit: int = 100,
     db: Session = Depends(get_db),
-    current_user: security.User = Depends(security.get_current_user),
 ):
     return watchlist.get_watchlist_items(
-        db=db, user_id=current_user.id, skip=skip, limit=limit
+        db=db, user_id=1, skip=skip, limit=limit
     )
 
 

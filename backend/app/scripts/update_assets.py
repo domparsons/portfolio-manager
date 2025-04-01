@@ -1,47 +1,12 @@
 import yfinance as yf
-from datetime import datetime
+from datetime import datetime, timezone
 from app.database import SessionLocal
 from app.models import Asset
 
-tickers = [
-    # Tech & Growth Stocks
-    "NFLX",  # Netflix, Inc.
-    "PYPL",  # PayPal Holdings, Inc.
-    "ADBE",  # Adobe Inc.
-    "ORCL",  # Oracle Corporation
-    "CRM",  # Salesforce, Inc.
-    "UBER",  # Uber Technologies, Inc.
-    "XYZ",  # Block, Inc. (formerly Square)
-    "SHOP",  # Shopify Inc.
-    "SNOW",  # Snowflake Inc.
-    "PLTR",  # Palantir Technologies Inc.
-    # Financial & Banking
-    "JPM",  # JPMorgan Chase & Co.
-    "BAC",  # Bank of America Corporation
-    "GS",  # Goldman Sachs Group, Inc.
-    "MS",  # Morgan Stanley
-    "V",  # Visa Inc.
-    "MA",  # Mastercard Incorporated
-    "AXP",  # American Express Company
-    # Energy & Utilities
-    "XOM",  # Exxon Mobil Corporation
-    "CVX",  # Chevron Corporation
-    "BP",  # BP p.l.c.
-    "TOT",  # TotalEnergies SE
-    "ENB",  # Enbridge Inc.
-    "DUK",  # Duke Energy Corporation
-    "NEE",  # NextEra Energy, Inc.
-    # Industrials & Consumer Goods
-    "BA",  # The Boeing Company
-    "CAT",  # Caterpillar Inc.
-    "DE",  # Deere & Company
-    "NKE",  # Nike, Inc.
-    "MCD",  # McDonald's Corporation
-    "KO",  # The Coca-Cola Company
-    "PEP",  # PepsiCo, Inc.
-]
 db = SessionLocal()
 
+tickers = [asset.ticker for asset in db.query(Asset).all()]
+tickers = [ticker for ticker in tickers if "." not in ticker]
 
 def get_asset_info(ticker):
     asset = yf.Ticker(ticker)
@@ -85,7 +50,7 @@ for ticker in tickers:
 
     if existing_asset:
         existing_asset.market_cap = asset_info["market_cap"]
-        existing_asset.last_updated = datetime.now(datetime.UTC)
+        existing_asset.last_updated = datetime.now(timezone.utc)
         db.commit()
         print(f"Updated {ticker} with new market cap and last updated timestamp.")
     else:
