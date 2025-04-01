@@ -11,7 +11,7 @@ tickers = [
     "ORCL",  # Oracle Corporation
     "CRM",  # Salesforce, Inc.
     "UBER",  # Uber Technologies, Inc.
-    "SQ",  # Block, Inc. (formerly Square)
+    "XYZ",  # Block, Inc. (formerly Square)
     "SHOP",  # Shopify Inc.
     "SNOW",  # Snowflake Inc.
     "PLTR",  # Palantir Technologies Inc.
@@ -85,7 +85,7 @@ for ticker in tickers:
 
     if existing_asset:
         existing_asset.market_cap = asset_info["market_cap"]
-        existing_asset.last_updated = datetime.utcnow()  # Set current timestamp
+        existing_asset.last_updated = datetime.now(datetime.UTC)
         db.commit()
         print(f"Updated {ticker} with new market cap and last updated timestamp.")
     else:

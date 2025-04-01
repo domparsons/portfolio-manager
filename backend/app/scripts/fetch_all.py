@@ -39,5 +39,3 @@ data = [
 # Create a Polars DataFrame from the list of dictionaries
 df = pl.DataFrame(data)
 db.close()
-
-1
