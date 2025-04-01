@@ -5,12 +5,12 @@ import {
   Route,
   Routes,
   useLocation,
-} from "react-router-dom";
-import { AppSidebar } from "@/components/app-sidebar";
-import { AssetList } from "@/app/assets/asset-list";
-import { Dashboard } from "@/app/dashboard/dashboard";
-import { Portfolio } from "@/app/portfolio/portfolio";
-import { Backtesting } from "@/app/backtesting/backtesting";
+} from 'react-router-dom'
+import { AppSidebar } from '@/components/app-sidebar'
+import { AssetList } from '@/app/assets/asset-list'
+import { Dashboard } from '@/app/dashboard/dashboard'
+import { Portfolio } from '@/app/portfolio/portfolio'
+import { Backtesting } from '@/app/backtesting/backtesting'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -18,18 +18,26 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
-import * as React from "react";
+} from '@/components/ui/breadcrumb'
+import { Separator } from '@/components/ui/separator'
+import * as React from 'react'
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar";
-import { MonteCarloSimulation } from "@/app/monte-carlo-simulation/monte-carlo-simulation";
-import { Toaster } from "@/components/ui/sonner";
+} from '@/components/ui/sidebar'
+import { MonteCarloSimulation } from '@/app/monte-carlo-simulation/monte-carlo-simulation'
+import { Toaster } from '@/components/ui/sonner'
+import LoginPage from '@/app/login/page'
+import { useAuth0 } from '@auth0/auth0-react'
 
 const App = () => {
+  const { isAuthenticated } = useAuth0()
+
+  if (import.meta.env.MODE !== 'development' && !isAuthenticated) {
+    return <LoginPage />
+  }
+
   return (
     <Router>
       <SidebarProvider>
@@ -59,25 +67,25 @@ const App = () => {
       </SidebarProvider>
       <Toaster />
     </Router>
-  );
-};
+  )
+}
 
 const DynamicBreadcrumb = () => {
-  const location = useLocation();
-  const pathSegments = location.pathname.split("/").filter(Boolean);
+  const location = useLocation()
+  const pathSegments = location.pathname.split('/').filter(Boolean)
 
   const formatSegment = (segment: string) => {
     return segment
-      .replace(/-/g, " ")
-      .replace(/\b\w/g, (char) => char.toUpperCase());
-  };
+      .replace(/-/g, ' ')
+      .replace(/\b\w/g, (char) => char.toUpperCase())
+  }
 
   return (
     <Breadcrumb>
       <BreadcrumbList>
         {pathSegments.map((segment, index) => {
-          const isLast = index === pathSegments.length - 1;
-          const breadcrumbPath = `/${pathSegments.slice(0, index + 1).join("/")}`;
+          const isLast = index === pathSegments.length - 1
+          const breadcrumbPath = `/${pathSegments.slice(0, index + 1).join('/')}`
 
           return (
             <BreadcrumbItem key={breadcrumbPath}>
@@ -90,11 +98,11 @@ const DynamicBreadcrumb = () => {
               )}
               {!isLast && <BreadcrumbSeparator />}
             </BreadcrumbItem>
-          );
+          )
         })}
       </BreadcrumbList>
     </Breadcrumb>
-  );
-};
+  )
+}
 
-export default App;
+export default App

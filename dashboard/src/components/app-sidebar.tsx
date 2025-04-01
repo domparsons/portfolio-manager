@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react'
 import {
   AudioWaveform,
   GalleryVerticalEnd,
@@ -6,97 +6,91 @@ import {
   Bookmark,
   House,
   Heading,
-} from "lucide-react";
-
-import { NavMain } from "@/components/nav-main";
-import { NavUser } from "@/components/nav-user";
-import { TeamSwitcher } from "@/components/team-switcher";
+} from 'lucide-react'
+import { NavMain } from '@/components/nav-main'
+import { NavUser } from '@/components/nav-user'
+import { TeamSwitcher } from '@/components/team-switcher'
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar";
+} from '@/components/ui/sidebar'
 
 const data = {
-  user: {
-    name: "Dom P",
-    email: "domparso@icloud.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   teams: [
     {
-      name: "Team",
+      name: 'Team',
       logo: GalleryVerticalEnd,
-      plan: "Enterprise",
+      plan: 'Enterprise',
     },
     {
-      name: "Acme Corp.",
+      name: 'Acme Corp.',
       logo: AudioWaveform,
-      plan: "Startup",
+      plan: 'Startup',
     },
   ],
   navMain: [
     {
-      title: "Home",
-      url: "#",
+      title: 'Home',
+      url: '#',
       icon: House,
       isActive: true,
       items: [
         {
-          title: "Dashboard",
-          url: "/",
+          title: 'Dashboard',
+          url: '/',
         },
         {
-          title: "Asset List",
-          url: "/asset-list",
+          title: 'Asset List',
+          url: '/asset-list',
         },
       ],
     },
     {
-      title: "Analytics",
-      url: "#",
+      title: 'Analytics',
+      url: '#',
       icon: PieChart,
       isActive: true,
       items: [
         {
-          title: "Portfolio",
-          url: "portfolio",
+          title: 'Portfolio',
+          url: 'portfolio',
         },
 
         {
-          title: "Backtesting",
-          url: "backtesting",
+          title: 'Backtesting',
+          url: 'backtesting',
         },
         {
-          title: "Monte Carlo Simulation",
-          url: "monte-carlo-simulation",
+          title: 'Monte Carlo Simulation',
+          url: 'monte-carlo-simulation',
         },
       ],
     },
     {
-      title: "Watchlist",
-      url: "#",
+      title: 'Watchlist',
+      url: '#',
       icon: Bookmark,
       isActive: true,
       items: [
         {
-          title: "Tesla",
-          url: "watchlist/tesla",
+          title: 'Tesla',
+          url: 'watchlist/tesla',
         },
         {
-          title: "Apple",
-          url: "watchlist/apple",
+          title: 'Apple',
+          url: 'watchlist/apple',
         },
         {
-          title: "NVIDIA",
-          url: "watchlist/nvidia",
+          title: 'NVIDIA',
+          url: 'watchlist/nvidia',
         },
       ],
     },
   ],
-};
+}
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -108,9 +102,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  );
+  )
 }
