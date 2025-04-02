@@ -30,9 +30,13 @@ import { MonteCarloSimulation } from '@/app/monte-carlo-simulation/monte-carlo-s
 import { Toaster } from '@/components/ui/sonner'
 import LoginPage from '@/app/login/page'
 import { useAuth0 } from '@auth0/auth0-react'
+import { Watchlist } from '@/app/watchlist/watchlist'
+import { Analytics } from '@vercel/analytics/react'
 
 const App = () => {
   const { isAuthenticated } = useAuth0()
+
+  // return <LoginPage />
 
   if (import.meta.env.MODE !== 'development' && !isAuthenticated) {
     return <LoginPage />
@@ -61,11 +65,13 @@ const App = () => {
                 path="/monte-carlo-simulation"
                 element={<MonteCarloSimulation />}
               />
+              <Route path="/watchlist" element={<Watchlist />} />
             </Routes>
           </div>
         </SidebarInset>
       </SidebarProvider>
       <Toaster />
+      <Analytics />
     </Router>
   )
 }

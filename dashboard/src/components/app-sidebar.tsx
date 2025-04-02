@@ -6,6 +6,7 @@ import {
   Bookmark,
   House,
   Heading,
+  ChartSpline,
 } from 'lucide-react'
 import { NavMain } from '@/components/nav-main'
 import { NavUser } from '@/components/nav-user'
@@ -22,7 +23,7 @@ const data = {
   teams: [
     {
       name: 'Team',
-      logo: GalleryVerticalEnd,
+      logo: ChartSpline,
       plan: 'Enterprise',
     },
     {
@@ -41,6 +42,10 @@ const data = {
         {
           title: 'Dashboard',
           url: '/',
+        },
+        {
+          title: 'Watchlist',
+          url: '/watchlist',
         },
         {
           title: 'Asset List',
@@ -66,26 +71,6 @@ const data = {
         {
           title: 'Monte Carlo Simulation',
           url: 'monte-carlo-simulation',
-        },
-      ],
-    },
-    {
-      title: 'Watchlist',
-      url: '#',
-      icon: Bookmark,
-      isActive: true,
-      items: [
-        {
-          title: 'Tesla',
-          url: 'watchlist/tesla',
-        },
-        {
-          title: 'Apple',
-          url: 'watchlist/apple',
-        },
-        {
-          title: 'NVIDIA',
-          url: 'watchlist/nvidia',
         },
       ],
     },
