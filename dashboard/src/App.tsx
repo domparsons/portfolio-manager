@@ -20,7 +20,7 @@ import LoginPage from '@/app/login/page'
 import { useAuth0 } from '@auth0/auth0-react'
 import { Watchlist } from '@/app/watchlist/watchlist'
 import { Analytics } from '@vercel/analytics/react'
-import { SpeedInsights } from '@vercel/speed-insights/remix'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 
 const App = () => {
   const { isAuthenticated } = useAuth0()
