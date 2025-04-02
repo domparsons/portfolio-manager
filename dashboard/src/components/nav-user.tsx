@@ -58,7 +58,7 @@ export function NavUser() {
   }
   const { user } = useAuth0()
 
-  const username = user?.name || user?.email || 'Developer'
+  const username = user?.nickname || 'Developer'
 
   const email = user?.email || 'dev@icloud.com'
 
