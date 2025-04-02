@@ -8,7 +8,6 @@ import {
   LogOut,
 } from 'lucide-react'
 import { Moon, Sun } from 'lucide-react'
-
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   DropdownMenu,
@@ -53,7 +52,7 @@ export function NavUser() {
           console.error('Logout error:', error)
         })
     } else {
-      toast('For development mode, logout is not required.')
+      toast('Cannot log out of development mode.')
     }
   }
   const { user } = useAuth0()
@@ -85,7 +84,7 @@ export function NavUser() {
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">{username}</span>
-                <span className="truncate text-xs">{email}</span>
+                {/*<span className="truncate text-xs">{email}</span>*/}
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -100,29 +99,31 @@ export function NavUser() {
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={user?.avatar} alt={username} />
-                  <AvatarFallback className="rounded-lg">DP</AvatarFallback>
+                  <AvatarFallback className="rounded-lg">
+                    {initials}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">{username}</span>
-                  <span className="truncate text-xs">{username}</span>
+                  <span className="truncate text-xs">{email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
+            {/*<DropdownMenuSeparator />*/}
+            {/*<DropdownMenuGroup>*/}
+            {/*  <DropdownMenuItem>*/}
+            {/*    <BadgeCheck />*/}
+            {/*    Account*/}
+            {/*  </DropdownMenuItem>*/}
+            {/*  <DropdownMenuItem>*/}
+            {/*    <CreditCard />*/}
+            {/*    Billing*/}
+            {/*  </DropdownMenuItem>*/}
+            {/*  <DropdownMenuItem>*/}
+            {/*    <Bell />*/}
+            {/*    Notifications*/}
+            {/*  </DropdownMenuItem>*/}
+            {/*</DropdownMenuGroup>*/}
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={toggleTheme}>
               {(theme === 'light' && <Moon />) || <Sun />}
