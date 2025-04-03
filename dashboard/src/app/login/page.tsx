@@ -31,14 +31,7 @@ export default function LandingPage() {
               <h2 className="text-xl font-semibold text-white">
                 Track, analyze, and optimize your investments with ease.
               </h2>
-              <Button
-                asChild
-                size="lg"
-                className="w-full"
-                onClick={handleLogin}
-              >
-                Explore Porta
-              </Button>
+              <Button onClick={handleLogin}>Explore Porta</Button>
             </CardContent>
           </Card>
 
