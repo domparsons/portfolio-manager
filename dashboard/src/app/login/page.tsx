@@ -3,8 +3,15 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { ThemeProvider } from '@/components/theme-provider'
 import { Analytics } from '@vercel/analytics/react'
+import { useAuth0 } from '@auth0/auth0-react'
 
 export default function LandingPage() {
+  const { loginWithRedirect, isAuthenticated, isLoading, error } = useAuth0()
+
+  const handleLogin = () => {
+    loginWithRedirect().then((r) => console.log(r))
+  }
+
   return (
     <ThemeProvider>
       <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-gray-900 to-gray-800 p-6">
@@ -24,14 +31,13 @@ export default function LandingPage() {
               <h2 className="text-xl font-semibold text-white">
                 Track, analyze, and optimize your investments with ease.
               </h2>
-              <Button asChild size="lg" className="w-full">
-                <a
-                  href="https://portfolio.domparsons.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Explore Porta
-                </a>
+              <Button
+                asChild
+                size="lg"
+                className="w-full"
+                onClick={handleLogin}
+              >
+                Explore Porta
               </Button>
             </CardContent>
           </Card>
