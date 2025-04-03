@@ -1,31 +1,47 @@
-import { LoginForm } from '@/components/login-form'
+import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
-import { useAuth0 } from '@auth0/auth0-react'
+import { Card, CardContent } from '@/components/ui/card'
+import { ThemeProvider } from '@/components/theme-provider'
+import { Analytics } from '@vercel/analytics/react'
 
-export default function LoginPage() {
-  const { loginWithRedirect, isAuthenticated, isLoading, error } = useAuth0()
-
-  const handleLogin = () => {
-    loginWithRedirect().then((r) => console.log(r))
-  }
-
+export default function LandingPage() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-muted p-6 md:p-10">
-      <div className="w-full max-w-sm md:max-w-3xl text-center space-y-6">
-        <h1 className="text-3xl font-bold">Welcome to Portfolio Manager</h1>
-        <p className="text-muted-foreground">
-          Track, analyze, and optimize your investment portfolio with ease. Get
-          real-time insights, interactive charts, and a seamless experience.
-        </p>
+    <ThemeProvider>
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-gray-900 to-gray-800 p-6">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center max-w-2xl"
+        >
+          <h1 className="text-5xl font-extrabold text-white">Porta</h1>
+          <p className="mt-2 text-xl text-gray-300">
+            Smarter Portfolio Analytics.
+          </p>
 
-        <Button onClick={handleLogin} size="lg" className="w-full">
-          Sign in to Your Dashboard
-        </Button>
+          <Card className="mt-6 p-6 bg-gray-700/80 shadow-2xl border border-gray-600">
+            <CardContent className="space-y-4">
+              <h2 className="text-xl font-semibold text-white">
+                Track, analyze, and optimize your investments with ease.
+              </h2>
+              <Button asChild size="lg" className="w-full">
+                <a
+                  href="https://portfolio.domparsons.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Explore Porta
+                </a>
+              </Button>
+            </CardContent>
+          </Card>
 
-        <p className="text-sm text-muted-foreground">
-          Securely powered by Auth0.
-        </p>
+          <p className="mt-4 text-sm text-gray-400">
+            Securely powered by Auth0 & hosted on Vercel.
+          </p>
+        </motion.div>
       </div>
-    </div>
+      <Analytics />
+    </ThemeProvider>
   )
 }

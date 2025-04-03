@@ -26,7 +26,7 @@ import { ThemeProvider } from '@/components/theme-provider'
 const App = () => {
   const { isAuthenticated } = useAuth0()
 
-  // return <LoginPage />
+  return <LoginPage />
 
   if (import.meta.env.MODE !== 'development' && !isAuthenticated) {
     return <LoginPage />
