@@ -8,6 +8,10 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     secret_key: str = ""
     algorithm: str = ""
+    SQLALCHEMY_DATABASE_URI: str = (
+        "postgresql://domparsons:DevPassword123!@localhost/portfolio"
+    )
+    SQLALCHEMY_TRACK_MODIFICATIONS: bool = False
 
     class Config:
         env_file = ".env"

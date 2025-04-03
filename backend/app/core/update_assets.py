@@ -3,26 +3,51 @@ from datetime import datetime, timezone
 from app.database import SessionLocal
 from app.models import Asset
 
+# Initialize the database session
 db = SessionLocal()
 
-tickers = [asset.ticker for asset in db.query(Asset).all()]
-tickers = [ticker for ticker in tickers if "." not in ticker]
+# List of 20 tickers to add manually
+new_tickers = [
+    "AAPL",
+    "GOOGL",
+    "MSFT",
+    "AMZN",
+    "TSLA",
+    "META",
+    "NFLX",
+    "NVDA",
+    "SPY",
+    "INTC",
+    "AMGN",
+    "BABA",
+    "BA",
+    "DIS",
+    "T",
+    "GS",
+    "V",
+    "JNJ",
+    "WMT",
+    "PG",
+    "VZ",
+]
 
 
 def get_asset_info(ticker):
     asset = yf.Ticker(ticker)
     asset_info = asset.info
 
+    # Extract relevant data from Yahoo Finance API response
     asset_name = asset_info.get("longName", "Unknown")
     ticker_symbol = asset_info.get("symbol", ticker)
-    asset_type = "stock"
+    asset_type = "stock"  # Assuming you only deal with stocks
     currency = asset_info.get("currency", "USD")
     sector = asset_info.get("sector", "Unknown")
     country = asset_info.get("country", "Unknown")
     market_cap = asset_info.get("marketCap", None)
-    asset_class = "Equity"
+    asset_class = "Equity"  # Assuming all assets are of the 'Equity' class
     description = asset_info.get("longBusinessSummary", "No description available.")
 
+    # Convert market cap from string to integer (if applicable)
     if isinstance(market_cap, str):
         if market_cap.endswith("B"):
             market_cap = int(float(market_cap[:-1]) * 1_000_000_000)
@@ -44,17 +69,21 @@ def get_asset_info(ticker):
     }
 
 
-for ticker in tickers:
+# Loop through the new tickers
+for ticker in new_tickers:
     asset_info = get_asset_info(ticker)
 
+    # Query the database to check if the asset already exists
     existing_asset = db.query(Asset).filter(Asset.ticker == ticker).first()
 
     if existing_asset:
+        # Update the existing asset if it already exists
         existing_asset.market_cap = asset_info["market_cap"]
         existing_asset.last_updated = datetime.now(timezone.utc)
         db.commit()
         print(f"Updated {ticker} with new market cap and last updated timestamp.")
     else:
+        # If the asset does not exist, create a new record
         new_asset = Asset(
             asset_name=asset_info["asset_name"],
             ticker=asset_info["ticker"],
@@ -71,6 +100,7 @@ for ticker in tickers:
         db.commit()
         print(f"Added new asset: {ticker}")
 
+# Close the database session
 db.close()
 
 print("Asset list update completed!")

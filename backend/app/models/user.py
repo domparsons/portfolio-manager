@@ -1,32 +1,21 @@
-from datetime import datetime
-
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, String, DateTime
 from app.database import Base
-from passlib.context import CryptContext
 from sqlalchemy.orm import relationship
-
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+from sqlalchemy.sql import func
 
 
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True)
-    username = Column(String, unique=True, nullable=False)
+    # Using String for Auth0's user ID, which is a string (e.g., UUID or auth0|<random_string>)
+    id = Column(String, primary_key=True)
     email = Column(String, unique=True, nullable=False)
-    password_hash = Column(String, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Use UTC time for the created_at column with a proper default
+    created_at = Column(DateTime, default=func.now(), nullable=False)
 
     # Relationship to WatchlistItem (a user can have multiple stock symbols in their watchlist)
     watchlists = relationship("WatchlistItem", back_populates="owner")
 
-    def set_password(self, password: str):
-        self.password = pwd_context.hash(password)
-
-    def verify_password(self, password: str) -> bool:
-        return pwd_context.verify(password, self.password)
-
     def __repr__(self):
-        return f"<User(id={self.id}, username={self.username}, email={self.email})>"
+        return f"<User(id={self.id}, email={self.email}, created_at={self.created_at})>"
