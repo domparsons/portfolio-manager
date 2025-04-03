@@ -39,6 +39,13 @@ export default function LandingPage() {
           <p className="mt-4 text-sm text-gray-400">
             Securely powered by Auth0 & hosted on Vercel.
           </p>
+
+          <a
+            className="mt-4 text-sm text-gray-400 underline"
+            href={'https://www.domparsons.com'}
+          >
+            ← Back to www.domparsons.com
+          </a>
         </motion.div>
       </div>
       <Analytics />
