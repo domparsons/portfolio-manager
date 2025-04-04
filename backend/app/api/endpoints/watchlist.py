@@ -1,47 +1,41 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app import schemas
+from app import schemas, crud
 from app.database import get_db
 from app.crud import watchlist
 
 router = APIRouter(prefix="/watchlist", tags=["watchlist"])
 
 
-# Todo: auth
 @router.post("/", response_model=schemas.WatchlistItem)
-def create_watchlist_item(
-    watchlist_item: schemas.WatchlistItemCreate,
+def add_to_watchlist(
+    user_id: str,
+    asset_id: int,
     db: Session = Depends(get_db),
 ):
-    return watchlist.create_watchlist_item(db=db, watchlist_item=watchlist_item, user_id=1)
+    user = crud.user.get_user_by_id(db, id=user_id)
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    return watchlist.create_watchlist_item(
+        user_id=user_id,
+        asset_id=asset_id,
+        db=db,
+    )
 
 
-# Todo: auth
-@router.get("/", response_model=list[schemas.WatchlistItem])
-def get_watchlist_items(
-    skip: int = 0,
-    limit: int = 100,
+@router.get("/", response_model=list[schemas.WatchlistItemBase])
+def get_watchlist(
+    user_id: str,
     db: Session = Depends(get_db),
 ):
-    return watchlist.get_watchlist_items(db=db, user_id=1, skip=skip, limit=limit)
+    user = crud.user.get_user_by_id(db, id=user_id)
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
 
+    watchlist_items = watchlist.get_watchlist_items(
+        user_id=user_id,
+        db=db,
+    )
 
-@router.get("/{watchlist_item_id}", response_model=schemas.WatchlistItem)
-def get_watchlist_item(watchlist_item_id: int, db: Session = Depends(get_db)):
-    db_watchlist_item = watchlist.get_watchlist_item(db, watchlist_item_id=watchlist_item_id)
-    if db_watchlist_item is None:
-        raise HTTPException(status_code=404, detail="Watchlist item not found")
-    return db_watchlist_item
-
-
-@router.delete("/{watchlist_item_id}", response_model=schemas.WatchlistItem)
-def delete_watchlist_item(watchlist_item_id: int, db: Session = Depends(get_db)):
-    db_watchlist_item = watchlist.delete_watchlist_item(db, watchlist_item_id=watchlist_item_id)
-    if db_watchlist_item is None:
-        raise HTTPException(status_code=404, detail="Watchlist item not found")
-    return db_watchlist_item
-
-
-@router.get("/user/{user_id}", response_model=list[schemas.WatchlistItem])
-def get_watchlist_items_by_user_id(user_id: int, db: Session = Depends(get_db)):
-    return watchlist.get_watchlist_items_by_user_id(db=db, user_id=user_id)
+    return watchlist_items

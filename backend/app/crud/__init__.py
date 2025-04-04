@@ -1,2 +1,1 @@
-def add_to_watchlist(db, watchlist):
-    return None
+from .user import *  # noqa: F403

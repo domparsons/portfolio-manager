@@ -39,7 +39,9 @@ def get_latest_price_and_changes(db):
 
     timeseries_df = pl.DataFrame(timeseries_data)
 
-    latest_df = timeseries_df.filter(timeseries_df["rank"] == 1).rename({"price": "latest_price"})
+    latest_df = timeseries_df.filter(timeseries_df["rank"] == 1).rename(
+        {"price": "latest_price"}
+    )
     second_latest_df = timeseries_df.filter(timeseries_df["rank"] == 2).rename(
         {"price": "second_latest_price"}
     )
@@ -71,7 +73,7 @@ def get_latest_price_and_changes(db):
 def get_latest_timeseries_for_asset(asset_id, db):
     from datetime import datetime, timedelta
 
-    one_month_ago = datetime.now() - timedelta(days=30)
+    one_month_ago = datetime.now() - timedelta(days=365 * 8)
     timeseries = (
         db.query(Timeseries)
         .filter(Timeseries.asset_id == asset_id, Timeseries.timestamp >= one_month_ago)
