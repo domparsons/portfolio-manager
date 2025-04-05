@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 import {
   Card,
   CardContent,
@@ -6,41 +6,43 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card'
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart";
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
-import { TrendingUp } from "lucide-react";
-import { portfolioData } from "../../../dev_data/portfolioData";
+} from '@/components/ui/chart'
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
+import { TrendingUp } from 'lucide-react'
+import { portfolioData } from '../../../dev_data/portfolioData'
+
 interface Portfolio {
-  date: string;
-  value: number;
+  date: string
+  value: number
 }
 
 const Dashboard = () => {
-  const chartData: Portfolio[] = portfolioData;
+  const chartData: Portfolio[] = portfolioData
 
-  const minValue = Math.min(...chartData.map((item) => item.value));
-  const maxValue = Math.max(...chartData.map((item) => item.value));
-  const padding = 5;
+  const minValue = Math.min(...chartData.map((item) => item.value))
+  const maxValue = Math.max(...chartData.map((item) => item.value))
+  const padding = 5
 
-  const minDomain = minValue - padding;
-  const maxDomain = maxValue + padding;
+  const minDomain = minValue - padding
+  const maxDomain = maxValue + padding
   const chartConfig = {
     value: {
-      label: "Value",
-      color: "hsl(var(--chart-1))",
+      label: 'Value',
+      color: 'hsl(var(--chart-1))',
     },
-  } satisfies ChartConfig;
+  } satisfies ChartConfig
+
   return (
     <div className="dashboard">
       <h1 className="text-2xl font-semibold">Dashboard</h1>
       <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-3">
-        <Card className={"mt-4"}>
+        <Card className={'mt-4'}>
           <CardHeader>
             <CardTitle>Portfolio</CardTitle>
             <CardDescription>January - June 2024</CardDescription>
@@ -90,7 +92,7 @@ const Dashboard = () => {
             </div>
           </CardFooter>
         </Card>
-        <Card className={"mt-4"}>
+        <Card className={'mt-4'}>
           <CardHeader>
             <CardTitle>Total Portfolio Value</CardTitle>
           </CardHeader>
@@ -100,7 +102,7 @@ const Dashboard = () => {
             </h1>
           </CardContent>
         </Card>
-        <Card className={"mt-4"}>
+        <Card className={'mt-4'}>
           <CardHeader>
             <CardTitle>Total Portfolio Value</CardTitle>
           </CardHeader>
@@ -112,7 +114,7 @@ const Dashboard = () => {
         </Card>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export { Dashboard };
+export { Dashboard }

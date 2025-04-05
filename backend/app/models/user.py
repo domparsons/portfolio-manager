@@ -17,5 +17,8 @@ class User(Base):
     # Relationship to WatchlistItem (a user can have multiple stock symbols in their watchlist)
     watchlists = relationship("WatchlistItem", back_populates="owner")
 
+    transactions = relationship("Transaction", back_populates="user")
+
+
     def __repr__(self):
         return f"<User(id={self.id}, email={self.email}, created_at={self.created_at})>"

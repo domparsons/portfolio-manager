@@ -7,7 +7,7 @@ from app.models import Asset  # noqa: F401
 from app.models import User  # noqa: F401
 from app.models import WatchlistItem  # noqa: F401
 from app.models import Timeseries  # noqa: F401
-from app.models import Portfolio  # noqa: F401
+from app.models import Transaction  # noqa: F401
 
 # Set the target metadata to your models' Base metadata
 target_metadata = Base.metadata
