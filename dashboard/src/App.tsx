@@ -22,13 +22,15 @@ import { Watchlist } from '@/app/watchlist/watchlist'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/react'
 import { ThemeProvider } from '@/components/theme-provider'
+import { useAuthInit } from '@/auth'
 
 const App = () => {
   const { isAuthenticated } = useAuth0()
+  useAuthInit()
 
   // return <LoginPage />
 
-  if (import.meta.env.MODE !== 'development' && !isAuthenticated) {
+  if (!isAuthenticated) {
     return <LoginPage />
   }
 
