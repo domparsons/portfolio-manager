@@ -1,9 +1,7 @@
-from fastapi import FastAPI
+from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from fastapi import APIRouter
-
-from app.api.endpoints import watchlist, asset, timeseries, user, transaction, portfolio
+from app.api.endpoints import asset, portfolio, timeseries, transaction, user, watchlist
 
 app = FastAPI(title="Portfolio Manager")
 

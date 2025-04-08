@@ -1,7 +1,8 @@
 import polars as pl
-from app.models.timeseries import Timeseries
 from sqlalchemy import func
 from sqlalchemy.orm import aliased
+
+from app.models.timeseries import Timeseries
 
 
 def get_latest_price_and_changes(db):
@@ -39,9 +40,7 @@ def get_latest_price_and_changes(db):
 
     timeseries_df = pl.DataFrame(timeseries_data)
 
-    latest_df = timeseries_df.filter(timeseries_df["rank"] == 1).rename(
-        {"price": "latest_price"}
-    )
+    latest_df = timeseries_df.filter(timeseries_df["rank"] == 1).rename({"price": "latest_price"})
     second_latest_df = timeseries_df.filter(timeseries_df["rank"] == 2).rename(
         {"price": "second_latest_price"}
     )

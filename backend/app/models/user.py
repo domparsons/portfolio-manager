@@ -1,7 +1,8 @@
-from sqlalchemy import Column, String, DateTime
-from app.database import Base
+from sqlalchemy import Column, DateTime, String
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
+
+from app.database import Base
 
 
 class User(Base):
@@ -18,7 +19,6 @@ class User(Base):
     watchlists = relationship("WatchlistItem", back_populates="owner")
 
     transactions = relationship("Transaction", back_populates="user")
-
 
     def __repr__(self):
         return f"<User(id={self.id}, email={self.email}, created_at={self.created_at})>"

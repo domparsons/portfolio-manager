@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends
-from app.schemas.asset import AssetListSchema, AssetSchema
 from sqlalchemy.orm import Session
-from app.database import get_db
+
+from app.core.asset import generate_asset_list
 from app.crud.asset import get_all_assets
 from app.crud.timeseries import get_latest_price_and_changes
-from app.core.asset import generate_asset_list
+from app.database import get_db
+from app.schemas.asset import AssetListSchema, AssetSchema
 
 router = APIRouter(prefix="/asset", tags=["asset"])
 

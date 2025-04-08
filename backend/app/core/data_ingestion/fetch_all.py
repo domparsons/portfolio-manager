@@ -1,6 +1,7 @@
+import polars as pl
+
 from app.database import SessionLocal
 from app.models import Asset, Timeseries
-import polars as pl
 
 # Create a session to interact with the database
 db = SessionLocal()

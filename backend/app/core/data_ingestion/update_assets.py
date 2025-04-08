@@ -1,5 +1,7 @@
-import yfinance as yf
 from datetime import datetime, timezone
+
+import yfinance as yf
+
 from app.database import SessionLocal
 from app.models import Asset
 

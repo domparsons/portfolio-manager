@@ -1,6 +1,7 @@
-from pydantic import BaseModel
-from datetime import datetime
 import enum
+from datetime import datetime
+
+from pydantic import BaseModel
 
 
 class TransactionType(str, enum.Enum):
@@ -35,4 +36,4 @@ class Portfolio(BaseModel):
     transactions: list[TransactionBase]
 
     class Config:
-        orm_mode = True
+        from_attributes = True

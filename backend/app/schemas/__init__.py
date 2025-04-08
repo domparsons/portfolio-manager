@@ -1,3 +1,3 @@
-from .watchlist import WatchlistItem, WatchlistItemBase
+from .transaction import Portfolio, TransactionBase, TransactionCreate, TransactionOut
 from .user import User, UserBase
-from .transaction import TransactionBase, TransactionCreate, TransactionOut, Portfolio
+from .watchlist import WatchlistItem, WatchlistItemBase

@@ -1,7 +1,8 @@
+import os
+
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-import os
 
 # Retrieve the database URL from environment variables (or default to SQLite if not set)
 DATABASE_URL = os.getenv(

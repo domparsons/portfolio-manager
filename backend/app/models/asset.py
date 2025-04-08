@@ -1,7 +1,7 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, BigInteger
-from sqlalchemy import Index
-from app.database import Base
+from sqlalchemy import BigInteger, Column, DateTime, Index, Integer, String, Text
 from sqlalchemy.orm import relationship
+
+from app.database import Base
 
 
 class Asset(Base):
@@ -33,13 +33,9 @@ class Asset(Base):
     # Indexes for performance optimization (useful for searching by ticker or asset name)
     __table_args__ = (
         Index("ix_assets_ticker", "ticker"),  # Index on ticker for fast lookups
-        Index(
-            "ix_assets_asset_name", "asset_name"
-        ),  # Index on asset_name for fast lookups
+        Index("ix_assets_asset_name", "asset_name"),  # Index on asset_name for fast lookups
     )
 
     # String representation for debugging and logging
     def __repr__(self):
-        return (
-            f"<Asset(id={self.id}, ticker={self.ticker}, asset_name={self.asset_name})>"
-        )
+        return f"<Asset(id={self.id}, ticker={self.ticker}, asset_name={self.asset_name})>"

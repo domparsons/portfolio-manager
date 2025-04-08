@@ -1,5 +1,5 @@
-from zoneinfo import ZoneInfo
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 
 def convert_to_utc(purchase_date: datetime, user_timezone: str) -> datetime:

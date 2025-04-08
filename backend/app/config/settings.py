@@ -7,9 +7,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "sqlite:///./test.db"
     secret_key: str = ""
     algorithm: str = ""
-    SQLALCHEMY_DATABASE_URI: str = (
-        "postgresql://domparsons:DevPassword123!@localhost/portfolio"
-    )
+    SQLALCHEMY_DATABASE_URI: str = "postgresql://domparsons:DevPassword123!@localhost/portfolio"
     SQLALCHEMY_TRACK_MODIFICATIONS: bool = False
 
     class Config:

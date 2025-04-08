@@ -1,12 +1,13 @@
 from datetime import datetime, timezone
 
 import pytz
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+
 from app import crud, models, schemas
 from app.crud.asset import get_asset_by_id
 from app.database import get_db
 from app.utils.convert_to_utc import convert_to_utc
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/transaction", tags=["transaction"])
 
@@ -37,9 +38,7 @@ def create_transaction(
     utc_date = convert_to_utc(purchase_date, user_timezone)
 
     if utc_date > datetime.now(timezone.utc):
-        raise HTTPException(
-            status_code=400, detail="Purchase date cannot be in the future"
-        )
+        raise HTTPException(status_code=400, detail="Purchase date cannot be in the future")
 
     transaction = models.Transaction(
         user_id=user_id,

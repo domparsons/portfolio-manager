@@ -1,18 +1,20 @@
+import enum
+from datetime import datetime
+
 from sqlalchemy import (
-    Column,
-    Integer,
-    Float,
-    DateTime,
-    ForeignKey,
-    String,
     CheckConstraint,
+    Column,
+    DateTime,
     Enum,
+    Float,
+    ForeignKey,
     Index,
+    Integer,
+    String,
 )
 from sqlalchemy.orm import relationship
+
 from app.database import Base
-from datetime import datetime
-import enum
 
 
 class TransactionType(str, enum.Enum):

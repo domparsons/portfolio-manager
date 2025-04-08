@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends
-from app.schemas.timeseries import TimeseriesSchema
-from app.crud.timeseries import get_latest_timeseries_for_asset
 from sqlalchemy.orm import Session
+
+from app.crud.timeseries import get_latest_timeseries_for_asset
 from app.database import get_db
+from app.schemas.timeseries import TimeseriesSchema
 
 router = APIRouter(prefix="/timeseries", tags=["timeseries"])
 
