@@ -30,7 +30,7 @@ const App = () => {
 
   // return <LoginPage />
 
-  if (!isAuthenticated) {
+  if (import.meta.env.MODE !== 'development' && !isAuthenticated) {
     return <LoginPage />
   }
 
