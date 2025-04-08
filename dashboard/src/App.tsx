@@ -51,7 +51,6 @@ const App = () => {
               <Routes>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/asset-list" element={<AssetList />} />
-                <Route path="/" element={<Dashboard />} />
                 <Route path="/portfolio" element={<Portfolio />} />
                 <Route path="/backtesting" element={<Backtesting />} />
                 <Route

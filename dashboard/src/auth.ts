@@ -7,10 +7,7 @@ export const useAuthInit = () => {
 
   useEffect(() => {
     const initUser = async () => {
-      const token = await getAccessTokenSilently({
-        audience: 'https://dev-aej4rxcs3274i7ss.us.auth0.com/api/v2/',
-        scope: 'read:users',
-      })
+      const token = await getAccessTokenSilently()
       const decoded = jwtDecode(token)
       const auth0UserId = decoded.sub
 
