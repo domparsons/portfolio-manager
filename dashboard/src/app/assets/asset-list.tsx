@@ -11,6 +11,7 @@ import {
   Asset,
   Portfolio,
 } from '@/api/asset'
+import { Badge } from '@/components/ui/badge'
 
 const AssetList = () => {
   const [assets, setAssets] = useState<Asset[]>([])
@@ -26,7 +27,17 @@ const AssetList = () => {
   return (
     <div>
       <Sheet>
-        <h1 className="text-2xl font-semibold">Asset List</h1>
+        <div className={'flex items-center justify-between'}>
+          <h1 className="text-2xl font-semibold">Asset List</h1>
+          {assets.length > 0 ? (
+            <Badge variant={'outline'}>
+              Last updated: {new Date(assets[0].timestamp).toLocaleDateString()}
+            </Badge>
+          ) : (
+            <Badge variant={'outline'}>Loading...</Badge>
+          )}
+        </div>
+
         <Input
           onInput={(e) => filterSearch(e, assets, setFilteredAssets)}
           placeholder="Search Assets"
