@@ -7,13 +7,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
-import { Info, SquareArrowOutUpRight } from 'lucide-react'
 import { SheetTrigger } from '@/components/ui/sheet'
 interface Asset {
   id: number
