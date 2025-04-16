@@ -28,6 +28,11 @@ export interface AssetTableProps {
   getTimeseriesDataForAsset: (assetId: number) => void
 }
 
+export interface AssetSheetPopoverProps {
+  timeseries: Portfolio[]
+  sheetAsset: Asset
+}
+
 export const getAssetList = async (
   setAssets: (assets: Asset[]) => void,
   setFilteredAssets: (assets: Asset[]) => void

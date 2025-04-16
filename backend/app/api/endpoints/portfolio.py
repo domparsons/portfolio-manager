@@ -7,10 +7,13 @@ from app.database import get_db
 router = APIRouter(prefix="/portfolio", tags=["portfolio"])
 
 
-# Fetch user's portfolio based on user_id
-@router.get("/get_portfolio/{user_id}", response_model=list[schemas.Portfolio])
-def get_user_portfolio(user_id: str, db: Session = Depends(get_db)) -> list[schemas.Portfolio]:
-    transactions = db.query(models.Transaction).filter(models.Transaction.user_id == user_id).all()
+@router.get("/{user_id}", response_model=list[schemas.Portfolio])
+def get_portfolio(
+    user_id: str, db: Session = Depends(get_db)
+) -> list[schemas.Portfolio]:
+    transactions = (
+        db.query(models.Transaction).filter(models.Transaction.user_id == user_id).all()
+    )
 
     if not transactions:
         return []
