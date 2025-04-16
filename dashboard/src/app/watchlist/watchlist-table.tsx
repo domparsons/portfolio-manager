@@ -7,13 +7,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
-import { Info } from 'lucide-react'
 interface WatchlistAsset {
   id: number
   asset_name: string
@@ -60,24 +53,7 @@ const WatchlistTable: React.FC<WatchlistAssetTableProps> = ({
             <TableCell>{asset.price_change.toFixed(2)}</TableCell>
             <TableCell>{asset.percentage_change.toFixed(2)}%</TableCell>
             <TableCell>{asset.currency}</TableCell>
-            <TableCell>
-              <div className={'flex flex-row space-x-2'}>
-                <div>{asset.latest_price.toFixed(2)}</div>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info size={16}></Info>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>
-                        Latest update:{' '}
-                        {new Date(asset.timestamp).toLocaleDateString()}
-                      </p>{' '}
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-            </TableCell>
+            <TableCell>{asset.latest_price.toFixed(2)}</TableCell>
           </TableRow>
         ))}
       </TableBody>
