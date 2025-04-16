@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app import crud, schemas
+from app import crud, schemas, core
 from app.crud import watchlist
 from app.database import get_db
 
@@ -25,7 +25,7 @@ def add_to_watchlist(
     )
 
 
-@router.get("/{user_id}", response_model=list[schemas.WatchlistItemBase])
+@router.get("/{user_id}", response_model=list[schemas.AssetListSchema])
 def get_watchlist(
     user_id: str,
     db: Session = Depends(get_db),
@@ -39,4 +39,11 @@ def get_watchlist(
         db=db,
     )
 
-    return watchlist_items
+    asset_ids = [item.asset_id for item in watchlist_items]
+
+    assets = crud.asset.get_all_assets(db)
+    latest_timeseries = crud.timeseries.get_latest_price_and_changes(db)
+    assets = assets.filter(assets["id"].is_in(asset_ids))
+    asset_list = core.asset.generate_asset_list(assets, latest_timeseries)
+
+    return asset_list

@@ -1,27 +1,27 @@
-import React, { useEffect, useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Sheet } from "@/components/ui/sheet";
-import { AssetTable } from "@/app/assets/asset-table";
-import { AssetSheetPopover } from "@/app/assets/asset-sheet-popover";
-import { AssetTableSkeleton } from "@/app/assets/asset-table-skeleton";
+import React, { useEffect, useState } from 'react'
+import { Input } from '@/components/ui/input'
+import { Sheet } from '@/components/ui/sheet'
+import { AssetTable } from '@/app/assets/asset-table'
+import { AssetSheetPopover } from '@/app/assets/asset-sheet-popover'
+import { TableSkeleton } from '@/app/table-skeleton'
 import {
   getAssetList,
   getTimeseriesDataForAsset,
   filterSearch,
   Asset,
   Portfolio,
-} from "@/api/asset";
+} from '@/api/asset'
 
 const AssetList = () => {
-  const [assets, setAssets] = useState<Asset[]>([]);
-  const [filteredAssets, setFilteredAssets] = useState<Asset[]>([]);
-  const [hoveredRow, setHoveredRow] = useState<number | null>(null);
-  const [sheetAsset, setSheetAsset] = useState<Asset | null>(null);
-  const [timeseries, setTimeseries] = useState<Portfolio[]>([]);
+  const [assets, setAssets] = useState<Asset[]>([])
+  const [filteredAssets, setFilteredAssets] = useState<Asset[]>([])
+  const [hoveredRow, setHoveredRow] = useState<number | null>(null)
+  const [sheetAsset, setSheetAsset] = useState<Asset | null>(null)
+  const [timeseries, setTimeseries] = useState<Portfolio[]>([])
 
   useEffect(() => {
-    getAssetList(setAssets, setFilteredAssets);
-  }, []);
+    getAssetList(setAssets, setFilteredAssets)
+  }, [])
 
   return (
     <div>
@@ -33,7 +33,7 @@ const AssetList = () => {
           className="mt-4 mb-4"
         />
         {filteredAssets.length === 0 ? (
-          <AssetTableSkeleton />
+          <TableSkeleton />
         ) : (
           <AssetTable
             filteredAssets={filteredAssets}
@@ -50,7 +50,7 @@ const AssetList = () => {
         )}
       </Sheet>
     </div>
-  );
-};
+  )
+}
 
-export { AssetList };
+export { AssetList }
