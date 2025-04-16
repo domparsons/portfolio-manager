@@ -16,6 +16,7 @@ import {
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
 import { TrendingUp } from 'lucide-react'
 import { portfolioData } from '../../../dev_data/portfolioData'
+import TransactionHistoryCard from '@/app/dashboard/transaction-history-card'
 
 interface Portfolio {
   date: string
@@ -29,6 +30,8 @@ const Dashboard = () => {
   const maxValue = Math.max(...chartData.map((item) => item.value))
   const padding = 5
 
+  const portfolioValue = chartData[chartData.length - 1].value
+
   const minDomain = minValue - padding
   const maxDomain = maxValue + padding
   const chartConfig = {
@@ -41,8 +44,13 @@ const Dashboard = () => {
   return (
     <div className="dashboard">
       <h1 className="text-2xl font-semibold">Dashboard</h1>
+      <div className="flex flex-col justify-between mt-4 mb-2">
+        <h2 className={'text-xl font-semibold'}>£{portfolioValue}</h2>
+        <p>Portfolio Value</p>
+      </div>
       <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-3">
-        <Card className={'mt-4'}>
+        <Card className={'mt-4 col-span-2'}>
+          {' '}
           <CardHeader>
             <CardTitle>Portfolio</CardTitle>
             <CardDescription>January - June 2024</CardDescription>
@@ -92,26 +100,7 @@ const Dashboard = () => {
             </div>
           </CardFooter>
         </Card>
-        <Card className={'mt-4'}>
-          <CardHeader>
-            <CardTitle>Total Portfolio Value</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <h1 className="text-3xl font-semibold">
-              ${chartData[chartData.length - 1].value}
-            </h1>
-          </CardContent>
-        </Card>
-        <Card className={'mt-4'}>
-          <CardHeader>
-            <CardTitle>Total Portfolio Value</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <h1 className="text-3xl font-semibold">
-              ${chartData[chartData.length - 1].value}
-            </h1>
-          </CardContent>
-        </Card>
+        <TransactionHistoryCard />
       </div>
     </div>
   )

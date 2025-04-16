@@ -8,12 +8,13 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import * as React from 'react'
-import App from '@/App'
 
 const DynamicBreadcrumb = () => {
   const location = useLocation()
-  const pathSegments = location.pathname.split('/').filter(Boolean)
-
+  const pathSegments =
+    location.pathname === '/'
+      ? ['dashboard']
+      : location.pathname.split('/').filter(Boolean)
   const formatSegment = (segment: string) => {
     return segment
       .replace(/-/g, ' ')

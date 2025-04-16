@@ -41,7 +41,7 @@ const data = {
       items: [
         {
           title: 'Dashboard',
-          url: '/',
+          url: '/dashboard',
         },
         {
           title: 'Watchlist',

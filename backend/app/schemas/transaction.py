@@ -28,7 +28,11 @@ class TransactionCreate(TransactionBase):
 
 
 class TransactionOut(TransactionBase):
-    pass
+    asset_name: str
+    ticker: str
+
+    class Config:
+        from_attributes = True
 
 
 class Portfolio(BaseModel):

@@ -1,11 +1,11 @@
 import polars as pl
 from sqlalchemy import func
-from sqlalchemy.orm import aliased
+from sqlalchemy.orm import aliased, Session
 
 from app.models.timeseries import Timeseries
 
 
-def get_latest_price_and_changes(db):
+def get_latest_price_and_changes(db: Session) -> pl.DataFrame:
     subquery = db.query(
         Timeseries.asset_id,
         Timeseries.timestamp,
@@ -69,7 +69,7 @@ def get_latest_price_and_changes(db):
     return result_df
 
 
-def get_latest_timeseries_for_asset(asset_id, db):
+def get_latest_timeseries_for_asset(asset_id: int, db: Session) -> pl.DataFrame:
     from datetime import datetime, timedelta
 
     one_month_ago = datetime.now() - timedelta(days=365 * 8)

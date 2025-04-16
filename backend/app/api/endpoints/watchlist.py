@@ -14,7 +14,7 @@ def add_to_watchlist(
     asset_id: int,
     db: Session = Depends(get_db),
 ):
-    user = crud.user.get_user_by_id(db, id=user_id)
+    user = crud.user.get_user_by_id(db, user_id=user_id)
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
 
@@ -25,12 +25,12 @@ def add_to_watchlist(
     )
 
 
-@router.get("/", response_model=list[schemas.WatchlistItemBase])
+@router.get("/{user_id}", response_model=list[schemas.WatchlistItemBase])
 def get_watchlist(
     user_id: str,
     db: Session = Depends(get_db),
 ):
-    user = crud.user.get_user_by_id(db, id=user_id)
+    user = crud.user.get_user_by_id(db, user_id=user_id)
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
 

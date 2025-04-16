@@ -31,39 +31,12 @@ def get_management_token():
         },
     )
     if response.status_code != 200:
-        raise HTTPException(
-            status_code=500, detail="Failed to get Auth0 management token"
-        )
+        raise HTTPException(status_code=500, detail="Failed to get Auth0 management token")
     return response.json()["access_token"]
 
 
-@router.post("/", response_model=schemas.User)
-def create_user(user_id: str, email: str, db: Session = Depends(get_db)):
-    user_exists = crud.user.get_user_by_email(db, email=email)
-    if user_exists:
-        raise HTTPException(status_code=400, detail="This email is already registered.")
-    db_user = crud.create_user(db=db, user_id=user_id, email=email)
-    return db_user
-
-
-@router.get("/get_by_email/{email}", response_model=schemas.User)
-def get_user_by_email(email: str, db: Session = Depends(get_db)):
-    user = crud.user.get_user_by_email(db, email=email)
-    if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    return user
-
-
-@router.get("/get_by_id/{id}", response_model=schemas.User)
-def get_user_by_id(id: str, db: Session = Depends(get_db)):
-    user = crud.user.get_user_by_id(db, id=id)
-    if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    return user
-
-
-@router.post("/create_or_get/{user_id}", response_model=schemas.User)
-def create_or_get_user(
+@router.post("/sync/{user_id}", response_model=schemas.User)
+def sync_user(
     user_id: str,
     db: Session = Depends(get_db),
 ):
@@ -82,7 +55,7 @@ def create_or_get_user(
     if not user_data.get("email"):
         raise HTTPException(status_code=403, detail="User is not active")
 
-    db_user = crud.get_user_by_id(db, id=user_id)
+    db_user = crud.get_user_by_id(db, user_id=user_id)
     if db_user:
         return db_user
     return crud.create_user(
@@ -90,3 +63,11 @@ def create_or_get_user(
         user_id=user_id,
         email=email,
     )
+
+
+@router.get("/get_by_email/{email}", response_model=schemas.User)
+def get_user_by_email(email: str, db: Session = Depends(get_db)):
+    user = crud.user.get_user_by_email(db, email=email)
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user

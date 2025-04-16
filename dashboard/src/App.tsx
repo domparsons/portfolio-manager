@@ -1,5 +1,3 @@
-// src/App.tsx
-
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { AppSidebar } from '@/components/app-sidebar'
 import { AssetList } from '@/app/assets/asset-list'
@@ -28,6 +26,8 @@ const App = () => {
   const { isAuthenticated } = useAuth0()
   useAuthInit()
 
+  localStorage.setItem('user_id', 'auth0|67ec6b5e6076f060a1e7927f')
+
   // return <LoginPage />
 
   if (import.meta.env.MODE !== 'development' && !isAuthenticated) {
@@ -36,7 +36,7 @@ const App = () => {
 
   return (
     <Router>
-      <ThemeProvider>
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <SidebarProvider>
           <AppSidebar />
           <SidebarInset>
@@ -50,6 +50,7 @@ const App = () => {
             <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
               <Routes>
                 <Route path="/" element={<Dashboard />} />
+                <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/asset-list" element={<AssetList />} />
                 <Route path="/portfolio" element={<Portfolio />} />
                 <Route path="/backtesting" element={<Backtesting />} />
@@ -63,9 +64,9 @@ const App = () => {
           </SidebarInset>
         </SidebarProvider>
         <Toaster />
+        <Analytics />
+        <SpeedInsights />
       </ThemeProvider>
-      <Analytics />
-      <SpeedInsights />
     </Router>
   )
 }

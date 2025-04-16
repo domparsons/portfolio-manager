@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 import {
   ChartConfig,
   ChartContainer,
@@ -6,64 +6,64 @@ import {
   ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart";
-import { Pie, PieChart } from "recharts";
+} from '@/components/ui/chart'
+import { Pie, PieChart } from 'recharts'
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { TrendingUp } from "lucide-react";
+} from '@/components/ui/card'
+import { TrendingUp } from 'lucide-react'
 const chartConfig = {
   assets: {
-    label: "Assets",
+    label: 'Assets',
   },
   apple: {
-    label: "Apple",
-    color: "hsl(var(--chart-1))",
+    label: 'Apple',
+    color: 'hsl(var(--chart-1))',
   },
   tesla: {
-    label: "Tesla",
-    color: "hsl(var(--chart-2))",
+    label: 'Tesla',
+    color: 'hsl(var(--chart-2))',
   },
   nvidia: {
-    label: "Nvidia",
-    color: "hsl(var(--chart-3))",
+    label: 'Nvidia',
+    color: 'hsl(var(--chart-3))',
   },
   amazon: {
-    label: "Amazon",
-    color: "hsl(var(--chart-4))",
+    label: 'Amazon',
+    color: 'hsl(var(--chart-4))',
   },
   google: {
-    label: "Google",
-    color: "hsl(var(--chart-5))",
+    label: 'Google',
+    color: 'hsl(var(--chart-5))',
   },
   microsoft: {
-    label: "Microsoft",
-    color: "hsl(var(--chart-6))",
+    label: 'Microsoft',
+    color: 'hsl(var(--chart-6))',
   },
   facebook: {
-    label: "Facebook",
-    color: "hsl(var(--chart-7))",
+    label: 'Facebook',
+    color: 'hsl(var(--chart-7))',
   },
   netflix: {
-    label: "Netflix",
-    color: "hsl(var(--chart-8))",
+    label: 'Netflix',
+    color: 'hsl(var(--chart-8))',
   },
-} satisfies ChartConfig;
+} satisfies ChartConfig
 const Portfolio = () => {
   const chartData = [
-    { asset: "Apple", value: 1500, fill: "var(--color-apple)" },
-    { asset: "Tesla", value: 1200, fill: "var(--color-tesla)" },
-    { asset: "Nvidia", value: 1000, fill: "var(--color-nvidia)" },
-    { asset: "Amazon", value: 900, fill: "var(--color-amazon)" },
-    { asset: "Google", value: 800, fill: "var(--color-google)" },
-    { asset: "Microsoft", value: 700, fill: "var(--color-microsoft)" },
-    { asset: "Facebook", value: 600, fill: "var(--color-facebook)" },
-    { asset: "Netflix", value: 500, fill: "var(--color-netflix)" },
-  ];
+    { asset: 'Apple', value: 0.25, fill: 'var(--color-apple)' },
+    { asset: 'Tesla', value: 0.12, fill: 'var(--color-tesla)' },
+    { asset: 'Nvidia', value: 0.5, fill: 'var(--color-nvidia)' },
+    { asset: 'Amazon', value: 0, fill: 'var(--color-amazon)' },
+    { asset: 'Google', value: 0, fill: 'var(--color-google)' },
+    { asset: 'Microsoft', value: 0, fill: 'var(--color-microsoft)' },
+    { asset: 'Facebook', value: 0, fill: 'var(--color-facebook)' },
+    { asset: 'Netflix', value: 0, fill: 'var(--color-netflix)' },
+  ]
 
   return (
     <div className="portfolio">
@@ -99,7 +99,7 @@ const Portfolio = () => {
         </Card>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export { Portfolio };
+export { Portfolio }
