@@ -7,26 +7,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-interface WatchlistAsset {
-  id: number
-  asset_name: string
-  ticker: string
-  market_cap: number
-  price_change: number
-  percentage_change: number
-  latest_price: number
-  currency: string
-  description: string
-  timestamp: string
-}
+import { AssetTableProps } from '@/api/asset'
 
-interface WatchlistAssetTableProps {
-  filteredAssets: WatchlistAsset[]
-}
-
-const WatchlistTable: React.FC<WatchlistAssetTableProps> = ({
-  filteredAssets,
-}) => {
+const WatchlistTable: React.FC<AssetTableProps> = ({ filteredAssets }) => {
   return (
     <Table className={'mt-4'}>
       <TableHeader>

@@ -8,26 +8,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { SheetTrigger } from '@/components/ui/sheet'
-interface Asset {
-  id: number
-  asset_name: string
-  ticker: string
-  market_cap: number
-  price_change: number
-  percentage_change: number
-  latest_price: number
-  currency: string
-  description: string
-  timestamp: string
-}
-
-interface AssetTableProps {
-  filteredAssets: Asset[]
-  setHoveredRow: React.Dispatch<React.SetStateAction<number | null>>
-  hoveredRow: number | null
-  setSheetAsset: React.Dispatch<React.SetStateAction<Asset | null>>
-  getTimeseriesDataForAsset: (assetId: number) => void
-}
+import { AssetTableProps } from '@/api/asset'
 
 const AssetTable: React.FC<AssetTableProps> = ({
   filteredAssets,
