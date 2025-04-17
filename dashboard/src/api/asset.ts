@@ -24,13 +24,13 @@ export interface AssetTableProps {
   filteredAssets: Asset[]
   setHoveredRow: React.Dispatch<React.SetStateAction<number | null>>
   hoveredRow: number | null
-  setSheetAsset: React.Dispatch<React.SetStateAction<Asset | null>>
+  setPageAsset: React.Dispatch<React.SetStateAction<Asset | null>>
   getTimeseriesDataForAsset: (assetId: number) => void
 }
 
 export interface AssetSheetPopoverProps {
   timeseries: Portfolio[]
-  sheetAsset: Asset
+  pageAsset: Asset
 }
 
 export const getAssetList = async (
@@ -91,4 +91,25 @@ export const filterSearch = (
       asset.ticker.toLowerCase().includes(searchValue)
   )
   setFilteredAssets(filtered)
+}
+
+export const getAssetByTicker = async (ticker: string | undefined) => {
+  try {
+    const response = await fetch(
+      `http://127.0.0.1:8000/asset/get_asset_by_ticker/${ticker}`,
+      {
+        headers: {
+          Accept: 'application/json',
+        },
+      }
+    )
+    if (!response.ok) {
+      toast('There was an error fetching asset data.')
+      return
+    }
+    return await response.json()
+  } catch (error) {
+    console.error('Error fetching asset data:', error)
+    toast('There was an error fetching asset data.')
+  }
 }

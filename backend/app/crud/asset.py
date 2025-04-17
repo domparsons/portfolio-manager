@@ -19,3 +19,11 @@ def get_asset_by_id(asset_id: int, db: Session) -> dict | None:
         return asset.__dict__
     else:
         return None
+
+
+def get_asset_by_ticker(db: Session, ticker: str) -> dict | None:
+    asset = db.query(Asset).filter(Asset.ticker == ticker.upper()).first()
+    if asset:
+        return asset.__dict__
+    else:
+        return None

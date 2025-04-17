@@ -7,15 +7,17 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { SheetTrigger } from '@/components/ui/sheet'
 import { AssetTableProps } from '@/api/asset'
+import { useNavigate } from 'react-router-dom'
 
 const AssetTable: React.FC<AssetTableProps> = ({
   filteredAssets,
   setHoveredRow,
-  setSheetAsset,
+  setPageAsset,
   getTimeseriesDataForAsset,
 }) => {
+  const navigate = useNavigate()
+
   return (
     <Table>
       <TableHeader>
@@ -31,30 +33,29 @@ const AssetTable: React.FC<AssetTableProps> = ({
       </TableHeader>
       <TableBody>
         {filteredAssets.map((asset) => (
-          <SheetTrigger asChild>
-            <TableRow
-              key={asset.id}
-              onMouseOver={() => setHoveredRow(asset.id)}
-              onMouseOut={() => setHoveredRow(null)}
-              onClick={() => {
-                setSheetAsset(asset)
-                getTimeseriesDataForAsset(asset.id)
-              }}
-              className={'cursor-pointer'}
-            >
-              <TableCell className="font-medium">{asset.asset_name}</TableCell>
-              <TableCell>{asset.ticker}</TableCell>
-              <TableCell>
-                {new Intl.NumberFormat('en-US', {
-                  notation: 'compact',
-                }).format(asset.market_cap)}
-              </TableCell>{' '}
-              <TableCell>{asset.price_change.toFixed(2)}</TableCell>
-              <TableCell>{asset.percentage_change.toFixed(2)}%</TableCell>
-              <TableCell>{asset.currency}</TableCell>
-              <TableCell>{asset.latest_price.toFixed(2)}</TableCell>
-            </TableRow>
-          </SheetTrigger>
+          <TableRow
+            key={asset.id}
+            onMouseOver={() => setHoveredRow(asset.id)}
+            onMouseOut={() => setHoveredRow(null)}
+            onClick={() => {
+              setPageAsset(asset)
+              getTimeseriesDataForAsset(asset.id)
+              navigate(`/assets/${asset.ticker.toLowerCase()}`)
+            }}
+            className={'cursor-pointer'}
+          >
+            <TableCell className="font-medium">{asset.asset_name}</TableCell>
+            <TableCell>{asset.ticker}</TableCell>
+            <TableCell>
+              {new Intl.NumberFormat('en-US', {
+                notation: 'compact',
+              }).format(asset.market_cap)}
+            </TableCell>
+            <TableCell>{asset.price_change.toFixed(2)}</TableCell>
+            <TableCell>{asset.percentage_change.toFixed(2)}%</TableCell>
+            <TableCell>{asset.currency}</TableCell>
+            <TableCell>{asset.latest_price.toFixed(2)}</TableCell>
+          </TableRow>
         ))}
       </TableBody>
     </Table>

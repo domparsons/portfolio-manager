@@ -22,3 +22,13 @@ def get_asset_list(db: Session = Depends(get_db)):
     asset_list = core.asset.generate_asset_list(assets, latest_timeseries)
 
     return asset_list
+
+
+@router.get("/get_asset_by_ticker/{ticker}", response_model=AssetSchema)
+def get_asset_by_ticker(ticker: str, db: Session = Depends(get_db)):
+    asset = crud.asset.get_asset_by_ticker(db, ticker)
+
+    if asset is None:
+        return None
+
+    return asset

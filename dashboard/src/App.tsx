@@ -21,6 +21,7 @@ import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/react'
 import { ThemeProvider } from '@/components/theme-provider'
 import { useAuthInit } from '@/auth'
+import AssetPageWrapper from '@/app/assets/asset-page-wrapper'
 
 const App = () => {
   const { isAuthenticated } = useAuth0()
@@ -51,7 +52,8 @@ const App = () => {
               <Routes>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/asset-list" element={<AssetList />} />
+                <Route path="/assets" element={<AssetList />} />
+                <Route path="/assets/:ticker" element={<AssetPageWrapper />} />
                 <Route path="/portfolio" element={<Portfolio />} />
                 <Route path="/backtesting" element={<Backtesting />} />
                 <Route

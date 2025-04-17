@@ -29,16 +29,18 @@ const DynamicBreadcrumb = () => {
           const breadcrumbPath = `/${pathSegments.slice(0, index + 1).join('/')}`
 
           return (
-            <BreadcrumbItem key={breadcrumbPath}>
-              {isLast ? (
-                <BreadcrumbPage>{formatSegment(segment)}</BreadcrumbPage>
-              ) : (
-                <BreadcrumbLink href={breadcrumbPath}>
-                  {formatSegment(segment)}
-                </BreadcrumbLink>
-              )}
+            <React.Fragment key={breadcrumbPath}>
+              <BreadcrumbItem key={breadcrumbPath}>
+                {isLast ? (
+                  <BreadcrumbPage>{formatSegment(segment)}</BreadcrumbPage>
+                ) : (
+                  <BreadcrumbLink href={breadcrumbPath}>
+                    {formatSegment(segment)}
+                  </BreadcrumbLink>
+                )}
+              </BreadcrumbItem>
               {!isLast && <BreadcrumbSeparator />}
-            </BreadcrumbItem>
+            </React.Fragment>
           )
         })}
       </BreadcrumbList>

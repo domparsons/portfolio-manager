@@ -49,7 +49,7 @@ const data = {
         },
         {
           title: 'Asset List',
-          url: '/asset-list',
+          url: '/assets',
         },
       ],
     },
