@@ -11,7 +11,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from '@/components/ui/sidebar'
-import { DynamicBreadcrumb } from '@/components/breadcrumb'
+import { DynamicBreadcrumb } from '@/components/dynamic-breadcrumb'
 import { MonteCarloSimulation } from '@/app/monte-carlo-simulation/monte-carlo-simulation'
 import { Toaster } from '@/components/ui/sonner'
 import LoginPage from '@/app/login/page'

@@ -3,56 +3,68 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart";
-import { Line, LineChart, YAxis } from "recharts";
-import * as React from "react";
+} from '@/components/ui/chart'
+import { Line, LineChart, XAxis, YAxis } from 'recharts'
+import * as React from 'react'
 interface Portfolio {
-  id: number;
-  close: number;
-  timestamp: string;
+  id: number
+  close: number
+  timestamp: string
 }
 
 const AssetChart = ({ data }: { data: Portfolio[] | null }) => {
-  const chartData: Portfolio[] = data ?? [];
-  const minValue = Math.min(...chartData.map((item) => item.close));
-  const maxValue = Math.max(...chartData.map((item) => item.close));
-  const padding = 5;
+  const chartData: Portfolio[] = (data ?? []).map((item) => ({
+    ...item,
+    close: Math.round(item.close * 100) / 100,
+    timestamp: new Date(item.timestamp).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    }),
+  }))
+  const minValue = Math.min(...chartData.map((item) => item.close))
+  const maxValue = Math.max(...chartData.map((item) => item.close))
 
-  const minDomain = minValue - padding;
-  const maxDomain = maxValue + padding;
+  const paddingPercentage = 0.03
+  const padding = (maxValue - minValue) * paddingPercentage
+  const minDomain = minValue - padding
+  const maxDomain = maxValue + padding
 
   const chartConfig = {
     value: {
-      label: "close",
-      color: "hsl(var(--chart-1))",
+      label: 'close',
+      color: 'hsl(var(--chart-2))',
     },
-  } satisfies ChartConfig;
+  } satisfies ChartConfig
 
   return (
-    <div className="flex flex-1 flex-col gap-4 p-4 pt-0 mt-4">
+    <div className="flex flex-1 flex-col gap-4">
       <ChartContainer config={chartConfig}>
         <LineChart
           accessibilityLayer
           data={chartData}
-          margin={{ top: 0, right: 0, bottom: 0, left: 0 }} // Adjusted margin to remove left gap
+          margin={{ top: 10, right: 40, bottom: 10, left: 10 }}
         >
-          <ChartTooltip
-            cursor={false}
-            content={<ChartTooltipContent hideLabel />}
-          />
-
+          <ChartTooltip content={<ChartTooltipContent />} />
           <YAxis
-            dataKey="close" // Set the data key for the Y-Axis
-            tick={false} // Hide tick marks
-            axisLine={false} // Hide the axis line
-            tickMargin={0} // Optional: remove any margin between ticks and chart area
-            domain={[minDomain, maxDomain]} // Ensure the line fills the chart area
+            dataKey="close"
+            tick={true}
+            axisLine={false}
+            tickMargin={0}
+            domain={[minDomain, maxDomain]}
+            tickFormatter={(value) => value.toFixed(2)}
             label={{
-              value: "Price (USD)", // Add a label for the Y-Axis
-              position: "insideLeft", // Position the label inside the chart area
-              angle: -90, // Rotate the label if needed
-              offset: 10, // Adjust the distance from the axis
+              value: 'Price (USD)',
+              position: 'insideLeft',
+              angle: -90,
             }}
+          />
+          <XAxis
+            dataKey="timestamp"
+            tick={true}
+            tickMargin={0}
+            axisLine={true}
+            tickLine={false}
           />
           <Line
             dataKey="close"
@@ -64,7 +76,7 @@ const AssetChart = ({ data }: { data: Portfolio[] | null }) => {
         </LineChart>
       </ChartContainer>
     </div>
-  );
-};
+  )
+}
 
-export default AssetChart;
+export default AssetChart

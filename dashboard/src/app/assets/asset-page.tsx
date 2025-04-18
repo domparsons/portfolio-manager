@@ -11,6 +11,9 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { AssetSheetPopoverProps } from '@/api/asset'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Plus } from 'lucide-react'
+import { addToWatchlist } from '@/api/watchlist'
 
 const AssetPage: React.FC<AssetSheetPopoverProps> = ({
   pageAsset,
@@ -21,11 +24,31 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
 
   const [transactionType, setTransactionType] = useState<'buy' | 'sell'>('buy')
 
+  const user_id = localStorage.getItem('user_id')
+
   return (
     <>
-      <h1>{pageAsset?.asset_name}</h1>
+      <div
+        className={'flex flex-row space-x-6 mt-4 items-center justify-between'}
+      >
+        <h1 className="text-2xl font-semibold">{pageAsset?.asset_name}</h1>
+        <Button
+          onClick={() => addToWatchlist(user_id, pageAsset?.id)}
+          className={'h-6 p-3 pl-2'}
+        >
+          <Plus />
+          Add to Watchlist
+        </Button>
+      </div>
       {timeseries.length > 0 ? (
-        <AssetChart data={timeseries} />
+        <Card>
+          <CardHeader>
+            <CardTitle>Data</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-1 flex-col gap-4 max-w-full overflow-hidden">
+            <AssetChart data={timeseries} />
+          </CardContent>
+        </Card>
       ) : (
         <div className="text-center text-gray-500">
           No data available for this asset.

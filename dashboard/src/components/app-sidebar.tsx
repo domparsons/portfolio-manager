@@ -1,13 +1,5 @@
 import * as React from 'react'
-import {
-  AudioWaveform,
-  GalleryVerticalEnd,
-  PieChart,
-  Bookmark,
-  House,
-  Heading,
-  ChartSpline,
-} from 'lucide-react'
+import { AudioWaveform, PieChart, House, ChartSpline } from 'lucide-react'
 import { NavMain } from '@/components/nav-main'
 import { NavUser } from '@/components/nav-user'
 import { TeamSwitcher } from '@/components/team-switcher'
@@ -61,16 +53,16 @@ const data = {
       items: [
         {
           title: 'Portfolio',
-          url: 'portfolio',
+          url: '/portfolio',
         },
 
         {
           title: 'Backtesting',
-          url: 'backtesting',
+          url: '/backtesting',
         },
         {
           title: 'Monte Carlo Simulation',
-          url: 'monte-carlo-simulation',
+          url: '/monte-carlo-simulation',
         },
       ],
     },
