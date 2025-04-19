@@ -1,5 +1,5 @@
 import enum
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy import (
     CheckConstraint,
@@ -34,7 +34,7 @@ class Transaction(Base):
     type = Column(Enum(TransactionType), nullable=False)  # buy or sell
     quantity = Column(Float, nullable=False)
     price = Column(Float, nullable=False)
-    timestamp = Column(DateTime, nullable=False, default=datetime.utcnow)
+    timestamp = Column(DateTime, nullable=False, default=datetime.now(timezone.utc))
 
     __table_args__ = (
         CheckConstraint("quantity > 0", name="check_quantity_positive"),

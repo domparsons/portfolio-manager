@@ -12,6 +12,7 @@ const AssetPageWrapper = () => {
   const { ticker } = useParams()
   const [pageAsset, setPageAsset] = useState(null)
   const [timeseries, setTimeseries] = useState<Portfolio[]>([])
+  const [timeseriesRange, setTimeseriesRange] = useState<string>('1Y')
 
   const fetchData = async () => {
     const asset = await getAssetByTicker(ticker)
@@ -22,14 +23,14 @@ const AssetPageWrapper = () => {
     }
 
     setPageAsset(asset)
-    await getTimeseriesDataForAsset(asset.id, setTimeseries)
+    await getTimeseriesDataForAsset(asset.id, setTimeseries, timeseriesRange)
   }
 
   useEffect(() => {
     if (ticker) {
       fetchData()
     }
-  }, [ticker])
+  }, [ticker, timeseriesRange])
 
   if (!pageAsset) {
     return <div className="text-center mt-10">Loading asset...</div>
@@ -40,7 +41,14 @@ const AssetPageWrapper = () => {
     )
   }
 
-  return <AssetPage pageAsset={pageAsset} timeseries={timeseries} />
+  return (
+    <AssetPage
+      pageAsset={pageAsset}
+      timeseries={timeseries}
+      timeseriesRange={timeseriesRange}
+      setTimeseriesRange={setTimeseriesRange}
+    />
+  )
 }
 
 export default AssetPageWrapper

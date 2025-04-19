@@ -96,7 +96,7 @@ for ticker in new_tickers:
             market_cap=asset_info["market_cap"],
             asset_class=asset_info["asset_class"],
             description=asset_info["description"],
-            last_updated=datetime.utcnow(),
+            last_updated=datetime.now(timezone.utc),
         )
         db.add(new_asset)
         db.commit()

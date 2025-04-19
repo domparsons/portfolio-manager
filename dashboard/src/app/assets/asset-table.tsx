@@ -10,12 +10,7 @@ import {
 import { AssetTableProps } from '@/api/asset'
 import { useNavigate } from 'react-router-dom'
 
-const AssetTable: React.FC<AssetTableProps> = ({
-  filteredAssets,
-  setHoveredRow,
-  setPageAsset,
-  getTimeseriesDataForAsset,
-}) => {
+const AssetTable: React.FC<AssetTableProps> = ({ filteredAssets }) => {
   const navigate = useNavigate()
 
   return (
@@ -35,11 +30,7 @@ const AssetTable: React.FC<AssetTableProps> = ({
         {filteredAssets.map((asset) => (
           <TableRow
             key={asset.id}
-            onMouseOver={() => setHoveredRow(asset.id)}
-            onMouseOut={() => setHoveredRow(null)}
             onClick={() => {
-              setPageAsset(asset)
-              getTimeseriesDataForAsset(asset.id)
               navigate(`/assets/${asset.ticker.toLowerCase()}`)
             }}
             className={'cursor-pointer'}

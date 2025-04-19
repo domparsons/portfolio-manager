@@ -22,15 +22,13 @@ export interface Portfolio {
 
 export interface AssetTableProps {
   filteredAssets: Asset[]
-  setHoveredRow: React.Dispatch<React.SetStateAction<number | null>>
-  hoveredRow: number | null
-  setPageAsset: React.Dispatch<React.SetStateAction<Asset | null>>
-  getTimeseriesDataForAsset: (assetId: number) => void
 }
 
 export interface AssetSheetPopoverProps {
   timeseries: Portfolio[]
   pageAsset: Asset
+  timeseriesRange: string
+  setTimeseriesRange: React.Dispatch<React.SetStateAction<string>>
 }
 
 export const getAssetList = async (
@@ -56,11 +54,12 @@ export const getAssetList = async (
 
 export const getTimeseriesDataForAsset = async (
   assetId: number,
-  setTimeseries: (data: Portfolio[]) => void
+  setTimeseries: (data: Portfolio[]) => void,
+  timeseriesRange: string
 ) => {
   try {
     const response = await fetch(
-      `http://127.0.0.1:8000/timeseries/timeseries_for_asset?asset_id=${assetId}`,
+      `http://127.0.0.1:8000/timeseries/timeseries_for_asset?asset_id=${assetId}&timeseries_range=${timeseriesRange}`,
       {
         headers: {
           Accept: 'application/json',

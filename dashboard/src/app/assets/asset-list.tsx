@@ -1,23 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { AssetTable } from '@/app/assets/asset-table'
-import { AssetPage } from '@/app/assets/asset-page'
 import { TableSkeleton } from '@/app/table-skeleton'
-import {
-  getAssetList,
-  getTimeseriesDataForAsset,
-  filterSearch,
-  Asset,
-  Portfolio,
-} from '@/api/asset'
+import { getAssetList, filterSearch, Asset } from '@/api/asset'
 import { Badge } from '@/components/ui/badge'
 
 const AssetList = () => {
   const [assets, setAssets] = useState<Asset[]>([])
   const [filteredAssets, setFilteredAssets] = useState<Asset[]>([])
-  const [hoveredRow, setHoveredRow] = useState<number | null>(null)
-  const [pageAsset, setPageAsset] = useState<Asset | null>(null)
-  const [timeseries, setTimeseries] = useState<Portfolio[]>([])
 
   useEffect(() => {
     getAssetList(setAssets, setFilteredAssets)
@@ -44,17 +34,8 @@ const AssetList = () => {
       {filteredAssets.length === 0 ? (
         <TableSkeleton />
       ) : (
-        <AssetTable
-          filteredAssets={filteredAssets}
-          setHoveredRow={setHoveredRow}
-          hoveredRow={hoveredRow}
-          setPageAsset={setPageAsset}
-          getTimeseriesDataForAsset={(assetId) =>
-            getTimeseriesDataForAsset(assetId, setTimeseries)
-          }
-        />
+        <AssetTable filteredAssets={filteredAssets} />
       )}
-      {pageAsset && <AssetPage timeseries={timeseries} pageAsset={pageAsset} />}
     </div>
   )
 }

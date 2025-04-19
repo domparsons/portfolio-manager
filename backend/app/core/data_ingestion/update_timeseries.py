@@ -14,7 +14,6 @@ assets = db.query(Asset).all()
 def get_timeseries_data(ticker, last_timestamp=None):
     asset = yf.Ticker(ticker)
 
-    # Default: fetch up to 10 years ago
     start_date = (datetime.now() - timedelta(days=365 * 10)).strftime("%Y-%m-%d")
     if last_timestamp:
         start_date = last_timestamp.strftime("%Y-%m-%d")

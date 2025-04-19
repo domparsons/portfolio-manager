@@ -14,10 +14,13 @@ import { AssetSheetPopoverProps } from '@/api/asset'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Plus } from 'lucide-react'
 import { addToWatchlist } from '@/api/watchlist'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 const AssetPage: React.FC<AssetSheetPopoverProps> = ({
   pageAsset,
   timeseries,
+  timeseriesRange,
+  setTimeseriesRange,
 }) => {
   const [showTransactionModal, setShowTransactionModal] =
     useState<boolean>(false)
@@ -37,13 +40,47 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
           className={'h-6 p-3 pl-2'}
         >
           <Plus />
-          Add to Watchlist
+          Save to Watchlist
         </Button>
       </div>
       {timeseries.length > 0 ? (
         <Card>
-          <CardHeader>
+          <CardHeader className={'flex flex-row items-center justify-between'}>
             <CardTitle>Data</CardTitle>
+            <Tabs defaultValue={timeseriesRange} className="w-[250px]">
+              <TabsList className="grid w-full grid-cols-5">
+                <TabsTrigger
+                  value="1W"
+                  onClick={() => setTimeseriesRange('1W')}
+                >
+                  1W
+                </TabsTrigger>
+                <TabsTrigger
+                  value="1M"
+                  onClick={() => setTimeseriesRange('1M')}
+                >
+                  1M
+                </TabsTrigger>
+                <TabsTrigger
+                  value="3M"
+                  onClick={() => setTimeseriesRange('3M')}
+                >
+                  3M
+                </TabsTrigger>
+                <TabsTrigger
+                  value="1Y"
+                  onClick={() => setTimeseriesRange('1Y')}
+                >
+                  1Y
+                </TabsTrigger>{' '}
+                <TabsTrigger
+                  value="ALL"
+                  onClick={() => setTimeseriesRange('ALL')}
+                >
+                  ALL
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
           </CardHeader>
           <CardContent className="flex flex-1 flex-col gap-4 max-w-full overflow-hidden">
             <AssetChart data={timeseries} />
