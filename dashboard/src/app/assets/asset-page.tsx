@@ -1,20 +1,23 @@
 import AssetChart from '@/app/charts/asset-chart'
 import { Button } from '@/components/ui/button'
 import React, { useState } from 'react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { AssetSheetPopoverProps } from '@/api/asset'
+import { AssetSheetPopoverProps, useTransactionType } from '@/api/asset'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Plus } from 'lucide-react'
 import { addToWatchlist } from '@/api/watchlist'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import TransactionButtons from '@/app/transaction-buttons'
+
+const AssetDetail: React.FC<{
+  label: string
+  value: string | number
+  className?: string
+}> = ({ label, value, className }) => (
+  <div className="flex flex-col space-y-1 items-center justify-center">
+    <p className="font-light text-sm">{label}</p>
+    <p className={`font-semibold text-xl ${className || ''}`}>{value}</p>
+  </div>
+)
 
 const AssetPage: React.FC<AssetSheetPopoverProps> = ({
   pageAsset,
@@ -24,9 +27,7 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
 }) => {
   const [showTransactionModal, setShowTransactionModal] =
     useState<boolean>(false)
-
-  const [transactionType, setTransactionType] = useState<'buy' | 'sell'>('buy')
-
+  const [transactionType, setTransactionType] = useTransactionType()
   const user_id = localStorage.getItem('user_id')
 
   return (
@@ -34,7 +35,14 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
       <div
         className={'flex flex-row space-x-6 mt-4 items-center justify-between'}
       >
-        <h1 className="text-2xl font-semibold">{pageAsset?.asset_name}</h1>
+        <div className={'flex flex-row space-x-6 items-center'}>
+          <h1 className="text-2xl font-semibold">{pageAsset?.asset_name}</h1>
+          <TransactionButtons
+            setShowTransactionModal={setShowTransactionModal}
+            transactionType={transactionType}
+            setTransactionType={setTransactionType}
+          />
+        </div>
         <Button
           onClick={() => addToWatchlist(user_id, pageAsset?.id)}
           className={'h-6 p-3 pl-2'}
@@ -46,7 +54,7 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
       {timeseries.length > 0 ? (
         <Card>
           <CardHeader className={'flex flex-row items-center justify-between'}>
-            <CardTitle>Data</CardTitle>
+            <CardTitle>{pageAsset?.latest_price.toFixed(2)}</CardTitle>
             <Tabs defaultValue={timeseriesRange} className="w-[250px]">
               <TabsList className="grid w-full grid-cols-5">
                 <TabsTrigger
@@ -91,76 +99,39 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
           No data available for this asset.
         </div>
       )}
-
-      <div className="flex flex-col space-y-2 mt-4">
-        <p className="font-semibold text-lg">Market Cap</p>
-        <p className="text-xl">
-          {pageAsset?.market_cap.toLocaleString('en-US', {
+      <div
+        className={'flex flex-row space-x-6 items-center justify-around p-4'}
+      >
+        <AssetDetail
+          label="Market Cap"
+          value={pageAsset?.market_cap.toLocaleString('en-US', {
             notation: 'compact',
           })}
-        </p>
-      </div>
-      <div className="flex flex-col space-y-2 mt-4">
-        <p className="font-semibold text-lg">Latest Value</p>
-        {/*<p className="text-xl">{pageAsset?.latest_price.toFixed(2)}</p>*/}
-      </div>
-      <div className="flex flex-col space-y-2 mt-4">
-        <p className="font-semibold text-lg">Daily Price Change</p>
-        <p className="text-xl text-green-600">
-          {/*{pageAsset?.price_change.toFixed(2)}*/}
-        </p>
-      </div>
-      <div className="flex flex-col space-y-2 mt-4">
-        <p className="font-semibold text-lg">Daily % Change</p>
-        <p
-          className={`text-xl ${
+        />
+        <AssetDetail
+          label="Latest Value"
+          value={pageAsset?.latest_price.toFixed(2)}
+        />
+        <AssetDetail
+          label="Daily Price Change"
+          value={pageAsset?.price_change.toFixed(2)}
+          className={
+            (pageAsset?.price_change ?? 0) > 0
+              ? 'text-green-600'
+              : 'text-red-600'
+          }
+        />
+        <AssetDetail
+          label="Daily % Change"
+          value={pageAsset?.percentage_change.toFixed(2)}
+          className={
             (pageAsset?.percentage_change ?? 0) > 0
               ? 'text-green-600'
               : 'text-red-600'
-          }`}
-        >
-          {/*{pageAsset?.latest_price.toFixed(2)}*/}
-        </p>
+          }
+        />
+        <AssetDetail label="Currency" value={pageAsset?.currency} />
       </div>
-      <div className="flex flex-col space-y-2 mt-4">
-        <p className="font-semibold text-lg">Currency</p>
-        <p className="text-xl">{pageAsset?.currency}</p>
-      </div>
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button
-            className={'bg-green-600'}
-            onClick={() => {
-              setShowTransactionModal(true)
-              setTransactionType('buy')
-            }}
-          >
-            {' '}
-            Buy
-          </Button>
-        </DialogTrigger>
-        <DialogTrigger asChild>
-          <Button
-            className={'bg-red-600'}
-            onClick={() => {
-              setShowTransactionModal(true)
-              setTransactionType('sell')
-            }}
-          >
-            Sell
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{transactionType}</DialogTitle>
-            <DialogDescription>
-              This action cannot be undone. This will permanently delete your
-              account and remove your data from our servers.
-            </DialogDescription>
-          </DialogHeader>
-          <Input placeholder="Enter amount" />
-        </DialogContent>
-      </Dialog>
     </>
   )
 }

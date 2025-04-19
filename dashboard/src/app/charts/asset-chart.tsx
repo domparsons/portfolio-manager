@@ -39,7 +39,7 @@ const AssetChart = ({ data }: { data: Portfolio[] | null }) => {
 
   return (
     <div className="flex flex-1 flex-col gap-4">
-      <ChartContainer config={chartConfig}>
+      <ChartContainer config={chartConfig} className={'h-64'}>
         <LineChart
           accessibilityLayer
           data={chartData}
@@ -57,7 +57,7 @@ const AssetChart = ({ data }: { data: Portfolio[] | null }) => {
           />
           <XAxis
             dataKey="timestamp"
-            // tick={false}
+            tick={false}
             axisLine={false}
             tickLine={false}
           />

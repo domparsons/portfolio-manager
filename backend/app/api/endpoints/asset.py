@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app import crud, core
 from app.database import get_db
 from app.schemas.asset import AssetListSchema, AssetSchema
+import polars as pl
 
 router = APIRouter(prefix="/asset", tags=["asset"])
 
@@ -24,10 +25,13 @@ def get_asset_list(db: Session = Depends(get_db)):
     return asset_list
 
 
-@router.get("/get_asset_by_ticker/{ticker}", response_model=AssetSchema)
+@router.get("/get_asset_by_ticker/{ticker}", response_model=AssetListSchema)
 def get_asset_by_ticker(ticker: str, db: Session = Depends(get_db)):
     asset = crud.asset.get_asset_by_ticker(db, ticker)
-
+    latest_timeseries = crud.timeseries.get_latest_price_and_changes(db)
+    filtered = latest_timeseries.filter(pl.col("asset_id") == asset["id"])
+    ts_data = filtered.to_dicts()[0]
+    asset.update(ts_data)
     if asset is None:
         return None
 

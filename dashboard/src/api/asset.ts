@@ -24,6 +24,10 @@ export interface AssetTableProps {
   filteredAssets: Asset[]
 }
 
+export function useTransactionType() {
+  return React.useState<'buy' | 'sell'>('buy')
+}
+
 export interface AssetSheetPopoverProps {
   timeseries: Portfolio[]
   pageAsset: Asset
