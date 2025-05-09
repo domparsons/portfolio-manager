@@ -1,73 +1,67 @@
-import * as React from 'react'
-import { AudioWaveform, PieChart, House, ChartSpline } from 'lucide-react'
-import { NavMain } from '@/components/nav-main'
-import { NavUser } from '@/components/nav-user'
-import { TeamSwitcher } from '@/components/team-switcher'
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarRail,
-} from '@/components/ui/sidebar'
+import { NavMain } from "@/components/nav-main";
+import { NavUser } from "@/components/nav-user";
+import { TeamSwitcher } from "@/components/team-switcher";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from "@/components/ui/sidebar";
+import { AudioWaveform, ChartSpline, House, PieChart } from "lucide-react";
+import * as React from "react";
 
 const data = {
   teams: [
     {
-      name: 'Team',
+      name: "Team",
       logo: ChartSpline,
-      plan: 'Enterprise',
+      plan: "Enterprise",
     },
     {
-      name: 'Acme Corp.',
+      name: "Acme Corp.",
       logo: AudioWaveform,
-      plan: 'Startup',
+      plan: "Startup",
     },
   ],
   navMain: [
     {
-      title: 'Home',
-      url: '#',
+      title: "Home",
+      url: "#",
       icon: House,
       isActive: true,
       items: [
         {
-          title: 'Dashboard',
-          url: '/dashboard',
+          title: "Dashboard",
+          url: "/dashboard",
         },
         {
-          title: 'Watchlist',
-          url: '/watchlist',
+          title: "Watchlist",
+          url: "/watchlist",
         },
         {
-          title: 'Asset List',
-          url: '/assets',
+          title: "Asset List",
+          url: "/assets",
         },
       ],
     },
     {
-      title: 'Analytics',
-      url: '#',
+      title: "Analytics",
+      url: "#",
       icon: PieChart,
       isActive: true,
       items: [
         {
-          title: 'Portfolio',
-          url: '/portfolio',
+          title: "Portfolio",
+          url: "/portfolio",
         },
 
         {
-          title: 'Backtesting',
-          url: '/backtesting',
+          title: "Backtesting",
+          url: "/backtesting",
         },
         {
-          title: 'Monte Carlo Simulation',
-          url: '/monte-carlo-simulation',
+          title: "Monte Carlo Simulation",
+          url: "/monte-carlo-simulation",
         },
       ],
     },
   ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -83,5 +77,5 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

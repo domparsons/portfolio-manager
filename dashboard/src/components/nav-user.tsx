@@ -1,14 +1,7 @@
-'use client'
+"use client";
 
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-} from 'lucide-react'
-import { Moon, Sun } from 'lucide-react'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { useTheme } from "@/components/theme-provider";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,55 +10,51 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from '@/components/ui/sidebar'
-import { useTheme } from '@/components/theme-provider'
-import { useAuth0 } from '@auth0/auth0-react'
-import { toast } from 'sonner'
+} from "@/components/ui/dropdown-menu";
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
+import { useAuth0 } from "@auth0/auth0-react";
+import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
+import { toast } from "sonner";
 
 export function NavUser() {
-  const { isMobile } = useSidebar()
+  const { isMobile } = useSidebar();
 
-  const { setTheme, theme } = useTheme()
+  const { setTheme, theme } = useTheme();
 
   const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light'
-    setTheme(newTheme)
-  }
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+  };
 
-  const { logout } = useAuth0()
+  const { logout } = useAuth0();
 
   const handleLogout = () => {
-    if (!(import.meta.env.MODE === 'development')) {
+    if (!(import.meta.env.MODE === "development")) {
       logout({ logoutParams: { returnTo: window.location.origin } })
         .then((r) => {
-          toast('Logged out successfully.')
-          console.log(r)
+          toast("Logged out successfully.");
+          console.log(r);
         })
         .catch((error) => {
-          toast('Failed to log out.')
-          console.error('Logout error:', error)
-        })
+          toast("Failed to log out.");
+          console.error("Logout error:", error);
+        });
     } else {
-      toast('Cannot log out of development mode.')
+      toast("Cannot log out of development mode.");
     }
-  }
-  const { user } = useAuth0()
+  };
+  const { user } = useAuth0();
 
-  const username = user?.nickname || 'Developer'
+  const username = user?.nickname || "Developer";
 
-  const email = user?.email || 'dev@icloud.com'
+  const email = user?.email || "dev@icloud.com";
 
   const initials = username
-    .split(' ')
+    .split(" ")
     .map((name) => name.slice(0, 2))
-    .join('')
-    .toUpperCase()
+    .join("")
+    .toUpperCase();
 
   return (
     <SidebarMenu>
@@ -91,7 +80,7 @@ export function NavUser() {
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-            side={isMobile ? 'bottom' : 'right'}
+            side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
           >
@@ -126,7 +115,7 @@ export function NavUser() {
             {/*</DropdownMenuGroup>*/}
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={toggleTheme}>
-              {(theme === 'light' && <Moon />) || <Sun />}
+              {(theme === "light" && <Moon />) || <Sun />}
               Toggle Appearance
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -138,5 +127,5 @@ export function NavUser() {
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }

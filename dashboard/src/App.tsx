@@ -1,38 +1,34 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import { AppSidebar } from '@/components/app-sidebar'
-import { AssetList } from '@/app/assets/asset-list'
-import { Dashboard } from '@/app/dashboard/dashboard'
-import { Portfolio } from '@/app/portfolio/portfolio'
-import { Backtesting } from '@/app/backtesting/backtesting'
-import { Separator } from '@/components/ui/separator'
-import * as React from 'react'
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from '@/components/ui/sidebar'
-import { DynamicBreadcrumb } from '@/components/dynamic-breadcrumb'
-import { MonteCarloSimulation } from '@/app/monte-carlo-simulation/monte-carlo-simulation'
-import { Toaster } from '@/components/ui/sonner'
-import LoginPage from '@/app/login/page'
-import { useAuth0 } from '@auth0/auth0-react'
-import { Watchlist } from '@/app/watchlist/watchlist'
-import { Analytics } from '@vercel/analytics/react'
-import { SpeedInsights } from '@vercel/speed-insights/react'
-import { ThemeProvider } from '@/components/theme-provider'
-import { useAuthInit } from '@/auth'
-import AssetPageWrapper from '@/app/assets/asset-page-wrapper'
+import { AssetList } from "@/app/assets/asset-list";
+import AssetPageWrapper from "@/app/assets/asset-page-wrapper";
+import { Backtesting } from "@/app/backtesting/backtesting";
+import { Dashboard } from "@/app/dashboard/dashboard";
+import LoginPage from "@/app/login/page";
+import { MonteCarloSimulation } from "@/app/monte-carlo-simulation/monte-carlo-simulation";
+import { Portfolio } from "@/app/portfolio/portfolio";
+import { Watchlist } from "@/app/watchlist/watchlist";
+import { useAuthInit } from "@/auth";
+import { AppSidebar } from "@/components/app-sidebar";
+import { DynamicBreadcrumb } from "@/components/dynamic-breadcrumb";
+import { ThemeProvider } from "@/components/theme-provider";
+import { Separator } from "@/components/ui/separator";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { Toaster } from "@/components/ui/sonner";
+import { useAuth0 } from "@auth0/auth0-react";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
+import * as React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 const App = () => {
-  const { isAuthenticated } = useAuth0()
-  useAuthInit()
+  const { isAuthenticated } = useAuth0();
+  useAuthInit();
 
-  localStorage.setItem('user_id', 'auth0|67ec6b5e6076f060a1e7927f')
+  localStorage.setItem("user_id", "auth0|67ec6b5e6076f060a1e7927f");
 
   // return <LoginPage />
 
-  if (import.meta.env.MODE !== 'development' && !isAuthenticated) {
-    return <LoginPage />
+  if (import.meta.env.MODE !== "development" && !isAuthenticated) {
+    return <LoginPage />;
   }
 
   return (
@@ -70,7 +66,7 @@ const App = () => {
         <SpeedInsights />
       </ThemeProvider>
     </Router>
-  )
-}
+  );
+};
 
-export default App
+export default App;

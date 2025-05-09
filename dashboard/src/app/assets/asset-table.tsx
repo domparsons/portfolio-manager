@@ -1,17 +1,10 @@
-import React from 'react'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
-import { AssetTableProps } from '@/api/asset'
-import { useNavigate } from 'react-router-dom'
+import { AssetTableProps } from "@/api/asset";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const AssetTable: React.FC<AssetTableProps> = ({ filteredAssets }) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <Table>
@@ -31,15 +24,15 @@ const AssetTable: React.FC<AssetTableProps> = ({ filteredAssets }) => {
           <TableRow
             key={asset.id}
             onClick={() => {
-              navigate(`/assets/${asset.ticker.toLowerCase()}`)
+              navigate(`/assets/${asset.ticker.toLowerCase()}`);
             }}
-            className={'cursor-pointer'}
+            className={"cursor-pointer"}
           >
             <TableCell className="font-medium">{asset.asset_name}</TableCell>
             <TableCell>{asset.ticker}</TableCell>
             <TableCell>
-              {new Intl.NumberFormat('en-US', {
-                notation: 'compact',
+              {new Intl.NumberFormat("en-US", {
+                notation: "compact",
               }).format(asset.market_cap)}
             </TableCell>
             <TableCell>{asset.price_change.toFixed(2)}</TableCell>
@@ -50,7 +43,7 @@ const AssetTable: React.FC<AssetTableProps> = ({ filteredAssets }) => {
         ))}
       </TableBody>
     </Table>
-  )
-}
+  );
+};
 
-export { AssetTable }
+export { AssetTable };

@@ -1,62 +1,50 @@
-import React from 'react'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from '@/components/ui/chart'
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
-import { TrendingUp } from 'lucide-react'
-import { portfolioData } from '../../../dev_data/portfolioData'
-import TransactionHistoryCard from '@/app/dashboard/transaction-history-card'
+import TransactionHistoryCard from "@/app/dashboard/transaction-history-card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { TrendingUp } from "lucide-react";
+import React from "react";
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import { portfolioData } from "../../../dev_data/portfolioData";
 
 interface Portfolio {
-  date: string
-  value: number
+  date: string;
+  value: number;
 }
 
 const Dashboard = () => {
-  const chartData: Portfolio[] = portfolioData
+  const chartData: Portfolio[] = portfolioData;
 
-  const minValue = Math.min(...chartData.map((item) => item.value))
-  const maxValue = Math.max(...chartData.map((item) => item.value))
-  const padding = 5
+  const minValue = Math.min(...chartData.map((item) => item.value));
+  const maxValue = Math.max(...chartData.map((item) => item.value));
+  const padding = 5;
 
-  const portfolioValue = chartData[chartData.length - 1].value
+  const portfolioValue = chartData[chartData.length - 1].value;
 
-  const minDomain = minValue - padding
-  const maxDomain = maxValue + padding
+  const minDomain = minValue - padding;
+  const maxDomain = maxValue + padding;
   const chartConfig = {
     value: {
-      label: 'Value',
-      color: 'hsl(var(--chart-1))',
+      label: "Value",
+      color: "hsl(var(--chart-1))",
     },
-  } satisfies ChartConfig
+  } satisfies ChartConfig;
 
   return (
     <div className="dashboard">
       <h1 className="text-2xl font-semibold">Dashboard</h1>
       <div className="flex flex-col justify-between mt-4 mb-2">
-        <h2 className={'text-xl font-semibold'}>£{portfolioValue}</h2>
+        <h2 className={"text-xl font-semibold"}>£{portfolioValue}</h2>
         <p>Portfolio Value</p>
       </div>
       <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-3">
-        <Card className={'mt-4 col-span-2'}>
-          {' '}
+        <Card className={"mt-4 col-span-2"}>
+          {" "}
           <CardHeader>
             <CardTitle>Portfolio</CardTitle>
             <CardDescription>January - June 2024</CardDescription>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={chartConfig} className={'h-64 w-full'}>
+            <ChartContainer config={chartConfig} className={"h-64 w-full"}>
               <LineChart
                 accessibilityLayer
                 data={chartData}
@@ -103,7 +91,7 @@ const Dashboard = () => {
         <TransactionHistoryCard />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export { Dashboard }
+export { Dashboard };

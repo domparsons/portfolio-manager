@@ -1,16 +1,16 @@
-import { motion } from 'framer-motion'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { ThemeProvider } from '@/components/theme-provider'
-import { Analytics } from '@vercel/analytics/react'
-import { useAuth0 } from '@auth0/auth0-react'
+import { ThemeProvider } from "@/components/theme-provider";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { useAuth0 } from "@auth0/auth0-react";
+import { Analytics } from "@vercel/analytics/react";
+import { motion } from "framer-motion";
 
 export default function LandingPage() {
-  const { loginWithRedirect, isAuthenticated, isLoading, error } = useAuth0()
+  const { loginWithRedirect, isAuthenticated, isLoading, error } = useAuth0();
 
   const handleLogin = () => {
-    loginWithRedirect().then((r) => console.log(r))
-  }
+    loginWithRedirect().then((r) => console.log(r));
+  };
 
   return (
     <ThemeProvider>
@@ -42,7 +42,7 @@ export default function LandingPage() {
 
           <a
             className="mt-4 text-sm text-gray-400 underline"
-            href={'https://www.domparsons.com'}
+            href={"https://www.domparsons.com"}
           >
             ← Back to www.domparsons.com
           </a>
@@ -50,5 +50,5 @@ export default function LandingPage() {
       </div>
       <Analytics />
     </ThemeProvider>
-  )
+  );
 }

@@ -1,45 +1,40 @@
-import {
-  type ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from '@/components/ui/chart'
-import { Line, LineChart, XAxis, YAxis } from 'recharts'
-import * as React from 'react'
+import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import * as React from "react";
+import { Line, LineChart, XAxis, YAxis } from "recharts";
 interface Portfolio {
-  id: number
-  close: number
-  timestamp: string
+  id: number;
+  close: number;
+  timestamp: string;
 }
 
 const AssetChart = ({ data }: { data: Portfolio[] | null }) => {
   const chartData: Portfolio[] = (data ?? []).map((item) => ({
     ...item,
     close: Math.round(item.close * 100) / 100,
-    timestamp: new Date(item.timestamp).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
+    timestamp: new Date(item.timestamp).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
     }),
-  }))
-  const minValue = Math.min(...chartData.map((item) => item.close))
-  const maxValue = Math.max(...chartData.map((item) => item.close))
+  }));
+  const minValue = Math.min(...chartData.map((item) => item.close));
+  const maxValue = Math.max(...chartData.map((item) => item.close));
 
-  const paddingPercentage = 0.03
-  const padding = (maxValue - minValue) * paddingPercentage
-  const minDomain = minValue - padding
-  const maxDomain = maxValue + padding
+  const paddingPercentage = 0.03;
+  const padding = (maxValue - minValue) * paddingPercentage;
+  const minDomain = minValue - padding;
+  const maxDomain = maxValue + padding;
 
   const chartConfig = {
     value: {
-      label: 'close',
-      color: 'hsl(var(--chart-2))',
+      label: "close",
+      color: "hsl(var(--chart-2))",
     },
-  } satisfies ChartConfig
+  } satisfies ChartConfig;
 
   return (
     <div className="flex flex-1 flex-col gap-4">
-      <ChartContainer config={chartConfig} className={'h-64'}>
+      <ChartContainer config={chartConfig} className={"h-64"}>
         <LineChart
           accessibilityLayer
           data={chartData}
@@ -71,7 +66,7 @@ const AssetChart = ({ data }: { data: Portfolio[] | null }) => {
         </LineChart>
       </ChartContainer>
     </div>
-  )
-}
+  );
+};
 
-export default AssetChart
+export default AssetChart;

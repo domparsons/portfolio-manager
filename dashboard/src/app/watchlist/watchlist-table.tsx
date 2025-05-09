@@ -1,17 +1,10 @@
-import React from 'react'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
-import { AssetTableProps } from '@/api/asset'
+import { AssetTableProps } from "@/api/asset";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import React from "react";
 
 const WatchlistTable: React.FC<AssetTableProps> = ({ filteredAssets }) => {
   return (
-    <Table className={'mt-4'}>
+    <Table className={"mt-4"}>
       <TableHeader>
         <TableRow>
           <TableHead>Asset Name</TableHead>
@@ -29,10 +22,10 @@ const WatchlistTable: React.FC<AssetTableProps> = ({ filteredAssets }) => {
             <TableCell className="font-medium">{asset.asset_name}</TableCell>
             <TableCell>{asset.ticker}</TableCell>
             <TableCell>
-              {new Intl.NumberFormat('en-US', {
-                notation: 'compact',
+              {new Intl.NumberFormat("en-US", {
+                notation: "compact",
               }).format(asset.market_cap)}
-            </TableCell>{' '}
+            </TableCell>{" "}
             <TableCell>{asset.price_change.toFixed(2)}</TableCell>
             <TableCell>{asset.percentage_change.toFixed(2)}%</TableCell>
             <TableCell>{asset.currency}</TableCell>
@@ -41,7 +34,7 @@ const WatchlistTable: React.FC<AssetTableProps> = ({ filteredAssets }) => {
         ))}
       </TableBody>
     </Table>
-  )
-}
+  );
+};
 
-export { WatchlistTable }
+export { WatchlistTable };
