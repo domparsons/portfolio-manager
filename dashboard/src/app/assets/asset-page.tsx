@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import React, { useState } from 'react'
 import { AssetSheetPopoverProps, useTransactionType } from '@/api/asset'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Plus } from 'lucide-react'
+import { CalendarIcon, Plus } from 'lucide-react'
 import { addToWatchlist } from '@/api/watchlist'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import TransactionButtons from '@/app/transaction-buttons'
@@ -25,10 +25,9 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
   timeseriesRange,
   setTimeseriesRange,
 }) => {
-  const [showTransactionModal, setShowTransactionModal] =
-    useState<boolean>(false)
   const [transactionType, setTransactionType] = useTransactionType()
   const user_id = localStorage.getItem('user_id')
+  const [executionDate, setExecutionDate] = React.useState<Date>()
 
   return (
     <>
@@ -38,14 +37,14 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
         <div className={'flex flex-row space-x-6 items-center'}>
           <h1 className="text-2xl font-semibold">{pageAsset?.asset_name}</h1>
           <TransactionButtons
-            setShowTransactionModal={setShowTransactionModal}
             transactionType={transactionType}
             setTransactionType={setTransactionType}
+            asset={pageAsset}
           />
         </div>
         <Button
           onClick={() => addToWatchlist(user_id, pageAsset?.id)}
-          className={'h-6 p-3 pl-2'}
+          variant={'outline'}
         >
           <Plus />
           Save to Watchlist

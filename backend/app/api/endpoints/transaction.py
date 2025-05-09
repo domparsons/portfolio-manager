@@ -38,9 +38,7 @@ def create_transaction(
     utc_date = convert_to_utc(purchase_date, user_timezone)
 
     if utc_date > datetime.now(timezone.utc):
-        raise HTTPException(
-            status_code=400, detail="Purchase date cannot be in the future"
-        )
+        raise HTTPException(status_code=400, detail="Purchase date cannot be in the future")
 
     transaction = models.Transaction(
         user_id=user_id,
@@ -77,9 +75,27 @@ def create_transaction(
 @router.get("/{user_id}", response_model=list[schemas.transaction.TransactionOut])
 def get_transactions(
     user_id: str,
+    limit: int = None,
     db: Session = Depends(get_db),
 ):
-    transactions = crud.transaction.get_transactions_by_user(db, user_id=user_id)
+    transactions = crud.transaction.get_transactions_by_user(db, user_id=user_id, limit=limit)
     if not transactions:
         raise HTTPException(status_code=404, detail="No transactions found")
     return transactions
+
+
+@router.delete("/{user_id}")
+def delete_transaction(
+    user_id: str,
+    transaction_id: int,
+    db: Session = Depends(get_db),
+):
+    transaction = crud.transaction.get_transaction_by_id(db, transaction_id=transaction_id)
+    if not transaction:
+        raise HTTPException(status_code=404, detail="Transaction not found")
+
+    if transaction.user_id != user_id:
+        raise HTTPException(status_code=403, detail="Not authorized to delete this transaction")
+
+    crud.transaction.delete_transaction(db, transaction_id=transaction_id)
+    return {"detail": "Transaction deleted successfully"}

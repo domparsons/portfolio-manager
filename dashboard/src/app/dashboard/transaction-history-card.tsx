@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge'
 type TransactionType = 'buy' | 'sell'
 
 interface Transaction {
+  id: number
   timestamp: string
   quantity: number
   asset_name: string
@@ -22,7 +23,7 @@ const TransactionHistoryCard = () => {
 
   const getTransactionHistory = async () => {
     const response = await fetch(
-      `http://localhost:8000/transaction/${user_id}`,
+      `http://localhost:8000/transaction/${user_id}?limit=${10}`,
       {
         method: 'GET',
         headers: {
@@ -31,7 +32,6 @@ const TransactionHistoryCard = () => {
       }
     )
     const data = await response.json()
-    console.log(data)
     setTransactionHistory(data)
   }
 

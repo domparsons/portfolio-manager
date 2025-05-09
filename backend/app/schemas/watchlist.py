@@ -8,6 +8,7 @@ class WatchlistItemBase(BaseModel):
     class Config:
         from_attributes = True
 
+
 class WatchlistAssets(WatchlistItemBase):
     asset_name: str
     asset_symbol: str

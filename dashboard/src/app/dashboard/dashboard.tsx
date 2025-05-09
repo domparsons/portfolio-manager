@@ -56,7 +56,7 @@ const Dashboard = () => {
             <CardDescription>January - June 2024</CardDescription>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={chartConfig}>
+            <ChartContainer config={chartConfig} className={'h-64 w-full'}>
               <LineChart
                 accessibilityLayer
                 data={chartData}
