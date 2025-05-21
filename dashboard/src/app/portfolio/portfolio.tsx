@@ -10,54 +10,29 @@ import {
 import { TrendingUp } from "lucide-react";
 import React from "react";
 import { Pie, PieChart } from "recharts";
-const chartConfig = {
-  assets: {
-    label: "Assets",
-  },
-  apple: {
-    label: "Apple",
-    color: "hsl(var(--chart-1))",
-  },
-  tesla: {
-    label: "Tesla",
-    color: "hsl(var(--chart-2))",
-  },
-  nvidia: {
-    label: "Nvidia",
-    color: "hsl(var(--chart-3))",
-  },
-  amazon: {
-    label: "Amazon",
-    color: "hsl(var(--chart-4))",
-  },
-  google: {
-    label: "Google",
-    color: "hsl(var(--chart-5))",
-  },
-  microsoft: {
-    label: "Microsoft",
-    color: "hsl(var(--chart-6))",
-  },
-  facebook: {
-    label: "Facebook",
-    color: "hsl(var(--chart-7))",
-  },
-  netflix: {
-    label: "Netflix",
-    color: "hsl(var(--chart-8))",
-  },
-} satisfies ChartConfig;
+const chartConfig = {} satisfies ChartConfig;
 const Portfolio = () => {
-  const chartData = [
-    { asset: "Apple", value: 0.25, fill: "var(--color-apple)" },
-    { asset: "Tesla", value: 0.12, fill: "var(--color-tesla)" },
-    { asset: "Nvidia", value: 0.5, fill: "var(--color-nvidia)" },
-    { asset: "Amazon", value: 0, fill: "var(--color-amazon)" },
-    { asset: "Google", value: 0, fill: "var(--color-google)" },
-    { asset: "Microsoft", value: 0, fill: "var(--color-microsoft)" },
-    { asset: "Facebook", value: 0, fill: "var(--color-facebook)" },
-    { asset: "Netflix", value: 0, fill: "var(--color-netflix)" },
-  ];
+  const [chartData, setChartData] = React.useState([]);
+
+  const user_id = localStorage.getItem("user_id");
+
+  const getPortfolioHoldings = async () => {
+    const response = await fetch(
+      `http://localhost:8000/portfolio/holdings/${user_id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+    const data = await response.json();
+    setChartData(data);
+  };
+
+  React.useEffect(() => {
+    getPortfolioHoldings();
+  }, []);
 
   return (
     <div className="portfolio">
@@ -77,17 +52,24 @@ const Portfolio = () => {
                   cursor={false}
                   content={<ChartTooltipContent hideLabel />}
                 />
-                <Pie data={chartData} dataKey="value" nameKey="asset" />
+                <Pie
+                  data={chartData}
+                  dataKey="net_quantity"
+                  nameKey="asset_name"
+                  // Assign a color to each slice using a color array
+                  fill="#8884d8"
+                  stroke="#fff"
+                  cx="50%"
+                  cy="50%"
+                >
+                </Pie>{" "}
                 <ChartLegend content={<ChartLegendContent />} />
               </PieChart>
             </ChartContainer>
           </CardContent>
           <CardFooter className="flex-col gap-2 text-sm">
             <div className="flex items-center gap-2 font-medium leading-none">
-              Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-            </div>
-            <div className="leading-none text-muted-foreground">
-              Showing total visitors for the last 6 months
+              Trending up by *** this month <TrendingUp className="h-4 w-4" />
             </div>
           </CardFooter>
         </Card>

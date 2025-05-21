@@ -41,3 +41,12 @@ class Portfolio(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class PortfolioHoldings(BaseModel):
+    asset_id: str
+    asset_name: str
+    net_quantity: float
+
+    class Config:
+        from_attributes = True
