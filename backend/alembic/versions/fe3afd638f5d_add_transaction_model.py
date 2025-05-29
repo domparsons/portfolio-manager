@@ -28,7 +28,9 @@ def upgrade() -> None:
         sa.Column("user_id", sa.String(), nullable=False),
         sa.Column("portfolio_name", sa.String(), nullable=False),
         sa.Column("asset_id", sa.Integer(), nullable=False),
-        sa.Column("type", sa.Enum("buy", "sell", name="transactiontype"), nullable=False),
+        sa.Column(
+            "type", sa.Enum("buy", "sell", name="transactiontype"), nullable=False
+        ),
         sa.Column("quantity", sa.Float(), nullable=False),
         sa.Column("price", sa.Float(), nullable=False),
         sa.Column("timestamp", sa.DateTime(), nullable=False),
@@ -45,7 +47,10 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(
-        "ix_transaction_user_portfolio", "transactions", ["user_id", "portfolio_name"], unique=False
+        "ix_transaction_user_portfolio",
+        "transactions",
+        ["user_id", "portfolio_name"],
+        unique=False,
     )
     op.create_index(op.f("ix_transactions_id"), "transactions", ["id"], unique=False)
     op.drop_index("ix_portfolio_asset_id", table_name="portfolio")
@@ -63,19 +68,37 @@ def downgrade() -> None:
         sa.Column("portfolio_name", sa.VARCHAR(), autoincrement=False, nullable=False),
         sa.Column("asset_id", sa.INTEGER(), autoincrement=False, nullable=False),
         sa.Column(
-            "quantity", sa.DOUBLE_PRECISION(precision=53), autoincrement=False, nullable=False
+            "quantity",
+            sa.DOUBLE_PRECISION(precision=53),
+            autoincrement=False,
+            nullable=False,
         ),
         sa.Column(
-            "purchase_price", sa.DOUBLE_PRECISION(precision=53), autoincrement=False, nullable=True
+            "purchase_price",
+            sa.DOUBLE_PRECISION(precision=53),
+            autoincrement=False,
+            nullable=True,
         ),
-        sa.Column("purchase_date", postgresql.TIMESTAMP(), autoincrement=False, nullable=True),
-        sa.CheckConstraint("quantity >= 0::double precision", name="check_quantity_nonnegative"),
-        sa.ForeignKeyConstraint(["asset_id"], ["assets.id"], name="portfolio_asset_id_fkey"),
-        sa.ForeignKeyConstraint(["user_id"], ["users.id"], name="portfolio_user_id_fkey"),
-        sa.PrimaryKeyConstraint("user_id", "portfolio_name", "asset_id", name="portfolio_pkey"),
+        sa.Column(
+            "purchase_date", postgresql.TIMESTAMP(), autoincrement=False, nullable=True
+        ),
+        sa.CheckConstraint(
+            "quantity >= 0::double precision", name="check_quantity_nonnegative"
+        ),
+        sa.ForeignKeyConstraint(
+            ["asset_id"], ["assets.id"], name="portfolio_asset_id_fkey"
+        ),
+        sa.ForeignKeyConstraint(
+            ["user_id"], ["users.id"], name="portfolio_user_id_fkey"
+        ),
+        sa.PrimaryKeyConstraint(
+            "user_id", "portfolio_name", "asset_id", name="portfolio_pkey"
+        ),
     )
     op.create_index("ix_portfolio_user_id", "portfolio", ["user_id"], unique=False)
-    op.create_index("ix_portfolio_portfolio_name", "portfolio", ["portfolio_name"], unique=False)
+    op.create_index(
+        "ix_portfolio_portfolio_name", "portfolio", ["portfolio_name"], unique=False
+    )
     op.create_index("ix_portfolio_asset_id", "portfolio", ["asset_id"], unique=False)
     op.drop_index(op.f("ix_transactions_id"), table_name="transactions")
     op.drop_index("ix_transaction_user_portfolio", table_name="transactions")

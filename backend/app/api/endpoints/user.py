@@ -31,7 +31,9 @@ def get_management_token():
         },
     )
     if response.status_code != 200:
-        raise HTTPException(status_code=500, detail="Failed to get Auth0 management token")
+        raise HTTPException(
+            status_code=500, detail="Failed to get Auth0 management token"
+        )
     return response.json()["access_token"]
 
 

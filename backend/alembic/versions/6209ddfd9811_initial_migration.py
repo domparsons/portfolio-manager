@@ -67,7 +67,9 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("user_id", "portfolio_name", "asset_id"),
     )
     op.create_index("ix_portfolio_asset_id", "portfolio", ["asset_id"], unique=False)
-    op.create_index("ix_portfolio_portfolio_name", "portfolio", ["portfolio_name"], unique=False)
+    op.create_index(
+        "ix_portfolio_portfolio_name", "portfolio", ["portfolio_name"], unique=False
+    )
     op.create_index("ix_portfolio_user_id", "portfolio", ["user_id"], unique=False)
     op.create_table(
         "timeseries",
@@ -82,7 +84,9 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("asset_id", "timestamp"),
     )
     op.create_index("ix_timeseries_asset_id", "timeseries", ["asset_id"], unique=False)
-    op.create_index("ix_timeseries_timestamp", "timeseries", ["timestamp"], unique=False)
+    op.create_index(
+        "ix_timeseries_timestamp", "timeseries", ["timestamp"], unique=False
+    )
     op.create_table(
         "watchlist_items",
         sa.Column("id", sa.Integer(), nullable=False),
@@ -98,11 +102,18 @@ def upgrade() -> None:
         ),
         sa.PrimaryKeyConstraint("id"),
     )
-    op.create_index("ix_watchlist_asset_id", "watchlist_items", ["asset_id"], unique=False)
     op.create_index(
-        "ix_watchlist_user_asset", "watchlist_items", ["user_id", "asset_id"], unique=False
+        "ix_watchlist_asset_id", "watchlist_items", ["asset_id"], unique=False
     )
-    op.create_index("ix_watchlist_user_id", "watchlist_items", ["user_id"], unique=False)
+    op.create_index(
+        "ix_watchlist_user_asset",
+        "watchlist_items",
+        ["user_id", "asset_id"],
+        unique=False,
+    )
+    op.create_index(
+        "ix_watchlist_user_id", "watchlist_items", ["user_id"], unique=False
+    )
     # ### end Alembic commands ###
 
 

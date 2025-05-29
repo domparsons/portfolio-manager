@@ -40,7 +40,9 @@ def get_latest_price_and_changes(db: Session) -> pl.DataFrame:
 
     timeseries_df = pl.DataFrame(timeseries_data)
 
-    latest_df = timeseries_df.filter(timeseries_df["rank"] == 1).rename({"price": "latest_price"})
+    latest_df = timeseries_df.filter(timeseries_df["rank"] == 1).rename(
+        {"price": "latest_price"}
+    )
     second_latest_df = timeseries_df.filter(timeseries_df["rank"] == 2).rename(
         {"price": "second_latest_price"}
     )

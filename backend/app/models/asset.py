@@ -33,9 +33,13 @@ class Asset(Base):
     # Indexes for performance optimization (useful for searching by ticker or asset name)
     __table_args__ = (
         Index("ix_assets_ticker", "ticker"),  # Index on ticker for fast lookups
-        Index("ix_assets_asset_name", "asset_name"),  # Index on asset_name for fast lookups
+        Index(
+            "ix_assets_asset_name", "asset_name"
+        ),  # Index on asset_name for fast lookups
     )
 
     # String representation for debugging and logging
     def __repr__(self):
-        return f"<Asset(id={self.id}, ticker={self.ticker}, asset_name={self.asset_name})>"
+        return (
+            f"<Asset(id={self.id}, ticker={self.ticker}, asset_name={self.asset_name})>"
+        )
