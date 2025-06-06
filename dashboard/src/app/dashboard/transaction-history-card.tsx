@@ -69,4 +69,4 @@ const TransactionHistoryCard = () => {
   );
 };
 
-export default TransactionHistoryCard;
+export { TransactionHistoryCard };
