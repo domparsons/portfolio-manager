@@ -42,7 +42,7 @@ const TransactionHistoryCard = () => {
   return (
     <Card className={"mt-4"}>
       <CardHeader>
-        <CardTitle>Recent Transaction History (GBP)</CardTitle>
+        <CardTitle>Recent Transaction History (USD)</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-2">
