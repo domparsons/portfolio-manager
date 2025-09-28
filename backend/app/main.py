@@ -1,7 +1,15 @@
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.endpoints import asset, portfolio, timeseries, transaction, user, watchlist
+from app.api.endpoints import (
+    asset,
+    portfolio,
+    timeseries,
+    transaction,
+    user,
+    watchlist,
+    monte_carlo,
+)
 
 app = FastAPI(title="Portfolio Manager")
 
@@ -28,3 +36,4 @@ app.include_router(portfolio.router)
 app.include_router(asset.router)
 app.include_router(timeseries.router)
 app.include_router(user.router)
+app.include_router(monte_carlo.router)

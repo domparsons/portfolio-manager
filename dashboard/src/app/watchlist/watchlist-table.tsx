@@ -1,5 +1,12 @@
 import { AssetTableProps } from "@/api/asset";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import React from "react";
 
 const WatchlistTable: React.FC<AssetTableProps> = ({ filteredAssets }) => {

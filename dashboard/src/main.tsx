@@ -13,7 +13,9 @@ library.add(fas);
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    {import.meta.env.MODE === "development" ? <App /> : (
+    {import.meta.env.MODE === "development" ? (
+      <App />
+    ) : (
       <Auth0Provider
         domain={domain}
         clientId={clientId}

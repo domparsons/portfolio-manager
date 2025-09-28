@@ -1,10 +1,22 @@
-import TransactionHistoryCard from "@/app/dashboard/transaction-history-card";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
 import { TrendingUp } from "lucide-react";
 import React from "react";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import { portfolioData } from "../../../dev_data/portfolioData";
+import { TransactionHistoryCard } from "@/app/dashboard/transaction-history-card";
 
 interface Portfolio {
   date: string;

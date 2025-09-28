@@ -11,12 +11,15 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { DynamicBreadcrumb } from "@/components/dynamic-breadcrumb";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Separator } from "@/components/ui/separator";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
-import * as React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 const App = () => {
@@ -25,7 +28,7 @@ const App = () => {
 
   localStorage.setItem("user_id", "auth0|67ec6b5e6076f060a1e7927f");
 
-  // return <LoginPage />
+  // return <LoginPage />;
 
   if (import.meta.env.MODE !== "development" && !isAuthenticated) {
     return <LoginPage />;
