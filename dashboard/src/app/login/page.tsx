@@ -29,10 +29,9 @@ export default function LandingPage() {
           <Card className="mt-6 p-6 bg-gray-700/80 shadow-2xl border border-gray-600">
             <CardContent className="space-y-4 pb-0">
               <h2 className="text-xl font-semibold text-white">
-                Track, analyze, and optimize your investments with ease.
+                Track, analyse, and optimize your investments with ease.
               </h2>
               <Button onClick={handleLogin}>Explore Porta</Button>
-              <Button>Coming soon</Button>
             </CardContent>
           </Card>
 
