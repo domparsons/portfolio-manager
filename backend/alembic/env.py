@@ -1,6 +1,5 @@
+import os
 from logging.config import fileConfig
-
-from sqlalchemy import engine_from_config, pool
 
 from alembic import context
 from app.database import Base
@@ -11,6 +10,10 @@ from app.models import (
     User,  # noqa: F401
     WatchlistItem,  # noqa: F401
 )
+from dotenv import load_dotenv
+from sqlalchemy import engine_from_config, pool
+
+load_dotenv()
 
 # Set the target metadata to your models' Base metadata
 target_metadata = Base.metadata
@@ -18,6 +21,10 @@ print("Target Metadata:", target_metadata)
 
 # Alembic Config object
 config = context.config
+
+database_url = os.getenv("DATABASE_URL")
+if database_url:
+    config.set_main_option("sqlalchemy.url", database_url)
 
 # Interpret the config file for Python logging
 if config.config_file_name is not None:
