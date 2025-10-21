@@ -28,6 +28,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}
+
+
+@app.get("/")
+async def root():
+    return {"message": "API is running"}
+
+
 app.openapi_schema = None
 app.include_router(api_router)
 app.include_router(watchlist.router)
