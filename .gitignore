@@ -25,4 +25,6 @@ dist-ssr
 .idea/
 backend/portfolio.db
 dashboard/.env
+dashboard/.env.development
+dashboard/.env.production
 backend/.env

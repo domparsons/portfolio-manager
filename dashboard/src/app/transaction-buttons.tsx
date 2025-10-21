@@ -16,6 +16,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import React from "react";
+import { apiClient, ApiError } from "@/lib/api-client";
+import { toast } from "sonner";
 
 type TransactionButtonsProps = {
   transactionType: "buy" | "sell";
@@ -87,14 +89,26 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     setModalOpen(false);
     e.preventDefault();
-    const url =
-      `http://localhost:8000/transaction/?user_id=${user_id}&portfolio_name=Placeholder&asset_id=${asset.id}&type=${transactionType}&quantity=${numberOfShares}&price=${executionPrice}&purchase_date=${executionDate?.toISOString()}&user_timezone=Europe%2FLondon`;
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+
+    try {
+      await apiClient.post("/transaction/", null, {
+        params: {
+          user_id,
+          portfolio_name: "Placeholder",
+          asset_id: asset.id,
+          type: transactionType,
+          quantity: numberOfShares,
+          price: executionPrice,
+          purchase_date: executionDate?.toISOString(),
+          user_timezone: "Europe/London",
+        },
+      });
+      toast("Transaction created successfully!");
+    } catch (error) {
+      const apiError = error as ApiError;
+      console.error("Failed to create transaction:", apiError);
+      toast("Failed to create transaction.");
+    }
   };
 
   return (

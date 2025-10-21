@@ -1,4 +1,6 @@
 import React from "react";
+import { apiClient, ApiError } from "@/lib/api-client";
+import { toast } from "sonner";
 
 export interface Transaction {
   id: number;
@@ -22,31 +24,37 @@ export const deleteTransaction = async (
   user_id: string | null,
   refreshHistory: () => void,
 ) => {
-  await fetch(
-    `http://localhost:8000/transaction/?user_id=${user_id}&transaction_id=${transactionId}`,
-    {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
+  if (!user_id) return;
+
+  try {
+    await apiClient.delete("/transaction/", {
+      params: {
+        user_id,
+        transaction_id: transactionId,
       },
-    },
-  );
-  refreshHistory();
+    });
+    refreshHistory();
+  } catch (error) {
+    const apiError = error as ApiError;
+    console.error("Failed to delete transaction:", apiError);
+    toast("Failed to delete transaction.");
+  }
 };
 
 export const getTransactionHistory = async (
   user_id: string | null,
   setTransactionHistory: React.Dispatch<React.SetStateAction<Transaction[]>>,
 ) => {
-  const response = await fetch(
-    `http://localhost:8000/transaction/${user_id}?limit=${10}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    },
-  );
-  const data = await response.json();
-  setTransactionHistory(data);
+  if (!user_id) return;
+
+  try {
+    const data = await apiClient.get<Transaction[]>(`/transaction/${user_id}`, {
+      params: { limit: 10 },
+    });
+    setTransactionHistory(data);
+  } catch (error) {
+    const apiError = error as ApiError;
+    console.error("Error fetching transaction history:", apiError);
+    toast("There was an error fetching transaction history.");
+  }
 };

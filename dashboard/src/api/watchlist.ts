@@ -1,19 +1,23 @@
 import { Asset } from "@/api/asset";
+import { apiClient, ApiError } from "@/lib/api-client";
+import { toast } from "sonner";
 
 export const getWatchlist = async (
   user_id: string | null,
   setWatchlistAssets: (assets: Asset[]) => void,
   setFilteredWatchlistAssets: (assets: Asset[]) => void,
 ) => {
-  const response = await fetch(`http://localhost:8000/watchlist/${user_id}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  const data = await response.json();
-  setWatchlistAssets(data);
-  setFilteredWatchlistAssets(data);
+  if (!user_id) return;
+
+  try {
+    const data = await apiClient.get<Asset[]>(`/watchlist/${user_id}`);
+    setWatchlistAssets(data);
+    setFilteredWatchlistAssets(data);
+  } catch (error) {
+    const apiError = error as ApiError;
+    console.error("Error fetching watchlist:", apiError);
+    toast("There was an error fetching your watchlist.");
+  }
 };
 
 export const addToWatchlist = async (
@@ -21,17 +25,18 @@ export const addToWatchlist = async (
   asset_id: number | undefined,
 ) => {
   if (!user_id || !asset_id) return;
-  const response = await fetch(
-    `http://localhost:8000/watchlist/?user_id=${user_id}&asset_id=${asset_id}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+
+  try {
+    await apiClient.post("/watchlist/", null, {
+      params: {
+        user_id,
+        asset_id,
       },
-    },
-  );
-  if (!response.ok) {
-    console.error("Failed to add asset to watchlist");
+    });
+  } catch (error) {
+    const apiError = error as ApiError;
+    console.error("Failed to add asset to watchlist:", apiError);
+    toast("Failed to add asset to watchlist.");
   }
 };
 
@@ -40,16 +45,17 @@ export const removeFromWatchlist = async (
   asset_id: number | undefined,
 ) => {
   if (!user_id || !asset_id) return;
-  const response = await fetch(
-    `http://localhost:8000/watchlist/remove_from_watchlist/?user_id=${user_id}&asset_id=${asset_id}`,
-    {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
+
+  try {
+    await apiClient.delete("/watchlist/remove_from_watchlist/", {
+      params: {
+        user_id,
+        asset_id,
       },
-    },
-  );
-  if (!response.ok) {
-    console.error("Failed to remove asset from watchlist");
+    });
+  } catch (error) {
+    const apiError = error as ApiError;
+    console.error("Failed to remove asset from watchlist:", apiError);
+    toast("Failed to remove asset from watchlist.");
   }
 };

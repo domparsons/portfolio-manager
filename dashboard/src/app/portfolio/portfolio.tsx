@@ -10,6 +10,9 @@ import {
 import { TrendingUp } from "lucide-react";
 import React from "react";
 import { Pie, PieChart } from "recharts";
+import { apiClient, ApiError } from "@/lib/api-client";
+import { toast } from "sonner";
+
 const chartConfig = {} satisfies ChartConfig;
 const Portfolio = () => {
   const [chartData, setChartData] = React.useState([]);
@@ -17,17 +20,16 @@ const Portfolio = () => {
   const user_id = localStorage.getItem("user_id");
 
   const getPortfolioHoldings = async () => {
-    const response = await fetch(
-      `http://localhost:8000/portfolio/holdings/${user_id}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
-    );
-    const data = await response.json();
-    setChartData(data);
+    if (!user_id) return;
+
+    try {
+      const data = await apiClient.get(`/portfolio/holdings/${user_id}`);
+      setChartData(data);
+    } catch (error) {
+      const apiError = error as ApiError;
+      console.error("Error fetching portfolio holdings:", apiError);
+      toast("There was an error fetching portfolio holdings.");
+    }
   };
 
   React.useEffect(() => {

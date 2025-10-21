@@ -1,5 +1,6 @@
 import React, { SetStateAction } from "react";
 import { toast } from "sonner";
+import { apiClient, ApiError } from "@/lib/api-client";
 
 export interface Asset {
   id: number;
@@ -43,19 +44,13 @@ export const getAssetList = async (
   setFilteredAssets: (assets: Asset[]) => void,
 ) => {
   try {
-    const response = await fetch("http://127.0.0.1:8000/asset/asset_list", {
-      headers: {
-        Accept: "application/json",
-      },
-    });
-    if (!response.ok) {
-      throw new Error("Failed to fetch asset list");
-    }
-    const data = await response.json();
+    const data = await apiClient.get<Asset[]>("/asset/asset_list");
     setAssets(data);
     setFilteredAssets(data);
   } catch (error) {
-    console.error("Error fetching asset data:", error);
+    const apiError = error as ApiError;
+    console.error("Error fetching asset data:", apiError);
+    toast("There was an error fetching asset data.");
   }
 };
 
@@ -65,43 +60,30 @@ export const getTimeseriesDataForAsset = async (
   timeseriesRange: string,
 ) => {
   try {
-    const response = await fetch(
-      `http://127.0.0.1:8000/timeseries/timeseries_for_asset?asset_id=${assetId}&timeseries_range=${timeseriesRange}`,
-      {
-        headers: {
-          Accept: "application/json",
-        },
+    const data = await apiClient.get<Portfolio[]>("/timeseries/timeseries_for_asset", {
+      params: {
+        asset_id: assetId,
+        timeseries_range: timeseriesRange,
       },
-    );
-    if (!response.ok) {
-      toast("There was an error fetching asset data.");
-      return;
-    }
-    const data = await response.json();
+    });
     setTimeseries(data);
   } catch (error) {
-    console.error("Error fetching asset data:", error);
+    const apiError = error as ApiError;
+    console.error("Error fetching asset data:", apiError);
     toast("There was an error fetching asset data.");
   }
 };
 
 export const getAssetByTicker = async (ticker: string | undefined) => {
+  if (!ticker) return;
+
   try {
-    const response = await fetch(
-      `http://127.0.0.1:8000/asset/get_asset_by_ticker?ticker=${ticker}`,
-      {
-        headers: {
-          Accept: "application/json",
-        },
-      },
-    );
-    if (!response.ok) {
-      toast("There was an error fetching asset data.");
-      return;
-    }
-    return await response.json();
+    return await apiClient.get<Asset>("/asset/get_asset_by_ticker", {
+      params: { ticker },
+    });
   } catch (error) {
-    console.error("Error fetching asset data:", error);
+    const apiError = error as ApiError;
+    console.error("Error fetching asset data:", apiError);
     toast("There was an error fetching asset data.");
   }
 };
@@ -110,22 +92,18 @@ export const checkAssetInWatchlist = async (
   ticker: string | undefined,
   user_id: string | null,
 ) => {
+  if (!ticker || !user_id) return;
+
   try {
-    const response = await fetch(
-      `http://127.0.0.1:8000/asset/check_asset_in_watchlist/?ticker=${ticker}&user_id=${user_id}`,
-      {
-        headers: {
-          Accept: "application/json",
-        },
+    return await apiClient.get<boolean>("/asset/check_asset_in_watchlist/", {
+      params: {
+        ticker,
+        user_id,
       },
-    );
-    if (!response.ok) {
-      toast("There was an error fetching asset data.");
-      return;
-    }
-    return await response.json();
+    });
   } catch (error) {
-    console.error("Error fetching asset data:", error);
+    const apiError = error as ApiError;
+    console.error("Error fetching asset data:", apiError);
     toast("There was an error fetching asset data.");
   }
 };

@@ -1,17 +1,16 @@
 import { toast } from "sonner";
+import { apiClient, ApiError } from "@/lib/api-client";
+
+interface MonteCarloResponse {
+  final_values: any;
+  portfolio_paths: any;
+  shares_accumulated: any;
+  total_invested: any;
+}
 
 export const runMonteCarloSimulations = async () => {
   try {
-    const res = await fetch(`http://127.0.0.1:8000/monte_carlo/`, {
-      headers: {
-        Accept: "application/json",
-      },
-    });
-    if (!res.ok) {
-      toast("There was an error running the Monte Carlo simulation.");
-      return;
-    }
-    const response = await res.json();
+    const response = await apiClient.get<MonteCarloResponse>("/monte_carlo/");
     console.log(response);
 
     return [
@@ -21,7 +20,8 @@ export const runMonteCarloSimulations = async () => {
       response.total_invested,
     ];
   } catch (error) {
-    console.error("Error running the Monte Carlo simulation:", error);
+    const apiError = error as ApiError;
+    console.error("Error running the Monte Carlo simulation:", apiError);
     toast("There was an error running the Monte Carlo simulation.");
   }
 };

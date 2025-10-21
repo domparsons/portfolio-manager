@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatTimestampShort } from "@/utils/format-timestamp";
 import React from "react";
 import { Transaction } from "@/api/transaction";
+import { apiClient, ApiError } from "@/lib/api-client";
+import { toast } from "sonner";
 
 const TransactionHistoryCard = () => {
   const [transactionHistory, setTransactionHistory] = React.useState<
@@ -11,17 +13,18 @@ const TransactionHistoryCard = () => {
   const user_id = localStorage.getItem("user_id");
 
   const getTransactionHistory = async () => {
-    const response = await fetch(
-      `http://localhost:8000/transaction/${user_id}?limit=${10}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
-    );
-    const data = await response.json();
-    setTransactionHistory(data);
+    if (!user_id) return;
+
+    try {
+      const data = await apiClient.get<Transaction[]>(`/transaction/${user_id}`, {
+        params: { limit: 10 },
+      });
+      setTransactionHistory(data);
+    } catch (error) {
+      const apiError = error as ApiError;
+      console.error("Error fetching transaction history:", apiError);
+      toast("There was an error fetching transaction history.");
+    }
   };
 
   React.useEffect(() => {
