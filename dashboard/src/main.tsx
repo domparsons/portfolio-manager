@@ -13,19 +13,15 @@ library.add(fas);
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    {import.meta.env.MODE === "development" ? (
+    <Auth0Provider
+      domain={domain}
+      clientId={clientId}
+      authorizationParams={{
+        redirect_uri: window.location.origin,
+      }}
+      cacheLocation="localstorage"
+    >
       <App />
-    ) : (
-      <Auth0Provider
-        domain={domain}
-        clientId={clientId}
-        authorizationParams={{
-          redirect_uri: window.location.origin,
-        }}
-        cacheLocation="localstorage"
-      >
-        <App />
-      </Auth0Provider>
-    )}
+    </Auth0Provider>
   </StrictMode>,
 );

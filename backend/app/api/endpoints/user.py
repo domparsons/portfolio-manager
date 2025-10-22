@@ -37,8 +37,8 @@ def get_management_token():
     return response.json()["access_token"]
 
 
-@router.post("/sync/{user_id}", response_model=schemas.User)
-def sync_user(
+@router.post("/create_or_get/{user_id}", response_model=schemas.User)
+def create_or_get_user(
     user_id: str,
     db: Session = Depends(get_db),
 ):

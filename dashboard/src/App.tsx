@@ -24,14 +24,18 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { TransactionHistory } from "@/app/transactions/transaction-history";
 
 const App = () => {
-  const { isAuthenticated } = useAuth0();
+  const { isAuthenticated, isLoading } = useAuth0();
   useAuthInit();
 
-  localStorage.setItem("user_id", "auth0|67ec6b5e6076f060a1e7927f");
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
-  // return <LoginPage />;
-
-  if (import.meta.env.MODE !== "development" && !isAuthenticated) {
+  if (!isAuthenticated) {
     return <LoginPage />;
   }
 
