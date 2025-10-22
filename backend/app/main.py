@@ -6,6 +6,7 @@ from app.api.endpoints import (
     transaction,
     user,
     watchlist,
+    admin,
 )
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -49,3 +50,4 @@ app.include_router(asset.router)
 app.include_router(timeseries.router)
 app.include_router(user.router)
 app.include_router(monte_carlo.router)
+app.include_router(admin.router)
