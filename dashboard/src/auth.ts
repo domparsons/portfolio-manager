@@ -4,14 +4,17 @@ import { useEffect } from "react";
 import { apiClient } from "@/lib/api-client";
 
 export const useAuthInit = () => {
-  const { getAccessTokenSilently, isAuthenticated } = useAuth0();
+  const { getAccessTokenSilently, isAuthenticated, user } = useAuth0();
 
   useEffect(() => {
     const initUser = async () => {
       try {
         const token = await getAccessTokenSilently();
-        const decoded = jwtDecode(token);
-        const auth0UserId = decoded.sub;
+        const auth0UserId = user?.sub; // Get user ID from Auth0's user object
+
+        if (!auth0UserId) {
+          throw new Error("No user ID available");
+        }
 
         // Set auth token for all subsequent API calls
         apiClient.setAuthToken(token);

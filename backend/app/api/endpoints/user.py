@@ -13,26 +13,31 @@ load_dotenv()
 
 router = APIRouter(prefix="/user", tags=["user"])
 
-AUTH0_DOMAIN = os.getenv("AUTH0_DOMAIN", "https://dev-aej4rxcs3274i7ss.us.auth0.com")
-AUTH0_MGMT_API_CLIENT_ID = os.getenv("AUTH0_MGMT_API_CLIENT_ID")
-AUTH0_MGMT_API_CLIENT_SECRET = os.getenv("AUTH0_MGMT_API_CLIENT_SECRET")
-AUTH0_AUDIENCE = f"{AUTH0_DOMAIN}/api/v2/"
+AUTH0_DOMAIN = os.getenv("AUTH0_DOMAIN", "dev-aej4rxcs3274i7ss.us.auth0.com")
+AUTH0_CLIENT_ID = os.getenv("AUTH0_CLIENT_ID")
+AUTH0_CLIENT_SECRET = os.getenv("AUTH0_CLIENT_SECRET")
+AUTH0_AUDIENCE = f"https://{AUTH0_DOMAIN}/api/v2/"
 
 
 def get_management_token():
+    url = f"https://{AUTH0_DOMAIN}/oauth/token"
+    payload = {
+        "client_id": AUTH0_CLIENT_ID,
+        "client_secret": AUTH0_CLIENT_SECRET,
+        "audience": AUTH0_AUDIENCE,
+        "grant_type": "client_credentials",
+    }
+
     response = requests.post(
-        f"{AUTH0_DOMAIN}/oauth/token",
+        url,
         headers={"Content-Type": "application/json"},
-        json={
-            "client_id": AUTH0_MGMT_API_CLIENT_ID,
-            "client_secret": AUTH0_MGMT_API_CLIENT_SECRET,
-            "audience": AUTH0_AUDIENCE,
-            "grant_type": "client_credentials",
-        },
+        json=payload,
     )
+
     if response.status_code != 200:
         raise HTTPException(
-            status_code=500, detail="Failed to get Auth0 management token"
+            status_code=500,
+            detail=f"Failed to get Auth0 management token: {response.text}",
         )
     return response.json()["access_token"]
 
@@ -44,7 +49,7 @@ def create_or_get_user(
 ):
     mgmt_token = get_management_token()
     user_response = requests.get(
-        f"{AUTH0_DOMAIN}/api/v2/users/{user_id}",
+        f"https://{AUTH0_DOMAIN}/api/v2/users/{user_id}",
         headers={"Authorization": f"Bearer {mgmt_token}"},
     )
 
