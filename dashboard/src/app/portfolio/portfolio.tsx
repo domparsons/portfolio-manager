@@ -44,6 +44,10 @@ const Portfolio = () => {
     "#FF8042",
     "#ff4242",
     "#8a42ff",
+    "#42ff71",
+    "#ff42d4",
+    "#42d4ff",
+    "#ffa742",
   ];
 
   React.useEffect(() => {
