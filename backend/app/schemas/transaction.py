@@ -1,5 +1,5 @@
 import enum
-from datetime import datetime
+from datetime import datetime, date
 
 from pydantic import BaseModel
 
@@ -54,7 +54,7 @@ class PortfolioHoldings(BaseModel):
 
 
 class PortfolioValueHistory(BaseModel):
-    date: datetime
+    date: date
     value: float
     daily_return: float
 
