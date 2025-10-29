@@ -16,9 +16,12 @@ const TransactionHistoryCard = () => {
     if (!user_id) return;
 
     try {
-      const data = await apiClient.get<Transaction[]>(`/transaction/${user_id}`, {
-        params: { limit: 10 },
-      });
+      const data = await apiClient.get<Transaction[]>(
+        `/transaction/${user_id}`,
+        {
+          params: { limit: 10 },
+        },
+      );
       setTransactionHistory(data);
     } catch (error) {
       const apiError = error as ApiError;
@@ -45,7 +48,7 @@ const TransactionHistoryCard = () => {
                 <span className={"font-light"}>
                   {formatTimestampShort(transaction.timestamp)}
                 </span>
-                £
+                $
                 {parseFloat(
                   (transaction.quantity * transaction.price).toFixed(2),
                 )}

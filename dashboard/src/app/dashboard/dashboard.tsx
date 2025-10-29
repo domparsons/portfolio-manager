@@ -80,7 +80,7 @@ const Dashboard = () => {
     <div className="dashboard">
       <h1 className="text-2xl font-semibold">Dashboard</h1>
       <div className="flex flex-col justify-between mt-4 mb-2">
-        <h2 className={"text-xl font-semibold"}>£{portfolioValue}</h2>
+        <h2 className={"text-xl font-semibold"}>${portfolioValue}</h2>
         <p>Portfolio Value</p>
       </div>
       <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-3">
