@@ -1,23 +1,7 @@
 import React from "react";
 import { apiClient, ApiError } from "@/lib/api-client";
 import { toast } from "sonner";
-
-export interface Transaction {
-  id: number;
-  timestamp: string;
-  quantity: number;
-  asset_name: string;
-  ticker: string;
-  type: TransactionType;
-  price: number;
-}
-
-export interface TransactionTableProps {
-  transactions: Transaction[];
-  onDelete: (transactionId: string) => void;
-}
-
-type TransactionType = "buy" | "sell";
+import { Transaction } from "@/types/custom-types";
 
 export const deleteTransaction = async (
   transactionId: number,

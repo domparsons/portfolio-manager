@@ -1,4 +1,9 @@
-import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import {
+  type ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
 import * as React from "react";
 import { Line, LineChart, XAxis, YAxis } from "recharts";
 interface Portfolio {
@@ -58,7 +63,7 @@ const AssetChart = ({ data }: { data: Portfolio[] | null }) => {
           />
           <Line
             dataKey="close"
-            type="natural"
+            type="linear"
             stroke="var(--color-value)"
             strokeWidth={2}
             dot={false}

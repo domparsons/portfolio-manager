@@ -4,8 +4,8 @@ from .transaction import (
     TransactionCreate,  # noqa: F401
     TransactionOut,  # noqa: F401
     PortfolioHoldings,  # noqa: F401
-    PortfolioOverTime,  # noqa: F401
     TransactionType,  # noqa: F401
+    PortfolioValueHistory,  # noqa: F401
 )
 from .user import User, UserBase  # noqa: F401
 from .watchlist import WatchlistItem, WatchlistItemBase  # noqa: F401

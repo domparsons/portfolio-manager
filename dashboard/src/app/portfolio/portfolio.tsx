@@ -1,4 +1,10 @@
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
@@ -7,15 +13,14 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { TrendingUp } from "lucide-react";
 import React from "react";
-import { Pie, PieChart } from "recharts";
+import { Cell, Pie, PieChart } from "recharts";
 import { apiClient, ApiError } from "@/lib/api-client";
 import { toast } from "sonner";
+import { PortfolioHoldings } from "@/types/custom-types";
 
-const chartConfig = {} satisfies ChartConfig;
 const Portfolio = () => {
-  const [chartData, setChartData] = React.useState([]);
+  const [chartData, setChartData] = React.useState<PortfolioHoldings[]>([]);
 
   const user_id = localStorage.getItem("user_id");
 
@@ -32,9 +37,33 @@ const Portfolio = () => {
     }
   };
 
+  const COLORS = [
+    "#0088FE",
+    "#00C49F",
+    "#FFBB28",
+    "#FF8042",
+    "#ff4242",
+    "#8a42ff",
+    "#42ff71",
+    "#ff42d4",
+    "#42d4ff",
+    "#ffa742",
+  ];
+
   React.useEffect(() => {
     getPortfolioHoldings();
   }, []);
+
+  const chartConfig = React.useMemo(() => {
+    const config: ChartConfig = {};
+    chartData.forEach((item, index) => {
+      config[item.asset_name] = {
+        label: item.asset_name,
+        color: COLORS[index % COLORS.length],
+      };
+    });
+    return config;
+  }, [chartData]);
 
   return (
     <div className="portfolio">
@@ -52,28 +81,24 @@ const Portfolio = () => {
               <PieChart>
                 <ChartTooltip
                   cursor={false}
-                  content={<ChartTooltipContent hideLabel />}
+                  content={<ChartTooltipContent />}
                 />
-                <Pie
-                  data={chartData}
-                  dataKey="net_quantity"
-                  nameKey="asset_name"
-                  // Assign a color to each slice using a color array
-                  fill="#8884d8"
-                  stroke="#fff"
-                  cx="50%"
-                  cy="50%"
-                >
-                </Pie>{" "}
-                <ChartLegend content={<ChartLegendContent />} />
+                <Pie data={chartData} dataKey="net_value" nameKey="asset_name">
+                  {" "}
+                  {chartData.map((_, index) => (
+                    <Cell
+                      key={`cell-${chartData}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+                <ChartLegend
+                  content={<ChartLegendContent nameKey="asset_name" />}
+                />
               </PieChart>
             </ChartContainer>
           </CardContent>
-          <CardFooter className="flex-col gap-2 text-sm">
-            <div className="flex items-center gap-2 font-medium leading-none">
-              Trending up by *** this month <TrendingUp className="h-4 w-4" />
-            </div>
-          </CardFooter>
+          <CardFooter className="flex-col gap-2 text-sm"></CardFooter>
         </Card>
       </div>
     </div>
