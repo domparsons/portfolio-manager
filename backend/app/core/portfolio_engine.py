@@ -23,7 +23,6 @@ def calculate_portfolio_history(
     transaction_index = 0
 
     for day in trading_days:
-        # Apply all transactions up to and including this day
         while (
             transaction_index < len(transactions)
             and transactions[transaction_index].timestamp.date() <= day
@@ -37,7 +36,6 @@ def calculate_portfolio_history(
 
             transaction_index += 1
 
-        # Calculate total portfolio value for this day
         total_value = 0.0
         for asset_id, quantity in holdings.items():
             if quantity > 0:

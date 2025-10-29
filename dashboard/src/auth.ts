@@ -15,14 +15,12 @@ export const useAuthInit = () => {
           throw new Error("No user ID available");
         }
 
-        // Set auth token for all subsequent API calls
         apiClient.setAuthToken(token);
         localStorage.setItem("user_id", auth0UserId);
 
         await apiClient.post(`/user/create_or_get/${auth0UserId}`);
       } catch (error) {
         console.error("Failed to initialize user:", error);
-        // Clear auth token on error
         apiClient.setAuthToken(null);
       }
     };

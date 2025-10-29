@@ -93,11 +93,9 @@ class PriceService:
         """
         cache_key = (asset_id, date)
 
-        # Check cache first
         if cache_key in self._price_cache:
             return self._price_cache[cache_key]
 
-        # Query database
         price_data = (
             self.db.query(models.Timeseries.adj_close)
             .filter(
