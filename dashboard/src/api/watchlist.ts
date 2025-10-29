@@ -1,6 +1,6 @@
-import { Asset } from "@/api/asset";
 import { apiClient, ApiError } from "@/lib/api-client";
 import { toast } from "sonner";
+import { Asset } from "@/types/custom-types";
 
 export const getWatchlist = async (
   user_id: string | null,

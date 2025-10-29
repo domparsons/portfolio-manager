@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/chart";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import { TrendIndicator } from "@/app/dashboard/trend-indicator";
-import { PortfolioChartData } from "@/api/transaction";
+import { PortfolioChartData } from "@/types/custom-types";
 
 interface PortfolioCardProps {
   portfolioHistory: PortfolioChartData[];

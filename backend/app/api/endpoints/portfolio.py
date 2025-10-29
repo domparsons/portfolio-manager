@@ -71,12 +71,22 @@ def get_portfolio_holdings(
             holdings[asset_id] = schemas.PortfolioHoldings(
                 asset_id=asset_id,
                 asset_name=asset_name,
-                net_quantity=0.0,
+                net_quantity_shares=0.0,
+                net_value=0.0,
             )
+
         if transaction.type == schemas.TransactionType.buy:
-            holdings[asset_id].net_quantity += transaction.quantity
+            holdings[asset_id].net_quantity_shares += transaction.quantity
+            holdings[asset_id].net_value = round(
+                holdings[asset_id].net_value + transaction.quantity * transaction.price,
+                2,
+            )
         elif transaction.type == schemas.TransactionType.sell:
-            holdings[asset_id].net_quantity -= transaction.quantity
+            holdings[asset_id].net_quantity_shares -= transaction.quantity
+            holdings[asset_id].net_value = round(
+                holdings[asset_id].net_value - transaction.quantity * transaction.price,
+                2,
+            )
 
     return list(holdings.values())
 

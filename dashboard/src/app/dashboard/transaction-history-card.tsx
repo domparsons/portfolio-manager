@@ -2,9 +2,9 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatTimestampShort } from "@/utils/format-timestamp";
 import React from "react";
-import { Transaction } from "@/api/transaction";
 import { apiClient, ApiError } from "@/lib/api-client";
 import { toast } from "sonner";
+import { Transaction } from "@/types/custom-types";
 
 const TransactionHistoryCard = () => {
   const [transactionHistory, setTransactionHistory] = React.useState<

@@ -1,30 +1,7 @@
 import React, { SetStateAction } from "react";
 import { toast } from "sonner";
 import { apiClient, ApiError } from "@/lib/api-client";
-
-export interface Asset {
-  id: number;
-  asset_name: string;
-  ticker: string;
-  market_cap: number;
-  price_change: number;
-  percentage_change: number;
-  latest_price: number;
-  currency: string;
-  description: string;
-  timestamp: string;
-  in_watchlist: boolean;
-}
-
-export interface Portfolio {
-  id: number;
-  close: number;
-  timestamp: string;
-}
-
-export interface AssetTableProps {
-  filteredAssets: Asset[];
-}
+import { Asset, Portfolio } from "@/types/custom-types";
 
 export function useTransactionType() {
   return React.useState<"buy" | "sell">("buy");
@@ -60,12 +37,15 @@ export const getTimeseriesDataForAsset = async (
   timeseriesRange: string,
 ) => {
   try {
-    const data = await apiClient.get<Portfolio[]>("/timeseries/timeseries_for_asset", {
-      params: {
-        asset_id: assetId,
-        timeseries_range: timeseriesRange,
+    const data = await apiClient.get<Portfolio[]>(
+      "/timeseries/timeseries_for_asset",
+      {
+        params: {
+          asset_id: assetId,
+          timeseries_range: timeseriesRange,
+        },
       },
-    });
+    );
     setTimeseries(data);
   } catch (error) {
     const apiError = error as ApiError;
