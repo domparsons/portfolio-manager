@@ -12,6 +12,18 @@ export interface Transaction {
   price: number;
 }
 
+export interface PortfolioValueHistory {
+  date: string;
+  value: number;
+  daily_return?: number;
+}
+
+export interface PortfolioChartData {
+  date: number;
+  value: number;
+  daily_return?: number;
+}
+
 export interface TransactionTableProps {
   transactions: Transaction[];
   onDelete: (transactionId: string) => void;

@@ -1,5 +1,4 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { jwtDecode } from "jwt-decode";
 import { useEffect } from "react";
 import { apiClient } from "@/lib/api-client";
 
@@ -18,6 +17,7 @@ export const useAuthInit = () => {
 
         // Set auth token for all subsequent API calls
         apiClient.setAuthToken(token);
+        localStorage.setItem("user_id", auth0UserId);
 
         await apiClient.post(`/user/create_or_get/${auth0UserId}`);
       } catch (error) {

@@ -52,9 +52,10 @@ class PortfolioHoldings(BaseModel):
         from_attributes = True
 
 
-class PortfolioOverTime(BaseModel):
+class PortfolioValueHistory(BaseModel):
     date: datetime
     value: float
+    daily_return: float
 
     class Config:
         from_attributes = True
