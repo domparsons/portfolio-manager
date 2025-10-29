@@ -1,10 +1,11 @@
-from datetime import datetime
-
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
 from app import models, schemas
-from app.core import PriceService, calculate_portfolio_history
+from app.core.portfolio_engine import (
+    get_portfolio_data_for_user,
+    calculate_metrics,
+)
 from app.database import get_db
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/portfolio", tags=["portfolio"])
 
@@ -101,38 +102,29 @@ def get_portfolio_over_time(
     """
     Calculate daily portfolio values for a user based on their transaction history.
     """
-    price_service = PriceService(db=db)
+    try:
+        _, history = get_portfolio_data_for_user(user_id, db)
+        return history
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
-    transactions = (
-        db.query(models.Transaction)
-        .filter(models.Transaction.user_id == user_id)
-        .order_by(models.Transaction.timestamp)
-        .all()
-    )
 
-    if not transactions:
-        return []
+@router.get("/portfolio_metrics/{user_id}", response_model=schemas.PortfolioMetrics)
+def get_portfolio_metrics(
+    user_id: str, db: Session = Depends(get_db)
+) -> schemas.PortfolioMetrics:
+    """
+    Calculate performance metrics for a user's portfolio.
+    """
+    try:
+        transactions, history = get_portfolio_data_for_user(user_id, db)
+        metrics = calculate_metrics(transactions, history)
 
-    timestamps = [t.timestamp for t in transactions if t.timestamp]
-    if not timestamps:
-        return []
+        if metrics is None:
+            raise HTTPException(
+                status_code=400, detail="Insufficient data to calculate metrics"
+            )
 
-    start_date = min(timestamps)  # type: ignore[arg-type]
-    end_date = datetime.now()
-
-    trading_days = price_service.get_trading_days(start_date, end_date)
-
-    if not trading_days:
-        return []
-
-    unique_asset_ids = list(set(t.asset_id for t in transactions))  # type: ignore[arg-type]
-
-    price_lookup = price_service.get_price_lookup(
-        unique_asset_ids,  # type: ignore[arg-type]
-        start_date,
-        end_date,
-    )
-
-    results = calculate_portfolio_history(transactions, trading_days, price_lookup)
-
-    return results
+        return metrics
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))

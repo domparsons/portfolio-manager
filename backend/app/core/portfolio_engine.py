@@ -1,5 +1,62 @@
-from datetime import date
-from app import schemas
+from datetime import date, datetime
+
+from app import models, schemas
+from app.core import PriceService
+from sqlalchemy.orm.session import Session
+
+
+def get_portfolio_data_for_user(
+    user_id: str, db: Session
+) -> tuple[list, list[schemas.PortfolioValueHistory]]:
+    """
+    Fetch all data needed for portfolio calculations.
+
+    Args:
+        user_id: User ID
+        db: Database session
+
+    Returns:
+        Tuple of (transactions, portfolio_history)
+
+    Raises:
+        ValueError: If no transactions or data available
+    """
+
+    price_service = PriceService(db=db)
+
+    transactions = (
+        db.query(models.Transaction)
+        .filter(models.Transaction.user_id == user_id)
+        .order_by(models.Transaction.timestamp)
+        .all()
+    )
+
+    if not transactions:
+        raise ValueError("No transactions found")
+
+    timestamps = [t.timestamp for t in transactions if t.timestamp]
+    if not timestamps:
+        raise ValueError("No valid transaction timestamps")
+
+    start_date = min(timestamps)  # type: ignore[arg-type]
+    end_date = datetime.now()
+
+    trading_days = price_service.get_trading_days(start_date, end_date)
+
+    if not trading_days:
+        raise ValueError("No trading data available")
+
+    unique_asset_ids = list(set(t.asset_id for t in transactions))  # type: ignore[arg-type]
+
+    price_lookup = price_service.get_price_lookup(
+        unique_asset_ids,  # type: ignore[arg-type]
+        start_date,
+        end_date,
+    )
+
+    history = calculate_portfolio_history(transactions, trading_days, price_lookup)
+
+    return transactions, history
 
 
 def calculate_portfolio_history(
@@ -87,3 +144,42 @@ def get_current_holdings(transactions: list) -> dict[int, float]:
     return {
         asset_id: quantity for asset_id, quantity in holdings.items() if quantity > 0
     }
+
+
+def calculate_metrics(
+    transactions: list,
+    history: list[schemas.PortfolioValueHistory],
+) -> schemas.PortfolioMetrics | None:
+    """
+    Calculate portfolio performance metrics.
+
+    Args:
+        transactions: List of transactions (to calculate cost basis)
+        history: List of daily portfolio values
+
+    Returns:
+        PortfolioMetrics object, or None if insufficient data
+    """
+    if len(history) < 1:
+        return None
+
+    total_invested = sum(
+        txn.quantity * txn.price for txn in transactions if txn.type == "buy"
+    )
+
+    if total_invested <= 0:
+        return None
+
+    current_value = history[-1].value
+    total_return_abs = current_value - total_invested
+    total_return_pct = total_return_abs / total_invested
+
+    return schemas.PortfolioMetrics(
+        total_invested=round(total_invested, 2),
+        current_value=round(current_value, 2),
+        total_return_abs=round(total_return_abs, 2),
+        total_return_pct=round(total_return_pct, 6),
+        start_date=history[0].date,
+        end_date=history[-1].date,
+        days_analysed=len(history),
+    )
