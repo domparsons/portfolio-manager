@@ -9,7 +9,7 @@ export const useAuthInit = () => {
     const initUser = async () => {
       try {
         const token = await getAccessTokenSilently();
-        const auth0UserId = user?.sub; // Get user ID from Auth0's user object
+        const auth0UserId = user?.sub;
 
         if (!auth0UserId) {
           throw new Error("No user ID available");
