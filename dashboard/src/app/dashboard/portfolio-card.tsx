@@ -3,7 +3,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -13,7 +12,6 @@ import {
   ChartTooltip,
 } from "@/components/ui/chart";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
-import { TrendIndicator } from "@/app/dashboard/trend-indicator";
 import { PortfolioChartData } from "@/types/custom-types";
 
 interface PortfolioCardProps {
@@ -126,9 +124,6 @@ const PortfolioCard: React.FC<PortfolioCardProps> = ({
           </LineChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter>
-        <TrendIndicator portfolioHistory={portfolioHistory} />
-      </CardFooter>
     </Card>
   );
 };

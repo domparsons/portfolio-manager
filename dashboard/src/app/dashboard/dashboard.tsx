@@ -1,15 +1,16 @@
 import { ChartConfig } from "@/components/ui/chart";
-import React from "react";
+import React, { useState } from "react";
 import { TransactionHistoryCard } from "@/app/dashboard/transaction-history-card";
-import { apiClient, ApiError } from "@/lib/api-client";
-import { toast } from "sonner";
-import { PortfolioChartData, PortfolioValueHistory } from "@/api/transaction";
 import { PortfolioCard } from "@/app/dashboard/portfolio-card";
+import { PortfolioChartData } from "@/types/custom-types";
+import { getPortfolioHistory, getPortfolioMetrics } from "@/api/portfolio";
 
 const Dashboard = () => {
   const [portfolioHistory, setPortfolioHistory] = React.useState<
     PortfolioChartData[]
   >([]);
+
+  const [totalReturn, setTotalReturn] = useState(0);
 
   const user_id = localStorage.getItem("user_id");
 
@@ -24,6 +25,7 @@ const Dashboard = () => {
 
   const minDomain = minValue - padding;
   const maxDomain = maxValue + padding;
+
   const chartConfig = {
     value: {
       label: "Value",
@@ -49,38 +51,28 @@ const Dashboard = () => {
         })
       : "N/A";
 
-  const getPortfolioHistory = async () => {
-    if (!user_id) return;
-
-    try {
-      const data = await apiClient.get<PortfolioValueHistory[]>(
-        `/portfolio/portfolio_over_time/${user_id}`,
-        {
-          params: { limit: 10 },
-        },
-      );
-      const chartData: PortfolioChartData[] = data.map((item) => ({
-        ...item,
-        date: new Date(item.date).getTime(),
-      }));
-
-      setPortfolioHistory(chartData);
-    } catch (error) {
-      const apiError = error as ApiError;
-      console.error("Error fetching portfolio history:", apiError);
-      toast("There was an error fetching portfolio history.");
-    }
-  };
+  React.useEffect(() => {
+    getPortfolioHistory(setPortfolioHistory, user_id);
+  }, []);
 
   React.useEffect(() => {
-    getPortfolioHistory();
+    getPortfolioMetrics(setTotalReturn, user_id);
   }, []);
 
   return (
     <div className="dashboard">
       <h1 className="text-2xl font-semibold">Dashboard</h1>
       <div className="flex flex-col justify-between mt-4 mb-2">
-        <h2 className={"text-xl font-semibold"}>${portfolioValue}</h2>
+        <div className="flex flex-row space-x-2 items-center">
+          <h2 className={"text-xl font-semibold"}>${portfolioValue}</h2>
+          <p
+            className={`font-semibold ${
+              totalReturn >= 0 ? "text-green-500" : "text-red-500"
+            }`}
+          >
+            {totalReturn >= 0 ? `+$${totalReturn}` : `-$${totalReturn}`}
+          </p>
+        </div>
         <p>Portfolio Value</p>
       </div>
       <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-3">

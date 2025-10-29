@@ -1,6 +1,6 @@
 import { TrendingDown, TrendingUp } from "lucide-react";
 import React from "react";
-import { PortfolioChartData } from "@/api/transaction";
+import { PortfolioChartData } from "@/types/custom-types";
 
 const TrendIndicator = ({
   portfolioHistory,

@@ -60,3 +60,13 @@ class PortfolioValueHistory(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class PortfolioMetrics(BaseModel):
+    total_invested: float
+    current_value: float
+    total_return_abs: float
+    total_return_pct: float
+    start_date: date
+    end_date: date
+    days_analysed: int
