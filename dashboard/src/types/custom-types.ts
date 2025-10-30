@@ -1,3 +1,6 @@
+import React from "react";
+import { ChartConfig } from "@/components/ui/chart";
+
 export interface Transaction {
   id: number;
   timestamp: string;
@@ -61,4 +64,24 @@ export interface Portfolio {
 
 export interface AssetTableProps {
   filteredAssets: Asset[];
+}
+
+export interface AssetSheetPopoverProps {
+  timeseries: Portfolio[];
+  pageAsset: Asset;
+  timeseriesRange: string;
+  setTimeseriesRange: React.Dispatch<React.SetStateAction<string>>;
+  pageAssetInWatchlist: boolean | undefined;
+  setPageAssetInWatchlist: React.Dispatch<
+    React.SetStateAction<boolean | undefined>
+  >;
+}
+
+export interface PortfolioCardProps {
+  portfolioHistory: PortfolioChartData[];
+  startDate: string;
+  endDate: string;
+  chartConfig: ChartConfig;
+  minDomain: number;
+  maxDomain: number;
 }

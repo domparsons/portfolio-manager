@@ -1,7 +1,8 @@
 import { TableSkeleton } from "@/app/table-skeleton";
 import React from "react";
-import { getTransactionHistory, Transaction } from "@/api/transaction";
+import { getTransactionHistory } from "@/api/transaction";
 import { TransactionHistoryTable } from "@/app/transactions/transaction-history-table";
+import { Transaction } from "@/types/custom-types";
 
 const TransactionHistory = () => {
   const [transactionHistory, setTransactionHistory] = React.useState<

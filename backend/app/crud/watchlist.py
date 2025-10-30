@@ -1,6 +1,5 @@
-from sqlalchemy.orm import Session
-
 from app.models.watchlistitem import WatchlistItem
+from sqlalchemy.orm import Session
 
 
 def create_watchlist_item(asset_id: int, user_id: str, db: Session) -> WatchlistItem:

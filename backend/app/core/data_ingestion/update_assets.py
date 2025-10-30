@@ -9,29 +9,7 @@ from app.models import Asset
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-new_tickers = [
-    "AAPL",
-    "GOOGL",
-    "MSFT",
-    "AMZN",
-    "TSLA",
-    "META",
-    "NFLX",
-    "NVDA",
-    "SPY",
-    "INTC",
-    "AMGN",
-    "BABA",
-    "BA",
-    "DIS",
-    "T",
-    "GS",
-    "V",
-    "JNJ",
-    "WMT",
-    "PG",
-    "VZ",
-]
+new_tickers = []
 
 
 def get_asset_info(ticker):

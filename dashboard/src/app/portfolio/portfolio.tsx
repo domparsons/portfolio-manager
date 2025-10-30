@@ -15,27 +15,21 @@ import {
 } from "@/components/ui/chart";
 import React from "react";
 import { Cell, Pie, PieChart } from "recharts";
-import { apiClient, ApiError } from "@/lib/api-client";
-import { toast } from "sonner";
 import { PortfolioHoldings } from "@/types/custom-types";
+import { getPortfolioHoldings } from "@/api/portfolio";
 
 const Portfolio = () => {
   const [chartData, setChartData] = React.useState<PortfolioHoldings[]>([]);
 
   const user_id = localStorage.getItem("user_id");
 
-  const getPortfolioHoldings = async () => {
-    if (!user_id) return;
-
-    try {
-      const data = await apiClient.get(`/portfolio/holdings/${user_id}`);
-      setChartData(data);
-    } catch (error) {
-      const apiError = error as ApiError;
-      console.error("Error fetching portfolio holdings:", apiError);
-      toast("There was an error fetching portfolio holdings.");
+  React.useEffect(() => {
+    if (user_id) {
+      getPortfolioHoldings(user_id).then((data) => {
+        if (data) setChartData(data);
+      });
     }
-  };
+  }, []);
 
   const COLORS = [
     "#0088FE",
@@ -49,10 +43,6 @@ const Portfolio = () => {
     "#42d4ff",
     "#ffa742",
   ];
-
-  React.useEffect(() => {
-    getPortfolioHoldings();
-  }, []);
 
   const chartConfig = React.useMemo(() => {
     const config: ChartConfig = {};

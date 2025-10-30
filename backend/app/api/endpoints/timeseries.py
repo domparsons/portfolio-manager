@@ -1,12 +1,12 @@
-from fastapi import APIRouter, Depends, Query
-from sqlalchemy.orm import Session
+from datetime import datetime, timedelta, timezone
+from enum import Enum
 
+import polars as pl
 from app.crud.timeseries import get_latest_timeseries_for_asset
 from app.database import get_db
 from app.schemas.timeseries import TimeseriesSchema
-import polars as pl
-from enum import Enum
-from datetime import datetime, timedelta, timezone
+from fastapi import APIRouter, Depends, Query
+from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/timeseries", tags=["timeseries"])
 
@@ -46,7 +46,6 @@ def get_latest_timeseries(
     timeseries_df_sorted = timeseries_df.sort(by="timestamp")
     timeseries_df_rounded = timeseries_df_sorted.with_columns(
         pl.col("close").round(2).alias("close"),
-        # pl.col("timestamp").dt.strftime("%d %b %Y").alias("timestamp"),
     )
     timeseries_list = timeseries_df_rounded.to_dicts()
     return timeseries_list
@@ -89,7 +88,6 @@ def get_sharpe(
         )
         .with_columns(
             [
-                # Annualize metrics
                 (pl.col("mean_return") * periods_per_year).alias("annual_return"),
                 (pl.col("std_return") * np.sqrt(periods_per_year)).alias(
                     "annual_volatility"

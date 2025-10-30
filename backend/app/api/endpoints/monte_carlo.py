@@ -1,17 +1,16 @@
-import polars as pl
-import numpy as np
-from typing import Dict
-import matplotlib.pyplot as plt
-from dataclasses import dataclass
-from scipy import stats
 import time
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
+from dataclasses import dataclass
 from enum import Enum
-from fastapi import Query
+from typing import Dict
+
+import matplotlib.pyplot as plt
+import numpy as np
+import polars as pl
 from app.crud import get_latest_timeseries_for_asset
 from app.database import get_db
-
+from fastapi import APIRouter, Depends, Query
+from scipy import stats
+from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/monte_carlo", tags=["monte_carlo"])
 

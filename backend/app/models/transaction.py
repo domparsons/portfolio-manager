@@ -1,6 +1,7 @@
 import enum
 from datetime import datetime, timezone
 
+from app.database import Base
 from sqlalchemy import (
     CheckConstraint,
     Column,
@@ -14,8 +15,6 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
-from app.database import Base
-
 
 class TransactionType(str, enum.Enum):
     buy = "buy"
@@ -28,10 +27,10 @@ class Transaction(Base):
     id = Column(Integer, primary_key=True, index=True)
 
     user_id = Column(String, ForeignKey("users.id"), nullable=False)
-    portfolio_name = Column(String, nullable=False)  # multiple portfolios per user
+    portfolio_name = Column(String, nullable=False)
     asset_id = Column(Integer, ForeignKey("assets.id"), nullable=False)
 
-    type = Column(Enum(TransactionType), nullable=False)  # buy or sell
+    type = Column(Enum(TransactionType), nullable=False)
     quantity = Column(Float, nullable=False)
     price = Column(Float, nullable=False)
     timestamp = Column(DateTime, nullable=False, default=datetime.now(timezone.utc))

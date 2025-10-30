@@ -1,9 +1,9 @@
-import { Asset } from "@/api/asset";
 import { getWatchlist } from "@/api/watchlist";
 import { TableSkeleton } from "@/app/table-skeleton";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { AssetTable } from "@/app/assets/asset-table";
 import { AssetSearch } from "@/app/assets/asset-search";
+import { Asset } from "@/types/custom-types";
 
 const Watchlist = () => {
   const [watchlistAssets, setWatchlistAssets] = useState<Asset[]>([]);

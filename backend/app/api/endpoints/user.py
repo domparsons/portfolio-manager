@@ -1,13 +1,11 @@
 import os
 
 import requests
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from dotenv import load_dotenv
-
 from app import crud, schemas
 from app.database import get_db
-
+from dotenv import load_dotenv
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
 
 load_dotenv()
 

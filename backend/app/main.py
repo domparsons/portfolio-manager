@@ -1,4 +1,5 @@
 from app.api.endpoints import (
+    admin,
     asset,
     monte_carlo,
     portfolio,
@@ -6,7 +7,6 @@ from app.api.endpoints import (
     transaction,
     user,
     watchlist,
-    admin,
 )
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware

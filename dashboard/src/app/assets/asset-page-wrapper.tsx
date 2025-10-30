@@ -2,19 +2,19 @@ import {
   checkAssetInWatchlist,
   getAssetByTicker,
   getTimeseriesDataForAsset,
-  Portfolio,
 } from "@/api/asset";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { AssetPage } from "./asset-page";
+import { Asset, Portfolio } from "@/types/custom-types";
 
 const AssetPageWrapper = () => {
   const { ticker } = useParams();
-  const [pageAsset, setPageAsset] = useState(null);
+  const [pageAsset, setPageAsset] = useState<Asset>();
   const [pageAssetInWatchlist, setPageAssetInWatchlist] = useState<
-    boolean | null
-  >(null);
+    boolean | undefined
+  >(undefined);
   const [timeseries, setTimeseries] = useState<Portfolio[]>([]);
   const [timeseriesRange, setTimeseriesRange] = useState<string>("1Y");
 

@@ -1,8 +1,7 @@
 import polars as pl
-from sqlalchemy import func
-from sqlalchemy.orm import aliased, Session
-
 from app.models.timeseries import Timeseries
+from sqlalchemy import func
+from sqlalchemy.orm import Session, aliased
 
 
 def get_latest_price_and_changes(db: Session) -> pl.DataFrame:

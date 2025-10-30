@@ -1,5 +1,4 @@
 import React, { useState, useCallback } from "react";
-import { Asset } from "@/api/asset";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ArrowDownUp } from "lucide-react";
+import { Asset } from "@/types/custom-types";
 
 const AssetSearch: React.FC<{
   assets: Asset[];

@@ -1,6 +1,6 @@
+from app.database import get_db
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.database import get_db
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
@@ -9,7 +9,6 @@ router = APIRouter(prefix="/admin", tags=["admin"])
 def trigger_asset_update(db: Session = Depends(get_db)):
     """Manually trigger asset list update"""
     try:
-        # Import and run the update function
         from app.core.data_ingestion.update_assets import main
 
         result = main()

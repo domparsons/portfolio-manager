@@ -5,6 +5,7 @@ import {
   PortfolioValueHistory,
 } from "@/types/custom-types";
 import { toast } from "sonner";
+import React from "react";
 
 export const getPortfolioHistory = async (
   setPortfolioHistory: React.Dispatch<
@@ -49,5 +50,16 @@ export const getPortfolioMetrics = async (
     const apiError = error as ApiError;
     console.error("Error fetching portfolio history:", apiError);
     toast("There was an error fetching portfolio history.");
+  }
+};
+
+export const getPortfolioHoldings = async (userId: string) => {
+  try {
+    return await apiClient.get(`/portfolio/holdings/${userId}`);
+  } catch (error) {
+    const apiError = error as ApiError;
+    console.error("Error fetching portfolio holdings:", apiError);
+    toast("There was an error fetching portfolio holdings.");
+    return null;
   }
 };
