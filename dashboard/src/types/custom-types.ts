@@ -85,3 +85,8 @@ export interface PortfolioCardProps {
   minDomain: number;
   maxDomain: number;
 }
+
+export interface TransactionTableProps {
+  transactions: Transaction[];
+  onDelete: () => void;
+}
