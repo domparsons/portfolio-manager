@@ -9,7 +9,6 @@ router = APIRouter(prefix="/admin", tags=["admin"])
 def trigger_asset_update(db: Session = Depends(get_db)):
     """Manually trigger asset list update"""
     try:
-        # Import and run the update function
         from app.core.data_ingestion.update_assets import main
 
         result = main()
