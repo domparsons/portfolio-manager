@@ -1,7 +1,6 @@
+from app.database import Base
 from sqlalchemy import BigInteger, Column, DateTime, Index, Integer, String, Text
 from sqlalchemy.orm import relationship
-
-from app.database import Base
 
 
 class Asset(Base):

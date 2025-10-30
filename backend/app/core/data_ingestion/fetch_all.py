@@ -1,5 +1,4 @@
 import polars as pl
-
 from app.database import SessionLocal
 from app.models import Asset, Timeseries
 

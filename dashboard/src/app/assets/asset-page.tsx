@@ -5,8 +5,8 @@ import TransactionButtons from "@/app/transaction-buttons";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CalendarIcon, Plus } from "lucide-react";
-import React, { useState } from "react";
+import { Minus, Plus } from "lucide-react";
+import React from "react";
 
 const AssetDetail: React.FC<{
   label: string;
@@ -56,7 +56,7 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
           }}
           variant="outline"
         >
-          <Plus />
+          {pageAssetInWatchlist ? <Minus /> : <Plus />}
           {pageAssetInWatchlist ? "Remove from watchlist" : "Add to watchlist"}
         </Button>
       </div>

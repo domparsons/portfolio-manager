@@ -1,7 +1,6 @@
-from sqlalchemy.orm import Session
-
 from app import models
-from app.schemas import TransactionOut, TransactionBase
+from app.schemas import TransactionBase, TransactionOut
+from sqlalchemy.orm import Session
 
 
 def get_transactions_by_user(

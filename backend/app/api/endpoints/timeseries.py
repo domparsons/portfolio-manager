@@ -1,12 +1,12 @@
-from fastapi import APIRouter, Depends, Query
-from sqlalchemy.orm import Session
+from datetime import datetime, timedelta, timezone
+from enum import Enum
 
+import polars as pl
 from app.crud.timeseries import get_latest_timeseries_for_asset
 from app.database import get_db
 from app.schemas.timeseries import TimeseriesSchema
-import polars as pl
-from enum import Enum
-from datetime import datetime, timedelta, timezone
+from fastapi import APIRouter, Depends, Query
+from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/timeseries", tags=["timeseries"])
 

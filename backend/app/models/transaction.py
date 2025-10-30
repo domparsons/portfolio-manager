@@ -1,6 +1,7 @@
 import enum
 from datetime import datetime, timezone
 
+from app.database import Base
 from sqlalchemy import (
     CheckConstraint,
     Column,
@@ -13,8 +14,6 @@ from sqlalchemy import (
     String,
 )
 from sqlalchemy.orm import relationship
-
-from app.database import Base
 
 
 class TransactionType(str, enum.Enum):

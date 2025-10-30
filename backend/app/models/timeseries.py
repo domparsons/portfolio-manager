@@ -1,3 +1,4 @@
+from app.database import Base
 from sqlalchemy import (
     BigInteger,
     Column,
@@ -8,8 +9,6 @@ from sqlalchemy import (
     Integer,
     PrimaryKeyConstraint,
 )
-
-from app.database import Base
 
 
 class Timeseries(Base):

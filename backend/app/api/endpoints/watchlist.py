@@ -1,9 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-
-from app import crud, schemas, core, models
+from app import core, crud, models, schemas
 from app.crud import watchlist
 from app.database import get_db
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/watchlist", tags=["watchlist"])
 

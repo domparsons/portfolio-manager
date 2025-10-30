@@ -1,7 +1,6 @@
 import polars as pl
-from sqlalchemy.orm import Session
-
 from app.models.asset import Asset
+from sqlalchemy.orm import Session
 
 
 def get_all_assets(db: Session, skip: int = 0, limit: int = 100) -> pl.DataFrame:
