@@ -1,9 +1,10 @@
-import { Asset, getAssetList } from "@/api/asset";
+import { getAssetList } from "@/api/asset";
 import { AssetTable } from "@/app/assets/asset-table";
 import { TableSkeleton } from "@/app/table-skeleton";
 import { Badge } from "@/components/ui/badge";
 import React, { useEffect, useState } from "react";
 import { AssetSearch } from "@/app/assets/asset-search";
+import { Asset } from "@/types/custom-types";
 
 const AssetList = () => {
   const [assets, setAssets] = useState<Asset[]>([]);

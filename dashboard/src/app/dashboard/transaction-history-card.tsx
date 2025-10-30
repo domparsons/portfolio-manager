@@ -2,9 +2,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatTimestampShort } from "@/utils/format-timestamp";
 import React from "react";
-import { apiClient, ApiError } from "@/lib/api-client";
-import { toast } from "sonner";
 import { Transaction } from "@/types/custom-types";
+import { useTransactionHistory } from "@/api/transaction";
 
 const TransactionHistoryCard = () => {
   const [transactionHistory, setTransactionHistory] = React.useState<
@@ -12,26 +11,10 @@ const TransactionHistoryCard = () => {
   >([]);
   const user_id = localStorage.getItem("user_id");
 
-  const getTransactionHistory = async () => {
-    if (!user_id) return;
-
-    try {
-      const data = await apiClient.get<Transaction[]>(
-        `/transaction/${user_id}`,
-        {
-          params: { limit: 10 },
-        },
-      );
-      setTransactionHistory(data);
-    } catch (error) {
-      const apiError = error as ApiError;
-      console.error("Error fetching transaction history:", apiError);
-      toast("There was an error fetching transaction history.");
-    }
-  };
-
   React.useEffect(() => {
-    getTransactionHistory();
+    if (user_id) {
+      useTransactionHistory(user_id, setTransactionHistory);
+    }
   }, []);
 
   return (

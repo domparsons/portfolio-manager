@@ -1,4 +1,3 @@
-import { AssetTableProps } from "@/api/asset";
 import {
   Table,
   TableBody,
@@ -9,6 +8,7 @@ import {
 } from "@/components/ui/table";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { AssetTableProps } from "@/types/custom-types";
 
 const AssetTable: React.FC<AssetTableProps> = ({ filteredAssets }) => {
   const navigate = useNavigate();

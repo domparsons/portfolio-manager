@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { Transaction } from "@/types/custom-types";
 
 export const deleteTransaction = async (
-  transactionId: number,
+  transactionId: number | undefined | null,
   user_id: string | null,
   refreshHistory: () => void,
 ) => {
@@ -31,6 +31,22 @@ export const getTransactionHistory = async (
 ) => {
   if (!user_id) return;
 
+  try {
+    const data = await apiClient.get<Transaction[]>(`/transaction/${user_id}`, {
+      params: { limit: 10 },
+    });
+    setTransactionHistory(data);
+  } catch (error) {
+    const apiError = error as ApiError;
+    console.error("Error fetching transaction history:", apiError);
+    toast("There was an error fetching transaction history.");
+  }
+};
+
+export const useTransactionHistory = async (
+  user_id: string,
+  setTransactionHistory: (transactions: Transaction[]) => void,
+) => {
   try {
     const data = await apiClient.get<Transaction[]>(`/transaction/${user_id}`, {
       params: { limit: 10 },

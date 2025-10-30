@@ -6,7 +6,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { motion } from "framer-motion";
 
 export default function LandingPage() {
-  const { loginWithRedirect, isAuthenticated, isLoading, error } = useAuth0();
+  const { loginWithRedirect } = useAuth0();
 
   const handleLogin = () => {
     loginWithRedirect().then((r) => console.log(r));

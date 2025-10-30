@@ -6,22 +6,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-} from "@/components/ui/chart";
+import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
+import { PortfolioCardProps } from "@/types/custom-types";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
-import { PortfolioChartData } from "@/types/custom-types";
-
-interface PortfolioCardProps {
-  portfolioHistory: PortfolioChartData[];
-  startDate: string;
-  endDate: string;
-  chartConfig: ChartConfig;
-  minDomain: number;
-  maxDomain: number;
-}
 
 const PortfolioCard: React.FC<PortfolioCardProps> = ({
   portfolioHistory,

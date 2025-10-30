@@ -1,5 +1,4 @@
 "use client";
-import { Asset } from "@/api/asset";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Card } from "@/components/ui/card";
@@ -18,6 +17,7 @@ import { Label } from "@/components/ui/label";
 import React from "react";
 import { apiClient, ApiError } from "@/lib/api-client";
 import { toast } from "sonner";
+import { Asset } from "@/types/custom-types";
 
 type TransactionButtonsProps = {
   transactionType: "buy" | "sell";
@@ -40,8 +40,10 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
 
   const numberOfSharesValid = numberOfShares > 0;
   const executionPriceValid = executionPrice > 0;
-  const executionDateValid = executionDate !== undefined && executionDate <= new Date();
-  const areInputsValid = numberOfSharesValid && executionPriceValid && executionDateValid;
+  const executionDateValid =
+    executionDate !== undefined && executionDate <= new Date();
+  const areInputsValid =
+    numberOfSharesValid && executionPriceValid && executionDateValid;
 
   React.useEffect(() => {
     const today = new Date();
@@ -70,7 +72,8 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
         {transactionType.charAt(0).toUpperCase() + transactionType.slice(1)}
         ing{" "}
         <span className={numberOfSharesValid ? "" : invalidClass}>
-          <strong>{numberOfShares}</strong> {numberOfShares === 1 ? "share" : "shares"}
+          <strong>{numberOfShares}</strong>{" "}
+          {numberOfShares === 1 ? "share" : "shares"}
         </span>{" "}
         of <strong>{asset.asset_name}</strong> on{" "}
         <span className={executionDateValid ? "" : invalidClass}>

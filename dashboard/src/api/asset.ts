@@ -1,19 +1,10 @@
-import React, { SetStateAction } from "react";
+import React from "react";
 import { toast } from "sonner";
 import { apiClient, ApiError } from "@/lib/api-client";
 import { Asset, Portfolio } from "@/types/custom-types";
 
 export function useTransactionType() {
   return React.useState<"buy" | "sell">("buy");
-}
-
-export interface AssetSheetPopoverProps {
-  timeseries: Portfolio[];
-  pageAsset: Asset;
-  timeseriesRange: string;
-  setTimeseriesRange: React.Dispatch<React.SetStateAction<string>>;
-  pageAssetInWatchlist: boolean | null;
-  setPageAssetInWatchlist: React.Dispatch<React.SetStateAction<boolean | null>>;
 }
 
 export const getAssetList = async (

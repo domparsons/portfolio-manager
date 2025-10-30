@@ -1,4 +1,3 @@
-import { AssetSheetPopoverProps, useTransactionType } from "@/api/asset";
 import { addToWatchlist, removeFromWatchlist } from "@/api/watchlist";
 import AssetChart from "@/app/charts/asset-chart";
 import TransactionButtons from "@/app/transaction-buttons";
@@ -7,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Minus, Plus } from "lucide-react";
 import React from "react";
+import { AssetSheetPopoverProps } from "@/types/custom-types";
+import { useTransactionType } from "@/api/asset";
 
 const AssetDetail: React.FC<{
   label: string;
@@ -29,7 +30,6 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
 }) => {
   const [transactionType, setTransactionType] = useTransactionType();
   const user_id = localStorage.getItem("user_id");
-  const [executionDate, setExecutionDate] = React.useState<Date>();
 
   return (
     <>
