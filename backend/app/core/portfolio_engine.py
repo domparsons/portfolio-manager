@@ -1,7 +1,6 @@
 from datetime import date, datetime
 
 from app import models, schemas
-from app.core import PriceService
 from sqlalchemy.orm.session import Session
 
 
@@ -21,6 +20,7 @@ def get_portfolio_data_for_user(
     Raises:
         ValueError: If no transactions or data available
     """
+    from app.core import PriceService  # inside function to prevent circular import
 
     price_service = PriceService(db=db)
 
