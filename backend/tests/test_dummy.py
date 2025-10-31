@@ -1,6 +1,2 @@
-def test_dummy_2():
-    assert True
-
-
-def test_dummy_2():
+def test_dummy():
     assert True
