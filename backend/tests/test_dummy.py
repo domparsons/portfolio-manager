@@ -1,2 +1,6 @@
-def test_get_latest_timeseries_for_asset_returns_recent_rows():
+def test_dummy_2():
+    assert True
+
+
+def test_dummy_2():
     assert True
