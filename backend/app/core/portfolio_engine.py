@@ -2,6 +2,7 @@ from datetime import date, datetime
 
 from app import models, schemas
 from sqlalchemy.orm.session import Session
+import statistics
 
 
 def get_portfolio_data_for_user(
@@ -73,13 +74,15 @@ def calculate_portfolio_history(
         price_lookup: dictionary mapping (asset_id, date) to price
 
     Returns:
-        list of dicts with date, value, and daily_return
+        list of PortfolioValueHistory with date, value, daily_return
     """
     holdings = {}
     results = []
     transaction_index = 0
 
     for day in trading_days:
+        net_cash_flow = 0.0
+
         while (
             transaction_index < len(transactions)
             and transactions[transaction_index].timestamp.date() <= day
@@ -88,8 +91,11 @@ def calculate_portfolio_history(
 
             if txn.type == "buy":
                 holdings[txn.asset_id] = holdings.get(txn.asset_id, 0.0) + txn.quantity
+                net_cash_flow += txn.quantity * txn.price
+
             elif txn.type == "sell":
                 holdings[txn.asset_id] = holdings.get(txn.asset_id, 0.0) - txn.quantity
+                net_cash_flow -= txn.quantity * txn.price
 
             transaction_index += 1
 
@@ -105,6 +111,7 @@ def calculate_portfolio_history(
                 date=day,
                 value=round(total_value, 2),
                 daily_return=0.0,
+                cash_flow=round(net_cash_flow, 2),
             )
         )
 
@@ -114,9 +121,12 @@ def calculate_portfolio_history(
     for i in range(1, len(results)):
         prev_value = results[i - 1].value
         curr_value = results[i].value
+        cash_flow = results[i].cash_flow
 
         if prev_value > 0:
-            results[i].daily_return = round((curr_value - prev_value) / prev_value, 6)
+            results[i].daily_return = round(
+                (curr_value - prev_value - cash_flow) / prev_value, 6
+            )
         else:
             results[i].daily_return = 0.0
 
@@ -144,6 +154,29 @@ def get_current_holdings(transactions: list) -> dict[int, float]:
     return {
         asset_id: quantity for asset_id, quantity in holdings.items() if quantity > 0
     }
+
+
+def calculate_std_dev(returns: list) -> float:
+    length = len(returns)
+    mean = sum(returns) / length
+
+    squared_diffs = [(x - mean) ** 2 for x in returns]
+    variance = sum(squared_diffs) / length
+
+    std_deviation = variance**0.5
+
+    return std_deviation
+
+
+def calculate_sharpe(returns: list) -> float:
+    if len(returns) < 2:
+        return 0.0
+
+    mean_return = statistics.mean(returns)
+    risk_free_rate = 0.04 / 252
+    std_dev = statistics.stdev(returns)
+
+    return (mean_return - risk_free_rate) / std_dev * (252**0.5)
 
 
 def calculate_metrics(
@@ -174,6 +207,9 @@ def calculate_metrics(
     total_return_abs = current_value - total_invested
     total_return_pct = total_return_abs / total_invested
 
+    returns = [hist.daily_return for hist in history[1:]]  # Skip day 0 with 0.0 returns
+    sharpe = calculate_sharpe(returns)
+
     return schemas.PortfolioMetrics(
         total_invested=round(total_invested, 2),
         current_value=round(current_value, 2),
@@ -182,4 +218,5 @@ def calculate_metrics(
         start_date=history[0].date,
         end_date=history[-1].date,
         days_analysed=len(history),
+        sharpe=sharpe,
     )
