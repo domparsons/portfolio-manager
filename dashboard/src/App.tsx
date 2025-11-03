@@ -22,6 +22,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { TransactionHistory } from "@/app/transactions/transaction-history";
+import { PortfolioProvider } from "@/context/portfolio-context";
 
 const App = () => {
   const { isAuthenticated, isLoading } = useAuth0();
@@ -53,23 +54,28 @@ const App = () => {
               </div>
             </header>
             <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-              <Routes>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/assets" element={<AssetList />} />
-                <Route path="/assets/:ticker" element={<AssetPageWrapper />} />
-                <Route path="/portfolio" element={<Portfolio />} />
-                <Route
-                  path="/transaction-history"
-                  element={<TransactionHistory />}
-                />
-                <Route path="/backtesting" element={<Backtesting />} />
-                <Route
-                  path="/monte-carlo-simulation"
-                  element={<MonteCarloSimulation />}
-                />
-                <Route path="/watchlist" element={<Watchlist />} />
-              </Routes>
+              <PortfolioProvider>
+                <Routes>
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/assets" element={<AssetList />} />
+                  <Route
+                    path="/assets/:ticker"
+                    element={<AssetPageWrapper />}
+                  />
+                  <Route path="/portfolio" element={<Portfolio />} />
+                  <Route
+                    path="/transaction-history"
+                    element={<TransactionHistory />}
+                  />
+                  <Route path="/backtesting" element={<Backtesting />} />
+                  <Route
+                    path="/monte-carlo-simulation"
+                    element={<MonteCarloSimulation />}
+                  />
+                  <Route path="/watchlist" element={<Watchlist />} />
+                </Routes>
+              </PortfolioProvider>
             </div>
           </SidebarInset>
         </SidebarProvider>
