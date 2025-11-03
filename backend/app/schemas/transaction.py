@@ -57,6 +57,7 @@ class PortfolioValueHistory(BaseModel):
     date: date
     value: float
     daily_return: float
+    cash_flow: float = 0.0
 
     class Config:
         from_attributes = True
@@ -70,3 +71,4 @@ class PortfolioMetrics(BaseModel):
     start_date: date
     end_date: date
     days_analysed: int
+    sharpe: float

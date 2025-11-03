@@ -2,6 +2,7 @@ import React from "react";
 import { apiClient, ApiError } from "@/lib/api-client";
 import { toast } from "sonner";
 import { Transaction } from "@/types/custom-types";
+import { usePortfolioMetrics } from "@/context/portfolio-context";
 
 export const deleteTransaction = async (
   transactionId: number | undefined | null,
@@ -9,6 +10,7 @@ export const deleteTransaction = async (
   refreshHistory: () => void,
 ) => {
   if (!user_id) return;
+  const { refreshMetrics } = usePortfolioMetrics();
 
   try {
     await apiClient.delete("/transaction/", {
@@ -22,6 +24,8 @@ export const deleteTransaction = async (
     const apiError = error as ApiError;
     console.error("Failed to delete transaction:", apiError);
     toast("Failed to delete transaction.");
+  } finally {
+    await refreshMetrics();
   }
 };
 

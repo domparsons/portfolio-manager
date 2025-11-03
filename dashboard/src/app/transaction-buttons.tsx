@@ -18,6 +18,7 @@ import React from "react";
 import { apiClient, ApiError } from "@/lib/api-client";
 import { toast } from "sonner";
 import { Asset } from "@/types/custom-types";
+import { usePortfolioMetrics } from "@/context/portfolio-context";
 
 type TransactionButtonsProps = {
   transactionType: "buy" | "sell";
@@ -44,6 +45,7 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
     executionDate !== undefined && executionDate <= new Date();
   const areInputsValid =
     numberOfSharesValid && executionPriceValid && executionDateValid;
+  const { refreshMetrics } = usePortfolioMetrics();
 
   React.useEffect(() => {
     const today = new Date();
@@ -111,6 +113,8 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
       const apiError = error as ApiError;
       console.error("Failed to create transaction:", apiError);
       toast("Failed to create transaction.");
+    } finally {
+      await refreshMetrics();
     }
   };
 

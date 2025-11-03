@@ -23,16 +23,6 @@ export interface PortfolioValueHistory {
   daily_return?: number;
 }
 
-export interface PortfolioMetrics {
-  total_invested: number;
-  current_value: number;
-  total_return_abs: number;
-  total_return_pct: number;
-  start_date: Date;
-  end_date: Date;
-  days_analysed: number;
-}
-
 export interface PortfolioHoldings {
   asset_id: string;
   asset_name: string;
@@ -89,4 +79,22 @@ export interface PortfolioCardProps {
 export interface TransactionTableProps {
   transactions: Transaction[];
   onDelete: () => void;
+}
+
+export interface PortfolioMetrics {
+  total_invested: number;
+  current_value: number;
+  total_return_abs: number;
+  total_return_pct: number;
+  start_date: string;
+  end_date: string;
+  days_analysed: number;
+  sharpe: number;
+}
+
+export interface PortfolioContextType {
+  portfolioMetrics: PortfolioMetrics | null;
+  loading: boolean;
+  error: string | null;
+  refreshMetrics: () => Promise<void>;
 }

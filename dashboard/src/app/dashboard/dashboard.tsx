@@ -3,14 +3,15 @@ import React, { useState } from "react";
 import { TransactionHistoryCard } from "@/app/dashboard/transaction-history-card";
 import { PortfolioCard } from "@/app/dashboard/portfolio-card";
 import { PortfolioChartData } from "@/types/custom-types";
-import { getPortfolioHistory, getPortfolioMetrics } from "@/api/portfolio";
+import { getPortfolioHistory } from "@/api/portfolio";
+import { usePortfolioMetrics } from "@/context/portfolio-context";
 
 const Dashboard = () => {
   const [portfolioHistory, setPortfolioHistory] = React.useState<
     PortfolioChartData[]
   >([]);
 
-  const [totalReturn, setTotalReturn] = useState(0);
+  const { portfolioMetrics, loading, error } = usePortfolioMetrics();
 
   const user_id = localStorage.getItem("user_id");
 
@@ -55,10 +56,6 @@ const Dashboard = () => {
     getPortfolioHistory(setPortfolioHistory, user_id);
   }, []);
 
-  React.useEffect(() => {
-    getPortfolioMetrics(setTotalReturn, user_id);
-  }, []);
-
   return (
     <div className="dashboard">
       <h1 className="text-2xl font-semibold">Dashboard</h1>
@@ -67,10 +64,22 @@ const Dashboard = () => {
           <h2 className={"text-xl font-semibold"}>${portfolioValue}</h2>
           <p
             className={`font-semibold ${
-              totalReturn >= 0 ? "text-green-500" : "text-red-500"
+              portfolioMetrics &&
+              portfolioMetrics.total_return_abs !== undefined &&
+              portfolioMetrics.total_return_abs >= 0
+                ? "text-green-500"
+                : "text-red-500"
             }`}
           >
-            {totalReturn >= 0 ? `+$${totalReturn}` : `-$${totalReturn}`}
+            {loading
+              ? ""
+              : error
+                ? ""
+                : portfolioMetrics?.total_return_abs !== undefined
+                  ? portfolioMetrics.total_return_abs >= 0
+                    ? `+$${portfolioMetrics.total_return_abs.toFixed(2)}`
+                    : `-$${Math.abs(portfolioMetrics.total_return_abs).toFixed(2)}`
+                  : "N/A"}
           </p>
         </div>
         <p>Portfolio Value</p>

@@ -1,6 +1,7 @@
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -17,10 +18,12 @@ import React from "react";
 import { Cell, Pie, PieChart } from "recharts";
 import { PortfolioHoldings } from "@/types/custom-types";
 import { getPortfolioHoldings } from "@/api/portfolio";
+import { usePortfolioMetrics } from "@/context/portfolio-context";
 
 const Portfolio = () => {
   const [chartData, setChartData] = React.useState<PortfolioHoldings[]>([]);
 
+  const { portfolioMetrics } = usePortfolioMetrics();
   const user_id = localStorage.getItem("user_id");
 
   React.useEffect(() => {
@@ -55,11 +58,30 @@ const Portfolio = () => {
     return config;
   }, [chartData]);
 
+  const getSharpeColor = (sharpe: number): string => {
+    if (sharpe < 1.0) return "bg-red-500";
+    if (sharpe < 2.0) return "bg-yellow-500";
+    if (sharpe < 3.0) return "bg-green-500";
+    return "bg-emerald-500";
+  };
+
+  const getSharpeWidth = (sharpe: number): number => {
+    return Math.min((sharpe / 4.0) * 100, 100);
+  };
+
+  const getSharpeLabel = (sharpe: number): string => {
+    if (sharpe === -1) return "";
+    if (sharpe < 1.0) return "Poor";
+    if (sharpe < 2.0) return "Good";
+    if (sharpe < 3.0) return "Very Good";
+    return "Excellent";
+  };
+
   return (
     <div className="portfolio">
       <h1 className="text-2xl font-semibold">Portfolio</h1>
-      <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-2 mt-4">
-        <Card className="flex flex-col">
+      <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-4 mt-4">
+        <Card className="flex flex-col col-span-2">
           <CardHeader className="items-center pb-0">
             <CardTitle>Portfolio Breakdown</CardTitle>
           </CardHeader>
@@ -89,6 +111,35 @@ const Portfolio = () => {
             </ChartContainer>
           </CardContent>
           <CardFooter className="flex-col gap-2 text-sm"></CardFooter>
+        </Card>
+        <Card className="flex flex-col">
+          <CardHeader className="items-center pb-0">
+            <CardTitle className="text-sm font-medium">Sharpe Ratio</CardTitle>
+            <CardDescription className="text-xs">
+              Risk-adjusted return
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex-1 flex flex-col items-center gap-3 justify-around">
+            <div className="text-4xl font-bold">
+              {portfolioMetrics?.sharpe.toFixed(2) ?? "--"}
+            </div>
+          </CardContent>
+          <CardFooter>
+            {" "}
+            <div className="w-full">
+              <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+                <div
+                  className={`h-full transition-all ${getSharpeColor(portfolioMetrics?.sharpe ?? 0)}`}
+                  style={{
+                    width: `${getSharpeWidth(portfolioMetrics?.sharpe ?? 0)}%`,
+                  }}
+                />
+              </div>
+              <p className="text-xs text-center text-muted-foreground mt-2">
+                {getSharpeLabel(portfolioMetrics?.sharpe ?? -1)}
+              </p>
+            </div>
+          </CardFooter>
         </Card>
       </div>
     </div>
