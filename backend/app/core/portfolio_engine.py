@@ -185,33 +185,34 @@ def calculate_metrics(
 ) -> schemas.PortfolioMetrics | None:
     """
     Calculate portfolio performance metrics.
-
-    Args:
-        transactions: List of transactions (to calculate cost basis)
-        history: List of daily portfolio values
-
-    Returns:
-        PortfolioMetrics object, or None if insufficient data
     """
     if len(history) < 1:
         return None
 
-    total_invested = sum(
-        txn.quantity * txn.price for txn in transactions if txn.type == "buy"
-    )
+    total_cash_out = 0.0
+    total_cash_in = 0.0
 
-    if total_invested <= 0:
-        return None
+    for txn in transactions:
+        if txn.type == "buy":
+            total_cash_out += txn.quantity * txn.price
+        elif txn.type == "sell":
+            total_cash_in += txn.quantity * txn.price
+
+    net_invested = total_cash_out - total_cash_in
 
     current_value = history[-1].value
-    total_return_abs = current_value - total_invested
-    total_return_pct = total_return_abs / total_invested
+    total_return_abs = current_value - net_invested
 
-    returns = [hist.daily_return for hist in history[1:]]  # Skip day 0 with 0.0 returns
+    if total_cash_out <= 0:
+        return None
+
+    total_return_pct = total_return_abs / total_cash_out
+
+    returns = [hist.daily_return for hist in history[1:]]
     sharpe = calculate_sharpe(returns)
 
     return schemas.PortfolioMetrics(
-        total_invested=round(total_invested, 2),
+        total_invested=round(total_cash_out, 2),
         current_value=round(current_value, 2),
         total_return_abs=round(total_return_abs, 2),
         total_return_pct=round(total_return_pct, 6),
