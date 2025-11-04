@@ -22,12 +22,14 @@ import {
 } from "@/components/ui/alert-dialog";
 import { deleteTransaction } from "@/api/transaction";
 import { TransactionTableProps } from "@/types/custom-types";
+import { usePortfolioMetrics } from "@/context/portfolio-context";
 
 const TransactionHistoryTable: React.FC<TransactionTableProps> = ({
   transactions,
   onDelete,
 }) => {
   const user_id = localStorage.getItem("user_id");
+  const { refreshMetrics } = usePortfolioMetrics();
 
   return (
     <Table>
@@ -69,7 +71,12 @@ const TransactionHistoryTable: React.FC<TransactionTableProps> = ({
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                     <AlertDialogAction
                       onClick={() =>
-                        deleteTransaction(transaction.id, user_id, onDelete)
+                        deleteTransaction(
+                          transaction.id,
+                          user_id,
+                          onDelete,
+                          refreshMetrics,
+                        )
                       }
                     >
                       Delete
