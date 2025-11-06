@@ -14,13 +14,13 @@ export interface Transaction {
 export interface PortfolioChartData {
   date: number;
   value: number;
-  daily_return?: number;
+  daily_return_pct?: number;
 }
 
 export interface PortfolioValueHistory {
   date: string;
   value: number;
-  daily_return?: number;
+  daily_return_pct?: number;
 }
 
 export interface PortfolioHoldings {
