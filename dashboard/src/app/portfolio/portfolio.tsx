@@ -141,6 +141,19 @@ const Portfolio = () => {
             </div>
           </CardFooter>
         </Card>
+        <Card className="flex flex-col">
+          <CardHeader className="items-center pb-0">
+            <CardTitle className="text-sm font-medium">
+              Maximum Drawdown
+            </CardTitle>
+            <CardDescription className="text-xs">Volatility</CardDescription>
+          </CardHeader>
+          <CardContent className="flex-1 flex flex-col items-center gap-3 justify-around">
+            <div className="text-4xl font-bold">
+              {portfolioMetrics?.max_drawdown.toFixed(2) ?? "--"}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

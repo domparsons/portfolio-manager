@@ -90,6 +90,7 @@ export interface PortfolioMetrics {
   end_date: string;
   days_analysed: number;
   sharpe: number;
+  max_drawdown: number;
 }
 
 export interface PortfolioContextType {
