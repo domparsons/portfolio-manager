@@ -74,7 +74,7 @@ def calculate_portfolio_history(
         price_lookup: dictionary mapping (asset_id, date) to price
 
     Returns:
-        list of PortfolioValueHistory with date, value, daily_return
+        list of PortfolioValueHistory with date, value, daily_return_pct
     """
     holdings = {}
     results = []
@@ -110,13 +110,15 @@ def calculate_portfolio_history(
             schemas.PortfolioValueHistory(
                 date=day,
                 value=round(total_value, 2),
-                daily_return=0.0,
+                daily_return_pct=0.0,
+                daily_return_val=0.0,
                 cash_flow=round(net_cash_flow, 2),
             )
         )
 
     if results:
-        results[0].daily_return = 0.0
+        results[0].daily_return_pct = 0.0
+        results[0].daily_return_val = 0.0
 
     for i in range(1, len(results)):
         prev_value = results[i - 1].value
@@ -124,11 +126,13 @@ def calculate_portfolio_history(
         cash_flow = results[i].cash_flow
 
         if prev_value > 0:
-            results[i].daily_return = round(
+            results[i].daily_return_pct = round(
                 (curr_value - prev_value - cash_flow) / prev_value, 6
             )
+            results[i].daily_return_val = round(curr_value - prev_value - cash_flow, 2)
         else:
-            results[i].daily_return = 0.0
+            results[i].daily_return_pct = 0.0
+            results[i].daily_return_val = 0.0
 
     return results
 
@@ -179,6 +183,24 @@ def calculate_sharpe(returns: list) -> float:
     return (mean_return - risk_free_rate) / std_dev * (252**0.5)
 
 
+def calculate_drawdown(history: list[schemas.PortfolioValueHistory]):
+    max_drawdown = 0
+    cumulative_return_series = []
+    value = 1
+    running_max = 0
+
+    for day in history:
+        value += value * day.daily_return_pct
+        cumulative_return_series.append(value)
+        if value > running_max:
+            running_max = value
+
+        current_drawdown = (value - running_max) / running_max
+        max_drawdown = min(current_drawdown, max_drawdown)
+
+    return max_drawdown
+
+
 def calculate_metrics(
     transactions: list,
     history: list[schemas.PortfolioValueHistory],
@@ -208,8 +230,11 @@ def calculate_metrics(
 
     total_return_pct = total_return_abs / total_cash_out
 
-    returns = [hist.daily_return for hist in history[1:]]
-    sharpe = calculate_sharpe(returns)
+    returns_pct = [hist.daily_return_pct for hist in history[1:]]
+
+    sharpe = calculate_sharpe(returns_pct)
+
+    max_drawdown = calculate_drawdown(history)
 
     return schemas.PortfolioMetrics(
         total_invested=round(total_cash_out, 2),
@@ -220,4 +245,5 @@ def calculate_metrics(
         end_date=history[-1].date,
         days_analysed=len(history),
         sharpe=sharpe,
+        max_drawdown=max_drawdown,
     )

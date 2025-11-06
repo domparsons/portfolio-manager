@@ -56,7 +56,8 @@ class PortfolioHoldings(BaseModel):
 class PortfolioValueHistory(BaseModel):
     date: date
     value: float
-    daily_return: float
+    daily_return_pct: float
+    daily_return_val: float
     cash_flow: float = 0.0
 
     class Config:
@@ -72,3 +73,4 @@ class PortfolioMetrics(BaseModel):
     end_date: date
     days_analysed: int
     sharpe: float
+    max_drawdown: float

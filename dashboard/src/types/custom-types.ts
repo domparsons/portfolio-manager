@@ -14,13 +14,13 @@ export interface Transaction {
 export interface PortfolioChartData {
   date: number;
   value: number;
-  daily_return?: number;
+  daily_return_pct?: number;
 }
 
 export interface PortfolioValueHistory {
   date: string;
   value: number;
-  daily_return?: number;
+  daily_return_pct?: number;
 }
 
 export interface PortfolioHoldings {
@@ -90,6 +90,7 @@ export interface PortfolioMetrics {
   end_date: string;
   days_analysed: number;
   sharpe: number;
+  max_drawdown: number;
 }
 
 export interface PortfolioContextType {

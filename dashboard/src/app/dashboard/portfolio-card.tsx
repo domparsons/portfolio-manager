@@ -83,16 +83,16 @@ const PortfolioCard: React.FC<PortfolioCardProps> = ({
                         <span className="font-bold text-foreground">
                           ${data.value.toFixed(2)}
                         </span>
-                        {data.daily_return !== undefined &&
-                          data.daily_return !== 0 && (
+                        {data.daily_return_pct !== undefined &&
+                          data.daily_return_pct !== 0 && (
                             <span
                               className={`text-xs ${
-                                data.daily_return >= 0
+                                data.daily_return_pct >= 0
                                   ? "text-green-600"
                                   : "text-red-600"
                               }`}
                             >
-                              {(data.daily_return * 100).toFixed(2)}%
+                              {(data.daily_return_pct * 100).toFixed(2)}%
                             </span>
                           )}
                       </div>

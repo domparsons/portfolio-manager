@@ -1,15 +1,9 @@
-import polars as pl
-from app.models.asset import Asset
+from app.models import Asset
 from sqlalchemy.orm import Session
 
 
-def get_all_assets(db: Session, skip: int = 0, limit: int = 100) -> pl.DataFrame:
-    assets = db.query(Asset).offset(skip).limit(limit).all()
-    assets_data = [asset.__dict__ for asset in assets]
-    assets_df = pl.DataFrame(assets_data)
-    assets_df = assets_df.drop("_sa_instance_state")
-
-    return assets_df
+def get_all_assets(db: Session, skip: int = 0, limit: int = 100) -> list[Asset]:
+    return db.query(Asset).offset(skip).limit(limit).all()
 
 
 def get_asset_by_id(asset_id: int, db: Session) -> dict | None:
