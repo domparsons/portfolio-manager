@@ -10,9 +10,7 @@ router = APIRouter(prefix="/asset", tags=["asset"])
 
 @router.get("/", response_model=list[AssetSchema])
 def get_all_assets(db: Session = Depends(get_db)):
-    assets_df = crud.asset.get_all_assets(db)
-
-    return assets_df.to_dicts()
+    return crud.asset.get_all_assets(db)
 
 
 @router.get("/asset_list", response_model=list[AssetListSchema])
