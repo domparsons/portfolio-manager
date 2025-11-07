@@ -34,3 +34,6 @@ line-ending = "lf"
 dev = [
     "ruff>=0.9.6",
 ]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
