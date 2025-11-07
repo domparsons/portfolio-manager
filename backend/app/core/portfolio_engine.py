@@ -172,13 +172,18 @@ def calculate_std_dev(returns: list) -> float:
     return std_deviation
 
 
-def calculate_sharpe(returns: list) -> float:
+def calculate_sharpe(returns: list, risk_free_rate: float = None) -> float:
+    if not risk_free_rate:
+        risk_free_rate = 0.04 / 252
+
     if len(returns) < 2:
         return 0.0
 
     mean_return = statistics.mean(returns)
-    risk_free_rate = 0.04 / 252
     std_dev = statistics.stdev(returns)
+
+    if std_dev == 0:
+        return 0.0
 
     return (mean_return - risk_free_rate) / std_dev * (252**0.5)
 
@@ -190,7 +195,7 @@ def calculate_drawdown(history: list[schemas.PortfolioValueHistory]):
     running_max = 0
 
     for day in history:
-        value += value * day.daily_return_pct
+        value = value * (1 + day.daily_return_pct)
         cumulative_return_series.append(value)
         if value > running_max:
             running_max = value
