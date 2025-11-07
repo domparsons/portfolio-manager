@@ -30,8 +30,7 @@ quote-style = "double"
 indent-style = "space"
 line-ending = "lf"
 
-[tool.uv.dependency-groups]
+[dependency-groups]
 dev = [
     "ruff>=0.9.6",
 ]
-
