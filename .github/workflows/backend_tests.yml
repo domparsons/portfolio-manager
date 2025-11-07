@@ -27,12 +27,8 @@ jobs:
       working-directory: ./backend
       run: uv sync
 
-    - name: Debug Python environment
-      working-directory: ./backend
-      run: |
-        uv run python -c "import sys; print(sys.path)"
-        uv run python -c "import app; print(app.__file__)"
-
     - name: Run tests
       working-directory: ./backend
+      env:
+        DATABASE_URL: postgresql://test:test@localhost/test
       run: uv run pytest
