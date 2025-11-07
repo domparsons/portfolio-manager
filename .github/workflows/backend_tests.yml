@@ -30,3 +30,9 @@ jobs:
     - name: Run tests
       working-directory: ./backend
       run: uv run pytest
+
+    - name: Debug Python environment
+      working-directory: ./backend
+      run: |
+        uv run python -c "import sys; print(sys.path)"
+        uv run python -c "import app; print(app.__file__)"
