@@ -71,10 +71,19 @@ const Portfolio = () => {
 
   const getSharpeLabel = (sharpe: number): string => {
     if (sharpe === -1) return "";
+    if (sharpe === 0)
+      return "Cannot calculate Sharpe Ratio with zero-volatility portfolio";
     if (sharpe < 1.0) return "Poor";
     if (sharpe < 2.0) return "Good";
     if (sharpe < 3.0) return "Very Good";
     return "Excellent";
+  };
+
+  const getDrawdownColor = (drawdown: number): string => {
+    if (drawdown >= -5) return "text-green-600";
+    if (drawdown >= -15) return "text-yellow-600";
+    if (drawdown >= -30) return "text-orange-600";
+    return "text-red-600";
   };
 
   return (
@@ -149,8 +158,16 @@ const Portfolio = () => {
             <CardDescription className="text-xs">Volatility</CardDescription>
           </CardHeader>
           <CardContent className="flex-1 flex flex-col items-center gap-3 justify-around">
-            <div className="text-4xl font-bold">
-              {portfolioMetrics?.max_drawdown.toFixed(2) ?? "--"}
+            <div
+              className={`text-4xl font-bold ${getDrawdownColor(
+                portfolioMetrics?.max_drawdown != null
+                  ? portfolioMetrics.max_drawdown
+                  : 0,
+              )}`}
+            >
+              {portfolioMetrics?.max_drawdown != null
+                ? `${(portfolioMetrics.max_drawdown * 100).toFixed(2)}%`
+                : "--"}
             </div>
           </CardContent>
         </Card>
