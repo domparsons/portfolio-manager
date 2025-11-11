@@ -23,22 +23,23 @@ import { SpeedInsights } from "@vercel/speed-insights/react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { TransactionHistory } from "@/app/transactions/transaction-history";
 import { PortfolioProvider } from "@/context/portfolio-context";
+import NoAccess from "@/app/login/no-access";
 
 const App = () => {
   const { isAuthenticated, isLoading } = useAuth0();
-  useAuthInit();
+  const { status } = useAuthInit();
 
   if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <p>Loading...</p>
-      </div>
-    );
+    return <div>Loading authentication...</div>;
   }
 
   if (!isAuthenticated) {
     return <LoginPage />;
   }
+
+  if (status === "loading") return <div>Checking access...</div>;
+  if (status === "denied") return <NoAccess />;
+  if (status === "error") return <div>Error occurred</div>;
 
   return (
     <Router>

@@ -1,32 +1,59 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { apiClient } from "@/lib/api-client";
 
 export const useAuthInit = () => {
   const { getAccessTokenSilently, isAuthenticated, user } = useAuth0();
+  const [status, setStatus] = useState<
+    "loading" | "approved" | "denied" | "error"
+  >("loading");
 
   useEffect(() => {
+    console.log("=== Effect fired ===");
+    console.log("isAuthenticated:", isAuthenticated);
+    console.log("user object:", user);
+    console.log("user?.sub:", user?.sub);
+
     const initUser = async () => {
+      console.log(">>> initUser started");
       try {
+        console.log(">>> Getting token...");
         const token = await getAccessTokenSilently();
+        console.log(">>> Got token");
+
         const auth0UserId = user?.sub;
+        console.log(">>> auth0UserId:", auth0UserId);
 
         if (!auth0UserId) {
-          throw new Error("No user ID available");
+          console.log(">>> No user ID, returning");
+          return;
         }
 
-        apiClient.setAuthToken(token);
-        localStorage.setItem("user_id", auth0UserId);
-
+        console.log(">>> Making API call...");
         await apiClient.post(`/user/create_or_get/${auth0UserId}`);
-      } catch (error) {
-        console.error("Failed to initialize user:", error);
-        apiClient.setAuthToken(null);
+        console.log(">>> API SUCCESS");
+        setStatus("approved");
+        console.log(">>> Status set to approved");
+      } catch (error: any) {
+        console.error(">>> ERROR CAUGHT:", error);
+        console.log(">>> Error status:", error?.status);
+        if (error?.status === 403) {
+          console.log(">>> Setting denied");
+          setStatus("denied");
+        } else {
+          console.log(">>> Setting error");
+          setStatus("error");
+        }
       }
     };
 
     if (isAuthenticated) {
+      console.log(">>> Calling initUser");
       initUser();
+    } else {
+      console.log(">>> Not authenticated, skipping");
     }
-  }, [isAuthenticated, getAccessTokenSilently]);
+  }, [isAuthenticated, user, getAccessTokenSilently]);
+
+  return { status }; // Return the status
 };

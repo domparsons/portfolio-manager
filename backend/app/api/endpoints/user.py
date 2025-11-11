@@ -2,6 +2,7 @@ import os
 
 import requests
 from app import crud, schemas
+from app.config.settings import settings
 from app.database import get_db
 from dotenv import load_dotenv
 from fastapi import APIRouter, Depends, HTTPException
@@ -11,10 +12,11 @@ load_dotenv()
 
 router = APIRouter(prefix="/user", tags=["user"])
 
-AUTH0_DOMAIN = os.getenv("AUTH0_DOMAIN", "dev-aej4rxcs3274i7ss.us.auth0.com")
-AUTH0_CLIENT_ID = os.getenv("AUTH0_CLIENT_ID")
-AUTH0_CLIENT_SECRET = os.getenv("AUTH0_CLIENT_SECRET")
-AUTH0_AUDIENCE = f"https://{AUTH0_DOMAIN}/api/v2/"
+AUTH0_DOMAIN = settings.AUTH0_DOMAIN
+AUTH0_CLIENT_ID = settings.AUTH0_CLIENT_ID
+AUTH0_CLIENT_SECRET = settings.AUTH0_CLIENT_SECRET
+AUTH0_AUDIENCE = settings.AUTH0_AUDIENCE
+APPROVED_EMAILS = set(os.getenv("APPROVED_EMAILS", "").split(","))
 
 
 def get_management_token():
@@ -59,6 +61,9 @@ def create_or_get_user(
 
     if not user_data.get("email"):
         raise HTTPException(status_code=403, detail="User is not active")
+
+    if user_data.get("email") not in APPROVED_EMAILS:
+        raise HTTPException(status_code=403, detail="User not allowed access")
 
     db_user = crud.get_user_by_id(db, user_id=user_id)
     if db_user:
