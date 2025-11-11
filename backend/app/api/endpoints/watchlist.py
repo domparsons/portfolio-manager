@@ -67,7 +67,7 @@ def get_watchlist(
 
     assets = crud.asset.get_all_assets(db)
     latest_timeseries = crud.timeseries.get_latest_price_and_changes(db)
-    assets = assets.filter(assets["id"].is_in(asset_ids))
+    assets = [asset for asset in assets if asset.id in asset_ids]
     asset_list = core.asset.generate_asset_list(assets, latest_timeseries)
 
     return asset_list
