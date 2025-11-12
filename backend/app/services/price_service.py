@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date
 
 from app import models
 from sqlalchemy.orm import Session
@@ -14,7 +14,7 @@ class PriceService:
         self.db = db
         self._price_cache: dict[tuple[int, date], float] = {}
 
-    def get_trading_days(self, start_date: datetime, end_date: datetime) -> list[date]:
+    def get_trading_days(self, start_date: date, end_date: date) -> list[date]:
         """
         Get all trading days (days with market data) between start and end dates.
 
@@ -37,14 +37,14 @@ class PriceService:
         )
 
         trading_days = [
-            row[0].date() if isinstance(row[0], datetime) else row[0]
+            row[0].date() if isinstance(row[0], date) else row[0]
             for row in trading_days_raw
         ]
 
         return trading_days
 
     def get_price_lookup(
-        self, asset_ids: list[int], start_date: datetime, end_date: datetime
+        self, asset_ids: list[int], start_date: date, end_date: date
     ) -> dict[tuple[int, date], float]:
         """
         Fetch all price data for given assets in date range.

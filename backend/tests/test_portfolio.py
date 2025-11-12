@@ -1,4 +1,4 @@
-from app.core.portfolio_engine import calculate_drawdown, calculate_sharpe
+from app.services.portfolio_engine import calculate_drawdown, calculate_sharpe
 
 
 def test_max_drawdown_basic(simple_drawdown_case):
