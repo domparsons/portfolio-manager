@@ -8,11 +8,10 @@ class LumpSumStrategy(BacktestStrategy):
         pass
 
     def on_day(self, context: BacktestContext) -> list[Action]:
-        # If first day and not invested:
-        #     return [BuyAction(asset_id, initial_investment)]
-        # else:
-        #     return []
         pass
 
     def get_parameters(self) -> dict:
+        pass
+
+    def get_asset_ids(self) -> list[int]:
         pass
