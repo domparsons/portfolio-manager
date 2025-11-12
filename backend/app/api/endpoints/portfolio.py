@@ -1,5 +1,5 @@
 from app import models, schemas, crud
-from app.core.portfolio_engine import (
+from app.services.portfolio_engine import (
     calculate_metrics,
     get_portfolio_data_for_user,
 )

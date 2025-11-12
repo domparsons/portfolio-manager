@@ -11,3 +11,10 @@ from .transaction import (
 )
 from .user import User, UserBase  # noqa: F401
 from .watchlist import WatchlistItem, WatchlistItemBase  # noqa: F401
+from .backtest import (
+    BacktestRequest,  # noqa: F401
+    BacktestMetrics,  # noqa: F401
+    BacktestResponse,  # noqa: F401
+    BacktestResult,  # noqa: F401
+    BaseModel,  # noqa: F401
+)

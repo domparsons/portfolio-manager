@@ -1,6 +1,7 @@
 from app.api.endpoints import (
     admin,
     asset,
+    backtest,
     monte_carlo,
     portfolio,
     timeseries,
@@ -43,6 +44,7 @@ async def root():
 
 app.openapi_schema = None
 app.include_router(api_router)
+app.include_router(backtest.router)
 app.include_router(watchlist.router)
 app.include_router(transaction.router)
 app.include_router(portfolio.router)
