@@ -1,14 +1,14 @@
-from app.services.portfolio_engine import calculate_drawdown, calculate_sharpe
+from app.backtesting.metrics import calculate_sharpe, calculate_max_drawdown
 
 
 def test_max_drawdown_basic(simple_drawdown_case):
-    result = calculate_drawdown(simple_drawdown_case)
+    result = calculate_max_drawdown(simple_drawdown_case)
     expected = -0.15
     assert abs(result - expected) < 0.01
 
 
 def test_no_drawdown(no_drawdown_case):
-    result = calculate_drawdown(no_drawdown_case)
+    result = calculate_max_drawdown(no_drawdown_case)
     expected = 0
     assert abs(result - expected) < 0.01
 
