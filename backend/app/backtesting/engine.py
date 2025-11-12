@@ -77,10 +77,10 @@ class BacktestEngine:
     def _execute_actions(
         actions: list[Action],
         current_date: date,
-        cash: float,  # Modified in place
-        holdings: dict,  # Modified in place
+        cash: float,
+        holdings: dict,
         price_lookup: dict,
-    ) -> float:  # Returns cash_flow
+    ) -> float:
         # Todo
         cash_flow = 0
         return cash_flow
@@ -88,7 +88,7 @@ class BacktestEngine:
     @staticmethod
     def _calculate_value(
         cash: float, holdings: dict, current_date: date, price_lookup: dict
-    ) -> float:  # Returns total value, not tuple
+    ) -> float:
         # Todo
         total_value = 0
         return total_value
