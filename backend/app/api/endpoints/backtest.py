@@ -1,19 +1,20 @@
-from fastapi import APIRouter
-from sqlalchemy.orm.session import Session
-from fastapi import Depends
 from app.database import get_db
-
-from app import schemas
+from app.schemas import BacktestRequest, BacktestResponse
 from app.services.backtest_service import BacktestService
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm.session import Session
 
 router = APIRouter(prefix="/backtest", tags=["backtest"])
 
 
-@router.post("/", response_model=schemas.BacktestResponse)
+@router.post("/", response_model=BacktestResponse)
 def run_backtest(
-    request: schemas.BacktestRequest,
+    request: BacktestRequest,
     db: Session = Depends(get_db),
 ):
+    import time
+
+    start_time = time.time()
     backtest_service = BacktestService(db)
     backtest_result = backtest_service.run_backtest(request)
 
@@ -25,11 +26,13 @@ def run_backtest(
         "parameters": request.parameters,
     }
 
-    backtest_response = schemas.BacktestResponse(
+    backtest_response = BacktestResponse(
         backtest_id="backtestid",
         strategy=request.strategy,
         parameters=parameters,
         results=backtest_result,
     )
+
+    print(time.time() - start_time)
 
     return backtest_response

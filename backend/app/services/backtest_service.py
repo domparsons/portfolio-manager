@@ -71,8 +71,16 @@ class BacktestService:
     def _create_buy_hold_strategy(
         request: schemas.BacktestRequest,
     ) -> BuyAndHoldStrategy:
+        allocation = request.parameters.get("allocation")
+
+        if allocation:
+            allocation = {int(k): v for k, v in allocation.items()}
+
+        if not allocation and len(request.asset_ids) == 1:
+            allocation = {request.asset_ids[0]: 1.0}
+
         return BuyAndHoldStrategy(
-            allocation=request.parameters["allocation"],
+            allocation=allocation,
             initial_investment=request.initial_cash,
         )
 

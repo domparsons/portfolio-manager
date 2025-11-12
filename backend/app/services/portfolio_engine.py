@@ -1,8 +1,11 @@
 from datetime import date, datetime
 
 from app import models, schemas
+from app.backtesting.metrics import (
+    calculate_max_drawdown,
+    calculate_sharpe,
+)
 from sqlalchemy.orm.session import Session
-import statistics
 
 
 def get_portfolio_data_for_user(
@@ -160,86 +163,31 @@ def get_current_holdings(transactions: list) -> dict[int, float]:
     }
 
 
-def calculate_std_dev(returns: list) -> float:
-    length = len(returns)
-    mean = sum(returns) / length
-
-    squared_diffs = [(x - mean) ** 2 for x in returns]
-    variance = sum(squared_diffs) / length
-
-    std_deviation = variance**0.5
-
-    return std_deviation
-
-
-def calculate_sharpe(returns: list, risk_free_rate: float = None) -> float:
-    if not risk_free_rate:
-        risk_free_rate = 0.04 / 252
-
-    if len(returns) < 2:
-        return 0.0
-
-    mean_return = statistics.mean(returns)
-    std_dev = statistics.stdev(returns)
-
-    if std_dev == 0:
-        return 0.0
-
-    return (mean_return - risk_free_rate) / std_dev * (252**0.5)
-
-
-def calculate_drawdown(history: list[schemas.PortfolioValueHistory]):
-    max_drawdown = 0
-    cumulative_return_series = []
-    value = 1
-    running_max = 0
-
-    for day in history:
-        value = value * (1 + day.daily_return_pct)
-        cumulative_return_series.append(value)
-        if value > running_max:
-            running_max = value
-
-        current_drawdown = (value - running_max) / running_max
-        max_drawdown = min(current_drawdown, max_drawdown)
-
-    return max_drawdown
-
-
 def calculate_metrics(
     transactions: list,
     history: list[schemas.PortfolioValueHistory],
 ) -> schemas.PortfolioMetrics | None:
-    """
-    Calculate portfolio performance metrics.
-    """
     if len(history) < 1:
         return None
 
-    total_cash_out = 0.0
-    total_cash_in = 0.0
-
-    for txn in transactions:
-        if txn.type == "buy":
-            total_cash_out += txn.quantity * txn.price
-        elif txn.type == "sell":
-            total_cash_in += txn.quantity * txn.price
-
+    total_cash_out = sum(
+        txn.quantity * txn.price for txn in transactions if txn.type == "buy"
+    )
+    total_cash_in = sum(
+        txn.quantity * txn.price for txn in transactions if txn.type == "sell"
+    )
     net_invested = total_cash_out - total_cash_in
-
-    current_value = history[-1].value
-    total_return_abs = current_value - net_invested
 
     if total_cash_out <= 0:
         return None
 
+    current_value = history[-1].value
+    total_return_abs = current_value - net_invested
     total_return_pct = total_return_abs / total_cash_out
 
-    returns_pct = [hist.daily_return_pct for hist in history[1:]]
-
-    sharpe = calculate_sharpe(returns_pct)
-
-    max_drawdown = calculate_drawdown(history)
+    returns = [hist.daily_return_pct for hist in history[1:]]
+    sharpe = calculate_sharpe(returns)
+    max_drawdown = calculate_max_drawdown(history)
 
     return schemas.PortfolioMetrics(
         total_invested=round(total_cash_out, 2),
