@@ -23,7 +23,7 @@ def run_backtest(
         backtest_id="backtestid",
         strategy=request.strategy,
         parameters=parameters,
-        results=backtest_result,
+        data=backtest_result,
     )
 
     return backtest_response

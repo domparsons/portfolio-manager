@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   BacktestParams,
   BacktestResult,
@@ -11,6 +11,8 @@ import { runBacktest } from "@/api/backtest";
 import { BuyAndHoldForm } from "@/app/backtesting/strategies/buy-and-hold";
 import { DCAForm } from "@/app/backtesting/strategies/dca";
 import { LumpSumForm } from "@/app/backtesting/strategies/lump-sum";
+import { Asset } from "@/types/custom-types";
+import { getAssetList } from "@/api/asset";
 
 const STRATEGY_NAMES: Record<BacktestStrategy, string> = {
   dca: "Dollar Cost Averaging",
@@ -49,6 +51,13 @@ const Backtesting = () => {
   };
   const StrategyForm = STRATEGY_FORMS[selectedStrategy];
 
+  const [assets, setAssets] = useState<Asset[]>([]);
+  const [filteredAssets, setFilteredAssets] = useState<Asset[]>([]);
+
+  useEffect(() => {
+    getAssetList(setAssets, setFilteredAssets);
+  }, []);
+
   return (
     <div className="dashboard">
       <h1 className="text-2xl font-semibold">Backtesting</h1>
@@ -60,7 +69,13 @@ const Backtesting = () => {
           strategyNames={STRATEGY_NAMES}
         />
       </div>
-      <StrategyForm onSubmit={handleBacktestSubmit} isLoading={isLoading} />
+      <StrategyForm
+        onSubmit={handleBacktestSubmit}
+        isLoading={isLoading}
+        assets={assets}
+        setFilteredAssets={setFilteredAssets}
+        filteredAssets={filteredAssets}
+      />
       <BacktestResults results={backtestResults} />
     </div>
   );
