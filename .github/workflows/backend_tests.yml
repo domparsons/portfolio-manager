@@ -5,6 +5,7 @@ on:
     branches: [ main ]
     paths:
       - 'backend/**'
+      - 'dashboard/**'
       - '.github/workflows/backend-tests.yml'
 
 jobs:
