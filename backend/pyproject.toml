@@ -11,7 +11,6 @@ dependencies = [
     "matplotlib>=3.10.6",
     "passlib[bcrypt]>=1.7.4",
     "polars>=1.20.0",
-    "prefect>=3.4.1",
     "psycopg2-binary==2.9.10",
     "pydantic-settings>=2.7.1",
     "pyjwt>=2.10.1",
