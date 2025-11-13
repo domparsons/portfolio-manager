@@ -1,22 +1,34 @@
+import { Asset } from "@/types/custom-types";
+
 export type BacktestStrategy = "dca" | "buy_and_hold" | "lump_sum";
 
 export interface BacktestResult {
-  portfolio_values: Array<{
-    date: string;
-    value: number;
-  }>;
-  metrics: {
-    total_return: number;
-    sharpe_ratio: number;
-    max_drawdown: number;
-    volatility: number;
+  backtest_id: string;
+  strategy: string;
+  parameters: Record<string, any>;
+  data: {
+    start_date: string;
+    end_date: string;
+    initial_value: number;
+    final_value: number;
+    total_return_pct: number;
+    total_return_abs: number;
+    metrics: {
+      sharpe: number;
+      max_drawdown: number;
+      volatility: number;
+      days_analysed: number;
+    };
+    history: Array<{
+      date: string;
+      value: number;
+      cash: number;
+      holdings: Record<string, number>;
+      cash_flow: number;
+      daily_return_pct: number;
+      daily_return_abs: number;
+    }>;
   };
-  transactions: Array<{
-    date: string;
-    action: string;
-    quantity: number;
-    price: number;
-  }>;
 }
 
 export interface BacktestParams {
@@ -31,4 +43,13 @@ export interface BacktestParams {
 export interface StrategyFormProps {
   onSubmit: (params: BacktestParams) => Promise<void>;
   isLoading: boolean;
+  assets: Asset[];
+  setFilteredAssets: (assets: Asset[]) => void;
+  filteredAssets: Asset[];
+}
+
+export interface SingleAssetSelectorProps {
+  assets: Asset[];
+  selectedAsset: Asset | undefined;
+  setSelectedAsset: (assets: Asset | undefined) => void;
 }

@@ -46,4 +46,4 @@ class BacktestResponse(BaseModel):
     backtest_id: str
     strategy: str
     parameters: dict
-    results: BacktestResult
+    data: BacktestResult
