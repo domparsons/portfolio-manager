@@ -6,6 +6,7 @@ from app.backtesting.metrics import (
     calculate_sharpe,
 )
 from sqlalchemy.orm.session import Session
+from fastapi import HTTPException
 
 
 def get_portfolio_data_for_user(
@@ -36,11 +37,13 @@ def get_portfolio_data_for_user(
     )
 
     if not transactions:
-        raise ValueError("No transactions found")
+        raise HTTPException(status_code=404, detail="No transactions found")
 
     timestamps = [t.timestamp for t in transactions if t.timestamp]
+
     if not timestamps:
-        raise ValueError("No valid transaction timestamps")
+        raise HTTPException(status_code=404, detail="No valid transaction timestamps")
+
 
     start_date = min(timestamps)  # type: ignore[arg-type]
     end_date = datetime.now()
@@ -48,7 +51,8 @@ def get_portfolio_data_for_user(
     trading_days = price_service.get_trading_days(start_date, end_date)
 
     if not trading_days:
-        raise ValueError("No trading data available")
+        raise HTTPException(status_code=404, detail="No trading data available")
+
 
     unique_asset_ids = list(set(t.asset_id for t in transactions))  # type: ignore[arg-type]
 

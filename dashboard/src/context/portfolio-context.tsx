@@ -30,11 +30,14 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({
       );
       setPortfolioMetrics(data);
       setError(null);
-    } catch (err) {
-      const apiError = err as ApiError;
-      console.error("Error fetching portfolio metrics:", apiError);
-      setError("Failed to load portfolio metrics");
-      toast.error("Failed to load portfolio metrics");
+    } catch (error) {
+      const apiError = error as ApiError;
+      if (apiError.status === 404) {
+        setPortfolioMetrics(null);
+        setError(null);
+      } else {
+        toast.error("Failed to load portfolio history");
+      }
     } finally {
       setLoading(false);
     }

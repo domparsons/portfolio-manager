@@ -5,6 +5,7 @@ import { PortfolioCard } from "@/app/dashboard/portfolio-card";
 import { PortfolioChartData } from "@/types/custom-types";
 import { getPortfolioHistory } from "@/api/portfolio";
 import { usePortfolioMetrics } from "@/context/portfolio-context";
+import { EmptyComponent } from "@/app/empty-component";
 
 const Dashboard = () => {
   const [portfolioHistory, setPortfolioHistory] = React.useState<
@@ -79,22 +80,31 @@ const Dashboard = () => {
                   ? portfolioMetrics.total_return_abs >= 0
                     ? `+$${portfolioMetrics.total_return_abs.toFixed(2)}`
                     : `-$${Math.abs(portfolioMetrics.total_return_abs).toFixed(2)}`
-                  : "N/A"}
+                  : ""}
           </p>
         </div>
         <p>Portfolio Value</p>
       </div>
-      <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-3">
-        <PortfolioCard
-          portfolioHistory={portfolioHistory}
-          startDate={startDate}
-          endDate={endDate}
-          chartConfig={chartConfig}
-          minDomain={minDomain}
-          maxDomain={maxDomain}
+      {portfolioHistory.length > 0 ? (
+        <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-3">
+          <PortfolioCard
+            portfolioHistory={portfolioHistory}
+            startDate={startDate}
+            endDate={endDate}
+            chartConfig={chartConfig}
+            minDomain={minDomain}
+            maxDomain={maxDomain}
+          />
+          <TransactionHistoryCard />
+        </div>
+      ) : (
+        <EmptyComponent
+          title={"No Transactions Yet"}
+          description={
+            "You haven't created any transactions yet. Get started by creating your first transaction in the Assets List."
+          }
         />
-        <TransactionHistoryCard />
-      </div>
+      )}
     </div>
   );
 };

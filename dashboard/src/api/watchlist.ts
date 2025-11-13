@@ -15,8 +15,11 @@ export const getWatchlist = async (
     setFilteredWatchlistAssets(data);
   } catch (error) {
     const apiError = error as ApiError;
-    console.error("Error fetching watchlist:", apiError);
-    toast("There was an error fetching your watchlist.");
+    if (apiError.status === 404) {
+      toast.error("User not found");
+    } else {
+      toast.error("Failed to fetch watchlist");
+    }
   }
 };
 
@@ -35,8 +38,11 @@ export const addToWatchlist = async (
     });
   } catch (error) {
     const apiError = error as ApiError;
-    console.error("Failed to add asset to watchlist:", apiError);
-    toast("Failed to add asset to watchlist.");
+    if (apiError.status === 404) {
+      toast.error("Asset not found");
+    } else {
+      toast.error("Failed to add to watchlist");
+    }
   }
 };
 
@@ -55,7 +61,10 @@ export const removeFromWatchlist = async (
     });
   } catch (error) {
     const apiError = error as ApiError;
-    console.error("Failed to remove asset from watchlist:", apiError);
-    toast("Failed to remove asset from watchlist.");
+    if (apiError.status === 404) {
+      toast.error("Watchlist item not found");
+    } else {
+      toast.error("Failed to remove from watchlist");
+    }
   }
 };
