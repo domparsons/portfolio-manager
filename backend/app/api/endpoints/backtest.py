@@ -12,19 +12,12 @@ def run_backtest(
     request: BacktestRequest,
     db: Session = Depends(get_db),
 ):
-    import time
-
-    start_time = time.time()
     backtest_service = BacktestService(db)
+
+    backtest_service.validate_request(request)
     backtest_result = backtest_service.run_backtest(request)
 
-    parameters = {
-        "asset_ids": request.asset_ids,
-        "start_date": request.start_date,
-        "end_date": request.end_date,
-        "initial_cash": request.initial_cash,
-        "parameters": request.parameters,
-    }
+    parameters = request.model_dump(exclude={"strategy"})
 
     backtest_response = BacktestResponse(
         backtest_id="backtestid",
@@ -32,7 +25,5 @@ def run_backtest(
         parameters=parameters,
         results=backtest_result,
     )
-
-    print(time.time() - start_time)
 
     return backtest_response
