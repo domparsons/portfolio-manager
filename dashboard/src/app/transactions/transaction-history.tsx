@@ -3,6 +3,7 @@ import React from "react";
 import { getTransactionHistory } from "@/api/transaction";
 import { TransactionHistoryTable } from "@/app/transactions/transaction-history-table";
 import { Transaction } from "@/types/custom-types";
+import { EmptyComponent } from "@/app/empty-component";
 
 const TransactionHistory = () => {
   const [transactionHistory, setTransactionHistory] = React.useState<
@@ -30,7 +31,14 @@ const TransactionHistory = () => {
       </div>
 
       {transactionHistory.length === 0 ? (
-        <TableSkeleton />
+        // <TableSkeleton />
+        <EmptyComponent
+          title={"No Transactions Yet"}
+          description={
+            "You haven't created any transactions yet. Get started by creating\n" +
+            "your first transaction in the Assets List."
+          }
+        />
       ) : (
         <TransactionHistoryTable
           transactions={transactionHistory}

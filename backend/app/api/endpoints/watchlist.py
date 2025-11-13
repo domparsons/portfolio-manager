@@ -41,7 +41,7 @@ def remove_from_watchlist(
     )
 
     if not watchlist_item:
-        return None
+        raise HTTPException(status_code=404, detail="Watchlist item not found")
 
     db.delete(watchlist_item)
     db.commit()
@@ -62,6 +62,9 @@ def get_watchlist(
         user_id=user_id,
         db=db,
     )
+
+    if not watchlist_items:
+        return []
 
     asset_ids = [item.asset_id for item in watchlist_items]
 

@@ -30,8 +30,11 @@ export const getPortfolioHistory = async (
     setPortfolioHistory(chartData);
   } catch (error) {
     const apiError = error as ApiError;
-    console.error("Error fetching portfolio history:", apiError);
-    toast("There was an error fetching portfolio history.");
+    if (apiError.status === 404) {
+      setPortfolioHistory([]);
+    } else {
+      toast.error("Failed to load portfolio history");
+    }
   }
 };
 
@@ -48,8 +51,8 @@ export const getPortfolioMetrics = async (
     setTotalReturn(data.total_return_abs);
   } catch (error) {
     const apiError = error as ApiError;
-    console.error("Error fetching portfolio history:", apiError);
-    toast("There was an error fetching portfolio history.");
+    console.error("Error fetching portfolio metrics:", apiError);
+    toast("There was an error fetching portfolio metrics.");
   }
 };
 

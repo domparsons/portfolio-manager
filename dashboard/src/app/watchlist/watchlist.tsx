@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { AssetTable } from "@/app/assets/asset-table";
 import { AssetSearch } from "@/app/assets/asset-search";
 import { Asset } from "@/types/custom-types";
+import { Empty } from "@/components/ui/empty";
+import { EmptyComponent } from "@/app/empty-component";
 
 const Watchlist = () => {
   const [watchlistAssets, setWatchlistAssets] = useState<Asset[]>([]);
@@ -21,7 +23,12 @@ const Watchlist = () => {
       {" "}
       <h1 className="text-2xl font-semibold">Watchlist</h1>
       {watchlistAssets.length === 0 ? (
-        <TableSkeleton />
+        <EmptyComponent
+          title={"No Assets in Watchlist Yet"}
+          description={
+            "You haven't added any assets to your Watchlist yet. Get started by selecting an Asset and adding it to your Watchlist"
+          }
+        />
       ) : (
         <div>
           <AssetSearch
