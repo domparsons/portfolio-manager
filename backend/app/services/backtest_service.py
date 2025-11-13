@@ -1,3 +1,4 @@
+from datetime import timedelta, date
 from enum import Enum
 
 from app import crud, schemas
@@ -32,9 +33,6 @@ class BacktestService:
         self.engine = BacktestEngine(self.db)
 
     def run_backtest(self, request: schemas.BacktestRequest) -> schemas.BacktestResult:
-        if not self.validate_assets_exist(request.asset_ids):
-            raise HTTPException(status_code=404, detail="Asset not found")
-
         strategy = self._create_strategy(request)
 
         backtest_result = self.engine.run(
@@ -46,7 +44,38 @@ class BacktestService:
 
         return backtest_result
 
-    def validate_assets_exist(self, requested_asset_ids) -> bool:
+    def validate_request(self, request: schemas.BacktestRequest):
+        if not self._validate_assets_exist(request.asset_ids):
+            raise HTTPException(status_code=404, detail="Asset not found")
+
+        if request.start_date >= date.today():
+            raise HTTPException(
+                status_code=400, detail="Start date cannot be in the future or today"
+            )
+
+        if request.end_date >= date.today():
+            raise HTTPException(
+                status_code=400, detail="End date cannot be in the future or today"
+            )
+
+        if request.start_date >= request.end_date:
+            raise HTTPException(
+                status_code=400,
+                detail="End date cannot be after or equal to start date",
+            )
+
+        date_range = request.end_date - request.start_date
+        if date_range > timedelta(days=365 * 10):
+            raise HTTPException(
+                status_code=400, detail="Date range cannot exceed 10 years"
+            )
+
+        if date_range < timedelta(days=7):
+            raise HTTPException(
+                status_code=400, detail="Date range must be at least 7 days"
+            )
+
+    def _validate_assets_exist(self, requested_asset_ids) -> bool:
         all_assets = crud.get_all_assets(db=self.db)
         all_asset_ids = [asset.id for asset in all_assets]
         for requested_asset in requested_asset_ids:
