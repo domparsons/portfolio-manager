@@ -53,7 +53,7 @@ export const removeFromWatchlist = async (
   if (!user_id || !asset_id) return;
 
   try {
-    await apiClient.delete("/watchlist/remove_from_watchlist/", {
+    await apiClient.delete("/watchlist/remove_from_watchlist", {
       params: {
         user_id,
         asset_id,
