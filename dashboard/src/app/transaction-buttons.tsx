@@ -119,7 +119,7 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
   };
 
   return (
-    <Dialog open={modalOpen}>
+    <Dialog open={modalOpen} onOpenChange={setModalOpen}>
       <DialogTrigger asChild>
         <Button
           className={"bg-green-600"}
@@ -188,9 +188,9 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
             <Card className="w-fit">
               <Calendar
                 mode="single"
+                captionLayout="dropdown"
                 selected={executionDate}
                 onSelect={setExecutionDate}
-                initialFocus
               />
             </Card>
           </div>

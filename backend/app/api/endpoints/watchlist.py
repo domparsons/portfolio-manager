@@ -37,7 +37,7 @@ def remove_from_watchlist(
     watchlist_item = (
         db.query(models.WatchlistItem)
         .filter(models.WatchlistItem.asset_id == asset_id)
-        .first()
+        .all()
     )
 
     if not watchlist_item:

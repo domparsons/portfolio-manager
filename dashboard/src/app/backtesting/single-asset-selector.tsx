@@ -18,7 +18,7 @@ const SingleAssetSelector: React.FC<SingleAssetSelectorProps> = ({
 }) => {
   return (
     <Select
-      value={selectedAsset?.asset_name}
+      value={selectedAsset?.asset_name ?? ""}
       onValueChange={(assetName) => {
         const asset = assets.find((a) => a.asset_name === assetName);
         setSelectedAsset(asset);

@@ -61,7 +61,7 @@ const Backtesting = () => {
   return (
     <div className="dashboard">
       <h1 className="text-2xl font-semibold">Backtesting</h1>
-      <div className={"mt-6"}>
+      <div className={"mt-8"}>
         <h2 className={"mb-2 font-semibold"}>Select a strategy</h2>
         <StrategySelector
           selectedStrategy={selectedStrategy}
