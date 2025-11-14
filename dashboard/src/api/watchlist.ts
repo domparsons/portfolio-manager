@@ -30,7 +30,7 @@ export const addToWatchlist = async (
   if (!user_id || !asset_id) return;
 
   try {
-    await apiClient.post("/watchlist/", null, {
+    await apiClient.post("/watchlist/add_to_watchlist", null, {
       params: {
         user_id,
         asset_id,
@@ -53,7 +53,7 @@ export const removeFromWatchlist = async (
   if (!user_id || !asset_id) return;
 
   try {
-    await apiClient.delete("/watchlist/remove_from_watchlist", {
+    await apiClient.delete("/watchlist/remove_from_watchlist/", {
       params: {
         user_id,
         asset_id,

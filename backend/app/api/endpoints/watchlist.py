@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 router = APIRouter(prefix="/watchlist", tags=["watchlist"])
 
 
-@router.post("/", response_model=schemas.WatchlistItem)
+@router.post("/add_to_watchlist", response_model=schemas.WatchlistItem)
 def add_to_watchlist(
     user_id: str,
     asset_id: int,
@@ -24,7 +24,10 @@ def add_to_watchlist(
     )
 
 
-@router.delete("/remove_from_watchlist", response_model=schemas.WatchlistItem)
+@router.delete(
+    "/remove_from_watchlist",
+    response_model=schemas.WatchlistItem,
+)
 def remove_from_watchlist(
     user_id: str,
     asset_id: int,
@@ -36,8 +39,11 @@ def remove_from_watchlist(
 
     watchlist_item = (
         db.query(models.WatchlistItem)
-        .filter(models.WatchlistItem.asset_id == asset_id)
-        .all()
+        .filter(
+            models.WatchlistItem.asset_id == asset_id,
+            models.WatchlistItem.user_id == user_id,
+        )
+        .first()
     )
 
     if not watchlist_item:
