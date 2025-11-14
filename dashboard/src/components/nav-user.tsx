@@ -57,7 +57,7 @@ export function NavUser() {
   };
   const { user } = useAuth0();
 
-  const username = user?.nickname || "Developer";
+  const username = user?.name || "Developer";
 
   const email = user?.email || "dev@icloud.com";
 
@@ -90,7 +90,7 @@ export function NavUser() {
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+            className="pe-4 min-w-56 rounded-lg"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
@@ -104,26 +104,13 @@ export function NavUser() {
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{username}</span>
-                  <span className="truncate text-xs">{email}</span>
+                  <span className="truncate font-semibold">
+                    {user?.name ?? ""}
+                  </span>
+                  <span className="truncate text-xs">{user?.sub}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
-            {/*<DropdownMenuSeparator />*/}
-            {/*<DropdownMenuGroup>*/}
-            {/*  <DropdownMenuItem>*/}
-            {/*    <BadgeCheck />*/}
-            {/*    Account*/}
-            {/*  </DropdownMenuItem>*/}
-            {/*  <DropdownMenuItem>*/}
-            {/*    <CreditCard />*/}
-            {/*    Billing*/}
-            {/*  </DropdownMenuItem>*/}
-            {/*  <DropdownMenuItem>*/}
-            {/*    <Bell />*/}
-            {/*    Notifications*/}
-            {/*  </DropdownMenuItem>*/}
-            {/*</DropdownMenuGroup>*/}
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={toggleTheme}>
               {(theme === "light" && <Moon />) || <Sun />}

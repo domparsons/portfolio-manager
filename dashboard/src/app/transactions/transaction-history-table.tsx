@@ -23,6 +23,7 @@ import {
 import { deleteTransaction } from "@/api/transaction";
 import { TransactionTableProps } from "@/types/custom-types";
 import { usePortfolioMetrics } from "@/context/portfolio-context";
+import { Badge } from "@/components/ui/badge";
 
 const TransactionHistoryTable: React.FC<TransactionTableProps> = ({
   transactions,
@@ -40,6 +41,7 @@ const TransactionHistoryTable: React.FC<TransactionTableProps> = ({
           <TableHead>Date Purchased</TableHead>
           <TableHead>Quantity</TableHead>
           <TableHead>Price</TableHead>
+          <TableHead>Action</TableHead>
           <TableHead></TableHead>
         </TableRow>
       </TableHeader>
@@ -53,6 +55,12 @@ const TransactionHistoryTable: React.FC<TransactionTableProps> = ({
             <TableCell>{formatTimestampLong(transaction.timestamp)}</TableCell>
             <TableCell>{transaction.quantity}</TableCell>
             <TableCell>${transaction.price.toFixed(2)}</TableCell>
+            <TableCell>
+              {" "}
+              <Badge variant={transaction.type}>
+                {transaction.type === "buy" ? "Buy" : "Sell"}
+              </Badge>
+            </TableCell>
             <TableCell>
               <AlertDialog>
                 <AlertDialogTrigger>

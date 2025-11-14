@@ -36,7 +36,7 @@ export interface BacktestParams {
   asset_ids: number[];
   start_date: string;
   end_date: string;
-  initial_cash: number;
+  initial_cash: number | undefined;
   parameters: Record<string, any>;
 }
 

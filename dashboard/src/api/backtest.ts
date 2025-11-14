@@ -8,8 +8,7 @@ export const runBacktest = async (params: BacktestParams) => {
     return await apiClient.post<BacktestResult>("/backtest/", params);
   } catch (error) {
     const apiError = error as ApiError;
-    console.error("Error running backtest:", apiError);
-    toast("There was an error running backtest.");
+    toast.error(`Error running backtest: ${apiError.message}`);
     throw error;
   }
 };
