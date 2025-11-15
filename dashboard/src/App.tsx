@@ -24,6 +24,8 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { TransactionHistory } from "@/app/transactions/transaction-history";
 import { PortfolioProvider } from "@/context/portfolio-context";
 import NoAccess from "@/app/login/no-access";
+import LoadingPage from "@/app/login/loading-page";
+import ErrorPage from "@/app/login/error-page";
 
 const App = () => {
   const { isAuthenticated, isLoading } = useAuth0();
@@ -37,9 +39,9 @@ const App = () => {
     return <LoginPage />;
   }
 
-  if (status === "loading") return <div>Checking access...</div>;
+  if (status === "loading") return <LoadingPage />;
   if (status === "denied") return <NoAccess />;
-  if (status === "error") return <div>Error occurred</div>;
+  if (status === "error") return <ErrorPage />;
 
   return (
     <Router>
