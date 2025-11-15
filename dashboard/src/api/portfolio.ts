@@ -1,30 +1,26 @@
 import { apiClient, ApiError } from "@/lib/api-client";
-import {
-  PortfolioChartData,
-  PortfolioMetrics,
-  PortfolioValueHistory,
-} from "@/types/custom-types";
+import { TimeseriesChartData, PortfolioMetrics } from "@/types/custom-types";
 import { toast } from "sonner";
 import React from "react";
 
 export const getPortfolioHistory = async (
   setPortfolioHistory: React.Dispatch<
-    React.SetStateAction<PortfolioChartData[]>
+    React.SetStateAction<TimeseriesChartData[]>
   >,
   user_id: string | null,
 ) => {
   if (!user_id) return;
 
   try {
-    const data = await apiClient.get<PortfolioValueHistory[]>(
+    const data = await apiClient.get<TimeseriesChartData[]>(
       `/portfolio/portfolio_over_time/${user_id}`,
       {
         params: { limit: 10 },
       },
     );
-    const chartData: PortfolioChartData[] = data.map((item) => ({
+    const chartData: TimeseriesChartData[] = data.map((item) => ({
       ...item,
-      date: new Date(item.date).getTime(),
+      date: new Date(item.date).toISOString(),
     }));
 
     setPortfolioHistory(chartData);

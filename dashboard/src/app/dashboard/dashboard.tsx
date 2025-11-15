@@ -1,15 +1,15 @@
 import { ChartConfig } from "@/components/ui/chart";
-import React, { useState } from "react";
+import React from "react";
 import { TransactionHistoryCard } from "@/app/dashboard/transaction-history-card";
 import { PortfolioCard } from "@/app/dashboard/portfolio-card";
-import { PortfolioChartData } from "@/types/custom-types";
+import { TimeseriesChartData } from "@/types/custom-types";
 import { getPortfolioHistory } from "@/api/portfolio";
 import { usePortfolioMetrics } from "@/context/portfolio-context";
 import { EmptyComponent } from "@/app/empty-component";
 
 const Dashboard = () => {
   const [portfolioHistory, setPortfolioHistory] = React.useState<
-    PortfolioChartData[]
+    TimeseriesChartData[]
   >([]);
 
   const { portfolioMetrics, loading, error } = usePortfolioMetrics();
@@ -25,15 +25,8 @@ const Dashboard = () => {
       ? portfolioHistory[portfolioHistory.length - 1].value.toFixed(2)
       : "0.00";
 
-  const minDomain = minValue - padding;
+  const minDomain = minValue;
   const maxDomain = maxValue + padding;
-
-  const chartConfig = {
-    value: {
-      label: "Value",
-      color: "hsl(var(--chart-1))",
-    },
-  } satisfies ChartConfig;
 
   const startDate =
     portfolioHistory.length > 0
@@ -91,7 +84,6 @@ const Dashboard = () => {
             portfolioHistory={portfolioHistory}
             startDate={startDate}
             endDate={endDate}
-            chartConfig={chartConfig}
             minDomain={minDomain}
             maxDomain={maxDomain}
           />
