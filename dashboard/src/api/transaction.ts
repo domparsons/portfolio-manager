@@ -50,6 +50,28 @@ export const getTransactionHistory = async (
   }
 };
 
+export const getTransactionsByAsset = async (
+  user_id: string | null,
+  asset_id: number | null,
+  setTransactionHistory: React.Dispatch<React.SetStateAction<Transaction[]>>,
+) => {
+  if (!user_id) return;
+
+  try {
+    const data = await apiClient.get<Transaction[]>(
+      `/transaction/by_asset/${user_id}/${asset_id}`,
+      {
+        params: { limit: 10 },
+      },
+    );
+    setTransactionHistory(data);
+  } catch (error) {
+    const apiError = error as ApiError;
+    console.error("Error fetching transaction history:", apiError);
+    toast("There was an error fetching transaction history.");
+  }
+};
+
 export const useTransactionHistory = async (
   user_id: string,
   setTransactionHistory: (transactions: Transaction[]) => void,

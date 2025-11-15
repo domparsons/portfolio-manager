@@ -85,6 +85,22 @@ def get_transactions(
     return transactions
 
 
+@router.get(
+    "/by_asset/{user_id}/{asset_id}",
+    response_model=list[schemas.transaction.TransactionOut],
+)
+def get_transactions_by_asset(
+    user_id: str,
+    asset_id: int,
+    limit: int = None,
+    db: Session = Depends(get_db),
+):
+    transactions = crud.transaction.get_transactions_by_user_and_asset(
+        db, user_id=user_id, asset_id=asset_id, limit=limit
+    )
+    return transactions
+
+
 @router.delete("/")
 def delete_transaction(
     user_id: str,

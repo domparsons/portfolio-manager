@@ -6,8 +6,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Minus, Plus } from "lucide-react";
 import React from "react";
-import { AssetSheetPopoverProps } from "@/types/custom-types";
+import { AssetSheetPopoverProps, Transaction } from "@/types/custom-types";
 import { useTransactionType } from "@/api/asset";
+import { getTransactionsByAsset } from "@/api/transaction";
+import { formatTimestampShort } from "@/utils/format-timestamp";
+import { Badge } from "@/components/ui/badge";
 
 const AssetDetail: React.FC<{
   label: string;
@@ -30,6 +33,15 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
 }) => {
   const [transactionType, setTransactionType] = useTransactionType();
   const user_id = localStorage.getItem("user_id");
+  const [transactionHistory, setTransactionHistory] = React.useState<
+    Transaction[]
+  >([]);
+
+  React.useEffect(() => {
+    if (user_id) {
+      getTransactionsByAsset(user_id, pageAsset.id, setTransactionHistory);
+    }
+  }, []);
 
   return (
     <>
@@ -102,39 +114,77 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
           No data available for this asset.
         </div>
       )}
-      <div
-        className={"flex flex-row space-x-6 items-center justify-around p-4"}
-      >
-        <AssetDetail
-          label="Market Cap"
-          value={pageAsset?.market_cap.toLocaleString("en-US", {
-            notation: "compact",
-          })}
-        />
-        <AssetDetail
-          label="Latest Value"
-          value={pageAsset?.latest_price.toFixed(2)}
-        />
-        <AssetDetail
-          label="Daily Price Change"
-          value={pageAsset?.price_change.toFixed(2)}
+      <Card>
+        <CardContent
           className={
-            (pageAsset?.price_change ?? 0) > 0
-              ? "text-green-600"
-              : "text-red-600"
+            "flex flex- space-x-6 items-center justify-around p-4 w-full"
           }
-        />
-        <AssetDetail
-          label="Daily % Change"
-          value={pageAsset?.percentage_change.toFixed(2)}
-          className={
-            (pageAsset?.percentage_change ?? 0) > 0
-              ? "text-green-600"
-              : "text-red-600"
-          }
-        />
-        <AssetDetail label="Currency" value={pageAsset?.currency} />
-      </div>
+        >
+          <AssetDetail
+            label="Market Cap"
+            value={pageAsset?.market_cap.toLocaleString("en-US", {
+              notation: "compact",
+            })}
+          />
+          <AssetDetail
+            label="Latest Value"
+            value={pageAsset?.latest_price.toFixed(2)}
+          />
+          <AssetDetail
+            label="Daily Price Change"
+            value={pageAsset?.price_change.toFixed(2)}
+            className={
+              (pageAsset?.price_change ?? 0) > 0
+                ? "text-green-600"
+                : "text-red-600"
+            }
+          />
+          <AssetDetail
+            label="Daily % Change"
+            value={pageAsset?.percentage_change.toFixed(2)}
+            className={
+              (pageAsset?.percentage_change ?? 0) > 0
+                ? "text-green-600"
+                : "text-red-600"
+            }
+          />
+          <AssetDetail label="Currency" value={pageAsset?.currency} />
+        </CardContent>
+      </Card>
+      {transactionHistory.length > 0 ? (
+        <div className={"grid w-full grid-cols-3"}>
+          <Card className={"col-span-1"}>
+            <CardHeader>
+              <CardTitle>
+                Transaction History for {pageAsset.asset_name}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col gap-2">
+                {transactionHistory.map((transaction, index) => (
+                  <div key={index} className="flex justify-between">
+                    <span className={"font-bold"}>{transaction.ticker}</span>
+                    <div className={"flex gap-4 "}>
+                      <span className={"font-light"}>
+                        {formatTimestampShort(transaction.timestamp)}
+                      </span>
+                      $
+                      {parseFloat(
+                        (transaction.quantity * transaction.price).toFixed(2),
+                      )}
+                      <Badge variant={transaction.type}>
+                        {transaction.type === "buy" ? "Buy" : "Sell"}
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      ) : (
+        <></>
+      )}
     </>
   );
 };
