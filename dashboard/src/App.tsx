@@ -32,7 +32,7 @@ const App = () => {
   const { status } = useAuthInit();
 
   if (isLoading) {
-    return <div>Loading authentication...</div>;
+    return <LoadingPage />;
   }
 
   if (!isAuthenticated) {
