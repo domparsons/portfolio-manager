@@ -41,7 +41,7 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
     if (user_id) {
       getTransactionsByAsset(user_id, pageAsset.id, setTransactionHistory);
     }
-  }, []);
+  }, [transactionHistory]);
 
   return (
     <>

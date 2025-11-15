@@ -1,5 +1,4 @@
 import React from "react";
-import { ChartConfig } from "@/components/ui/chart";
 
 export interface Transaction {
   id: number;
@@ -11,16 +10,10 @@ export interface Transaction {
   price: number;
 }
 
-export interface PortfolioChartData {
-  date: number;
-  value: number;
-  daily_return_pct?: number;
-}
-
-export interface PortfolioValueHistory {
+export interface TimeseriesChartData {
   date: string;
   value: number;
-  daily_return_pct?: number;
+  daily_return_pct?: number | undefined;
 }
 
 export interface PortfolioHoldings {
@@ -68,10 +61,9 @@ export interface AssetSheetPopoverProps {
 }
 
 export interface PortfolioCardProps {
-  portfolioHistory: PortfolioChartData[];
+  portfolioHistory: TimeseriesChartData[];
   startDate: string;
   endDate: string;
-  chartConfig: ChartConfig;
   minDomain: number;
   maxDomain: number;
 }
