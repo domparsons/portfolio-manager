@@ -106,7 +106,7 @@ const TimeseriesChart = ({
           dataKey="value"
           type="linear"
           stroke="var(--color-value)"
-          strokeWidth={2}
+          strokeWidth={1.5}
           dot={false}
         />
       </LineChart>
