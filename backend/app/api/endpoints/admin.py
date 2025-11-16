@@ -6,12 +6,12 @@ router = APIRouter(prefix="/admin", tags=["admin"])
 
 
 @router.post("/update-assets")
-def trigger_asset_update(db: Session = Depends(get_db)):
+def trigger_asset_update(new_tickers: list[str], db: Session = Depends(get_db)):
     """Manually trigger asset list update"""
     try:
         from app.core.data_ingestion.update_assets import main
 
-        result = main()
+        result = main(new_tickers)
         if result == 0:
             return {"status": "success", "message": "Assets updated successfully"}
         else:
@@ -21,7 +21,7 @@ def trigger_asset_update(db: Session = Depends(get_db)):
 
 
 @router.post("/update-timeseries")
-def trigger_timeseries_update(db: Session = Depends(get_db)):
+def trigger_timeseries_update(new_tickers: list[str], db: Session = Depends(get_db)):
     """Manually trigger timeseries data update"""
     try:
         from app.core.data_ingestion.update_timeseries import main
