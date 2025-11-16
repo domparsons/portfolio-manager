@@ -9,8 +9,6 @@ from app.models import Asset
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-new_tickers = []
-
 
 def get_asset_info(ticker):
     asset = yf.Ticker(ticker)
@@ -47,10 +45,17 @@ def get_asset_info(ticker):
     }
 
 
-def main():
+def main(new_tickers: list[str]):
     db = SessionLocal()
 
     try:
+        all_existing_assets = db.query(Asset).all()
+
+        tickers = new_tickers
+
+        for asset in all_existing_assets:
+            tickers.append(asset.ticker)
+
         for ticker in new_tickers:
             print(f"Processing {ticker}...")
             asset_info = get_asset_info(ticker)
