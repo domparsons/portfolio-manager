@@ -10,20 +10,17 @@ import { BacktestResults } from "@/app/backtesting/backtest-results";
 import { runBacktest } from "@/api/backtest";
 import { BuyAndHoldForm } from "@/app/backtesting/strategies/buy-and-hold";
 import { DCAForm } from "@/app/backtesting/strategies/dca";
-import { LumpSumForm } from "@/app/backtesting/strategies/lump-sum";
 import { Asset } from "@/types/custom-types";
 import { getAssetList } from "@/api/asset";
 
 const STRATEGY_NAMES: Record<BacktestStrategy, string> = {
   dca: "Dollar Cost Averaging",
   buy_and_hold: "Buy and Hold",
-  lump_sum: "Lump Sum Investing",
 };
 
 const STRATEGY_FORMS: Record<BacktestStrategy, React.FC<StrategyFormProps>> = {
   buy_and_hold: BuyAndHoldForm,
   dca: DCAForm,
-  lump_sum: LumpSumForm,
 };
 
 const Backtesting = () => {
