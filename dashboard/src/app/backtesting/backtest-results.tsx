@@ -34,7 +34,7 @@ const BacktestResults = ({
           {format(new Date(results.data.end_date), "d MMMM yyyy")}
         </p>
       </div>
-      <div className={"grid w-full grid-cols-4 gap-4 [&>*]:min-h-[200px]"}>
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         <ResultValues
           finalValue={results.data.final_value}
           absoluteReturn={results.data.total_return_abs}
@@ -50,7 +50,7 @@ const BacktestResults = ({
           maxDrawdown={results.data.metrics.max_drawdown}
           volatility={results.data.metrics.volatility}
         />
-        <Card className={"col-span-4"}>
+        <Card className={"col-span-full"}>
           <CardHeader>
             <CardTitle>Backtest Performance</CardTitle>
           </CardHeader>
