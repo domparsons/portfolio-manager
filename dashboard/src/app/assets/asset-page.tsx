@@ -1,6 +1,6 @@
 import { addToWatchlist, removeFromWatchlist } from "@/api/watchlist";
 import AssetChart from "@/app/charts/asset-chart";
-import TransactionButtons from "@/app/transaction-buttons";
+import TransactionButtons from "@/app/transactions/transaction-buttons";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
