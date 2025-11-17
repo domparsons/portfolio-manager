@@ -1,10 +1,7 @@
 import React from "react";
 import { BacktestResult } from "@/types/backtest-types";
 import { format } from "date-fns";
-import { SharpeRatio } from "@/app/metrics/sharpe-ratio";
 import { ResultValues } from "@/app/metrics/result-values";
-import { MaxDrawdown } from "@/app/metrics/max-drawdown";
-import { Volatility } from "@/app/metrics/volatiity";
 import { TimeseriesChart } from "@/app/metrics/timeseries-chart";
 import {
   Card,
@@ -13,6 +10,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { BacktestInfo } from "@/app/metrics/backtest-info";
+import { RiskMetrics } from "@/app/metrics/risk-metrics";
 
 const BacktestResults = ({
   results,
@@ -35,15 +34,22 @@ const BacktestResults = ({
           {format(new Date(results.data.end_date), "d MMMM yyyy")}
         </p>
       </div>
-      <div className={"grid w-full grid-cols-4 gap-4"}>
+      <div className={"grid w-full grid-cols-4 gap-4 [&>*]:min-h-[200px]"}>
         <ResultValues
           finalValue={results.data.final_value}
           absoluteReturn={results.data.total_return_abs}
           percentageReturn={results.data.total_return_pct}
         />
-        <SharpeRatio sharpeRatio={results.data.metrics.sharpe} />
-        <MaxDrawdown maxDrawdown={results.data.metrics.max_drawdown} />
-        <Volatility volatility={results.data.metrics.volatility} />
+        <BacktestInfo
+          totalInvested={results.data.total_invested}
+          investmentsMade={results.data.metrics.investments_made}
+          daysAnalysed={results.data.metrics.days_analysed}
+        />
+        <RiskMetrics
+          sharpe={results.data.metrics.sharpe}
+          maxDrawdown={results.data.metrics.max_drawdown}
+          volatility={results.data.metrics.volatility}
+        />
         <Card className={"col-span-4"}>
           <CardHeader>
             <CardTitle>Backtest Performance</CardTitle>

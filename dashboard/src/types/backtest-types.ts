@@ -54,3 +54,14 @@ export interface SingleAssetSelectorProps {
   selectedAsset: Asset | undefined;
   setSelectedAsset: (assets: Asset | undefined) => void;
 }
+
+export const DCA_FREQUENCIES = {
+  DAILY: "daily",
+  WEEKLY: "weekly",
+  MONTHLY: "monthly",
+} as const;
+
+export type DCAFrequencies =
+  (typeof DCA_FREQUENCIES)[keyof typeof DCA_FREQUENCIES];
+
+export const DCA_FREQUENCY_OPTIONS = Object.values(DCA_FREQUENCIES);

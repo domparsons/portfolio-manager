@@ -7,7 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import React from "react";
-import { formatTimestampLong } from "@/utils/format-timestamp";
+import { formatTimestampLong } from "@/utils/formatters";
 import { Trash } from "lucide-react";
 import {
   AlertDialog,

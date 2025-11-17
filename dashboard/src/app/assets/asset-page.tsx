@@ -9,7 +9,7 @@ import React from "react";
 import { AssetSheetPopoverProps, Transaction } from "@/types/custom-types";
 import { useTransactionType } from "@/api/asset";
 import { getTransactionsByAsset } from "@/api/transaction";
-import { formatTimestampShort } from "@/utils/format-timestamp";
+import { formatTimestampShort } from "@/utils/formatters";
 import { Badge } from "@/components/ui/badge";
 
 const AssetDetail: React.FC<{

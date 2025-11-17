@@ -6,6 +6,7 @@ import { TimeseriesChartData } from "@/types/custom-types";
 import { getPortfolioHistory } from "@/api/portfolio";
 import { usePortfolioMetrics } from "@/context/portfolio-context";
 import { EmptyComponent } from "@/app/empty-component";
+import { formatCurrencyValue, formatPercentageValue } from "@/utils/formatters";
 
 const Dashboard = () => {
   const [portfolioHistory, setPortfolioHistory] = React.useState<
@@ -71,8 +72,8 @@ const Dashboard = () => {
                 ? ""
                 : portfolioMetrics?.total_return_abs !== undefined
                   ? portfolioMetrics.total_return_abs >= 0
-                    ? `+$${portfolioMetrics.total_return_abs.toFixed(2)}`
-                    : `-$${Math.abs(portfolioMetrics.total_return_abs).toFixed(2)}`
+                    ? `+${formatCurrencyValue(portfolioMetrics.total_return_abs)} (${formatPercentageValue(portfolioMetrics.total_return_pct)})`
+                    : `-${formatCurrencyValue(Math.abs(portfolioMetrics.total_return_abs))} (${formatPercentageValue(portfolioMetrics.total_return_pct)})`
                   : ""}
           </p>
         </div>
