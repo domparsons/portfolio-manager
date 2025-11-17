@@ -112,6 +112,13 @@ class BacktestService:
     def _create_dca_strategy(
         request: schemas.BacktestRequest,
     ) -> DCAStrategy:
-        print(request)
+        asset_id = request.asset_ids[0]
+        amount_per_period = request.parameters.get("amount_per_period")
+        frequency = request.parameters.get("frequency")
 
-        return DCAStrategy()
+        return DCAStrategy(
+            asset_id=asset_id,
+            initial_investment=request.initial_cash,
+            amount_per_period=amount_per_period,
+            frequency=frequency,
+        )
