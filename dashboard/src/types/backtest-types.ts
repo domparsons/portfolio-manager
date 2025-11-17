@@ -9,7 +9,7 @@ export interface BacktestResult {
   data: {
     start_date: string;
     end_date: string;
-    initial_value: number;
+    total_invested: number;
     final_value: number;
     total_return_pct: number;
     total_return_abs: number;
@@ -18,6 +18,7 @@ export interface BacktestResult {
       max_drawdown: number;
       volatility: number;
       days_analysed: number;
+      investments_made: number;
     };
     history: Array<{
       date: string;
