@@ -1,5 +1,4 @@
 from datetime import date
-from typing import Any
 
 from app import schemas
 from app.backtesting.actions import Action, BuyAction, SellAction
@@ -32,28 +31,25 @@ class BacktestEngine:
             asset_ids, start_date, end_date
         )
         holdings = {}
-        cash = initial_cash
         history = []
+        all_actions = []
 
         for trading_day in trading_days:
             context = BacktestContext(
                 current_date=trading_day,
-                cash=cash,
                 holdings=holdings.copy(),
                 price_lookup=price_lookup,
                 history=history.copy(),
             )
             actions_list = strategy.on_day(context)
-            cash_flow, cash = self._execute_actions(
-                actions_list, trading_day, cash, holdings, price_lookup
+            all_actions = all_actions + actions_list
+            cash_flow = self._execute_actions(
+                actions_list, trading_day, holdings, price_lookup
             )
-            portfolio_value = self._calculate_value(
-                cash, holdings, trading_day, price_lookup
-            )
+            portfolio_value = self._calculate_value(holdings, trading_day, price_lookup)
             daily_snapshot = DailySnapshot(
                 date=trading_day,
                 value=portfolio_value,
-                cash=cash,
                 holdings=holdings.copy(),
                 cash_flow=cash_flow,
                 daily_return_pct=0,
@@ -62,14 +58,19 @@ class BacktestEngine:
             history.append(daily_snapshot)
 
         history = self._calculate_daily_returns(history)
-        metrics = self._calculate_metrics(history)
+        metrics = self._calculate_metrics(history, all_actions)
 
-        total_return_abs = history[-1].value - initial_cash
-        total_return_pct = total_return_abs / initial_cash
+        total_invested = sum(snapshot.cash_flow for snapshot in history)
+
+        if total_invested == 0:
+            total_invested = initial_cash
+
+        total_return_abs = history[-1].value - total_invested
+        total_return_pct = total_return_abs / total_invested
         result = schemas.BacktestResult(
             start_date=start_date,
             end_date=end_date,
-            initial_value=initial_cash,
+            total_invested=total_invested,
             final_value=history[-1].value,
             total_return_pct=total_return_pct,
             total_return_abs=total_return_abs,
@@ -83,12 +84,11 @@ class BacktestEngine:
     def _execute_actions(
         actions: list[Action],
         current_date: date,
-        cash: float,
         holdings: dict,
         price_lookup: dict,
-    ) -> float | tuple[int | Any, float | Any]:
+    ) -> float:
         if not actions:
-            return 0.0, cash
+            return 0.0
 
         cash_flow = 0
         for action in actions:
@@ -98,27 +98,21 @@ class BacktestEngine:
 
             if isinstance(action, BuyAction):
                 number_of_shares = action.dollar_amount / price
-                if cash < action.dollar_amount:
-                    continue
-                cash -= action.dollar_amount
                 cash_flow += action.dollar_amount
                 current_shares = holdings.get(action.asset_id, 0.0)
                 holdings[action.asset_id] = current_shares + number_of_shares
 
             elif isinstance(action, SellAction):
                 current_shares = holdings.get(action.asset_id, 0.0)
-                if action.quantity > current_shares:
-                    continue
                 proceeds = action.quantity * price
-                cash += proceeds
                 holdings[action.asset_id] = current_shares - action.quantity
                 cash_flow -= proceeds
 
-        return cash_flow, cash
+        return cash_flow
 
     @staticmethod
     def _calculate_value(
-        cash: float, holdings: dict, current_date: date, price_lookup: dict
+        holdings: dict, current_date: date, price_lookup: dict
     ) -> float:
         holdings_value = 0
         for asset, shares in holdings.items():
@@ -133,7 +127,7 @@ class BacktestEngine:
 
         portfolio_value = holdings_value
 
-        return cash + portfolio_value
+        return portfolio_value
 
     @staticmethod
     def _calculate_daily_returns(
@@ -161,10 +155,16 @@ class BacktestEngine:
         return history
 
     @staticmethod
-    def _calculate_metrics(history: list[DailySnapshot]) -> BacktestMetrics:
+    def _calculate_metrics(
+        history: list[DailySnapshot], all_actions: list[Action]
+    ) -> BacktestMetrics:
         if len(history) < 2:
             return BacktestMetrics(
-                sharpe=0.0, max_drawdown=0.0, volatility=0.0, days_analysed=len(history)
+                sharpe=0.0,
+                max_drawdown=0.0,
+                volatility=0.0,
+                days_analysed=len(history),
+                investments_made=len(all_actions),
             )
 
         returns = [day.daily_return_pct for day in history[1:]]
@@ -174,4 +174,5 @@ class BacktestEngine:
             max_drawdown=calculate_max_drawdown(history),
             volatility=calculate_volatility(returns),
             days_analysed=len(history),
+            investments_made=len(all_actions),
         )

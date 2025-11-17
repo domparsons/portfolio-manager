@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatTimestampShort } from "@/utils/format-timestamp";
+import { formatTimestampShort } from "@/utils/formatters";
 import React from "react";
 import { Transaction } from "@/types/custom-types";
 import { useTransactionHistory } from "@/api/transaction";

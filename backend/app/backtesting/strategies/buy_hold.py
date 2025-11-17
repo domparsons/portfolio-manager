@@ -4,7 +4,7 @@ from app.backtesting.strategies.base import BacktestStrategy
 
 
 class BuyAndHoldStrategy(BacktestStrategy):
-    def __init__(self, allocation, initial_investment):
+    def __init__(self, allocation: dict, initial_investment: float):
         self.allocation = allocation
         self.initial_investment = initial_investment
         self.already_invested = False

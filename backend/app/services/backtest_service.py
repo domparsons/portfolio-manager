@@ -7,7 +7,6 @@ from app.backtesting.strategies import base
 from app.backtesting.strategies.base import BacktestStrategy
 from app.backtesting.strategies.buy_hold import BuyAndHoldStrategy
 from app.backtesting.strategies.dca import DCAStrategy
-from app.backtesting.strategies.lump_sum import LumpSumStrategy
 from app.core import PriceService
 from fastapi import HTTPException
 from sqlalchemy.orm.session import Session
@@ -16,13 +15,11 @@ from sqlalchemy.orm.session import Session
 class StrategyType(str, Enum):
     BUY_AND_HOLD = "buy_and_hold"
     DCA = "dca"
-    LUMP_SUM = "lump_sum"
 
 
 STRATEGY_REGISTRY: dict[StrategyType | str, type[BacktestStrategy]] = {
     StrategyType.BUY_AND_HOLD: BuyAndHoldStrategy,
     StrategyType.DCA: DCAStrategy,
-    StrategyType.LUMP_SUM: LumpSumStrategy,
 }
 
 
@@ -91,8 +88,6 @@ class BacktestService:
             return self._create_buy_hold_strategy(request)
         elif request.strategy == StrategyType.DCA:
             return self._create_dca_strategy(request)
-        elif request.strategy == StrategyType.LUMP_SUM:
-            return self._create_lump_sum_strategy(request)
 
         raise ValueError(f"Unhandled strategy: {request.strategy}")
 
@@ -117,14 +112,13 @@ class BacktestService:
     def _create_dca_strategy(
         request: schemas.BacktestRequest,
     ) -> DCAStrategy:
-        print(request)
+        asset_id = request.asset_ids[0]
+        amount_per_period = request.parameters.get("amount_per_period")
+        frequency = request.parameters.get("frequency")
 
-        return DCAStrategy()
-
-    @staticmethod
-    def _create_lump_sum_strategy(
-        request: schemas.BacktestRequest,
-    ) -> LumpSumStrategy:
-        print(request)
-
-        return LumpSumStrategy()
+        return DCAStrategy(
+            asset_id=asset_id,
+            initial_investment=request.initial_cash,
+            amount_per_period=amount_per_period,
+            frequency=frequency,
+        )

@@ -1,6 +1,6 @@
 import { Asset } from "@/types/custom-types";
 
-export type BacktestStrategy = "dca" | "buy_and_hold" | "lump_sum";
+export type BacktestStrategy = "dca" | "buy_and_hold";
 
 export interface BacktestResult {
   backtest_id: string;
@@ -9,7 +9,7 @@ export interface BacktestResult {
   data: {
     start_date: string;
     end_date: string;
-    initial_value: number;
+    total_invested: number;
     final_value: number;
     total_return_pct: number;
     total_return_abs: number;
@@ -18,6 +18,7 @@ export interface BacktestResult {
       max_drawdown: number;
       volatility: number;
       days_analysed: number;
+      investments_made: number;
     };
     history: Array<{
       date: string;
@@ -53,3 +54,14 @@ export interface SingleAssetSelectorProps {
   selectedAsset: Asset | undefined;
   setSelectedAsset: (assets: Asset | undefined) => void;
 }
+
+export const DCA_FREQUENCIES = {
+  DAILY: "daily",
+  WEEKLY: "weekly",
+  MONTHLY: "monthly",
+} as const;
+
+export type DCAFrequencies =
+  (typeof DCA_FREQUENCIES)[keyof typeof DCA_FREQUENCIES];
+
+export const DCA_FREQUENCY_OPTIONS = Object.values(DCA_FREQUENCIES);

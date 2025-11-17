@@ -24,7 +24,7 @@ const StrategySelector = ({
       value={selectedStrategy}
       onValueChange={(value) => setSelectedStrategy(value as BacktestStrategy)}
     >
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className={"w-60"}>
         <SelectValue placeholder="Select a strategy" />
       </SelectTrigger>
       <SelectContent>
