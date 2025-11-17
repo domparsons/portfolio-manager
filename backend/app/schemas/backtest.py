@@ -17,7 +17,6 @@ class BacktestRequest(BaseModel):
 class DailySnapshot(BaseModel):
     date: date
     value: float
-    cash: float
     holdings: dict[int, float]
     cash_flow: float
     daily_return_pct: float
@@ -29,12 +28,13 @@ class BacktestMetrics(BaseModel):
     max_drawdown: float
     volatility: float
     days_analysed: int
+    investments_made: int
 
 
 class BacktestResult(BaseModel):
     start_date: date
     end_date: date
-    initial_value: float
+    total_invested: float
     final_value: float
     total_return_pct: float
     total_return_abs: float
