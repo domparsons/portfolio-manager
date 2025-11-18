@@ -21,6 +21,9 @@ export const useAuthInit = () => {
         const token = await getAccessTokenSilently();
         console.log(">>> Got token");
 
+        apiClient.setAuthToken(token);
+        console.log("✅ Auth token set in API client");
+
         const auth0UserId = user?.sub;
         console.log(">>> auth0UserId:", auth0UserId);
 
