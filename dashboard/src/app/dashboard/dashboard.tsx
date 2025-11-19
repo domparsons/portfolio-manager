@@ -1,4 +1,3 @@
-import { ChartConfig } from "@/components/ui/chart";
 import React from "react";
 import { TransactionHistoryCard } from "@/app/dashboard/transaction-history-card";
 import { PortfolioCard } from "@/app/dashboard/portfolio-card";
@@ -7,6 +6,7 @@ import { getPortfolioHistory } from "@/api/portfolio";
 import { usePortfolioMetrics } from "@/context/portfolio-context";
 import { EmptyComponent } from "@/app/empty-component";
 import { formatCurrencyValue, formatPercentageValue } from "@/utils/formatters";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const Dashboard = () => {
   const [portfolioHistory, setPortfolioHistory] = React.useState<
@@ -15,7 +15,8 @@ const Dashboard = () => {
 
   const { portfolioMetrics, loading, error } = usePortfolioMetrics();
 
-  const user_id = localStorage.getItem("user_id");
+  const { user } = useAuth0();
+  const user_id = user?.sub ?? null;
 
   const minValue = Math.min(...portfolioHistory.map((item) => item.value));
   const maxValue = Math.max(...portfolioHistory.map((item) => item.value));

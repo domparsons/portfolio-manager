@@ -11,6 +11,7 @@ import { useTransactionType } from "@/api/asset";
 import { getTransactionsByAsset } from "@/api/transaction";
 import { formatTimestampShort } from "@/utils/formatters";
 import { Badge } from "@/components/ui/badge";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const AssetDetail: React.FC<{
   label: string;
@@ -32,7 +33,8 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
   setPageAssetInWatchlist,
 }) => {
   const [transactionType, setTransactionType] = useTransactionType();
-  const user_id = localStorage.getItem("user_id");
+  const { user } = useAuth0();
+  const user_id = user?.sub ?? null;
   const [transactionHistory, setTransactionHistory] = React.useState<
     Transaction[]
   >([]);

@@ -4,12 +4,14 @@ import { formatTimestampShort } from "@/utils/formatters";
 import React from "react";
 import { Transaction } from "@/types/custom-types";
 import { useTransactionHistory } from "@/api/transaction";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const TransactionHistoryCard = () => {
   const [transactionHistory, setTransactionHistory] = React.useState<
     Transaction[]
   >([]);
-  const user_id = localStorage.getItem("user_id");
+  const { user } = useAuth0();
+  const user_id = user?.sub ?? null;
 
   React.useEffect(() => {
     if (user_id) {

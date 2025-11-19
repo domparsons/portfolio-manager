@@ -4,15 +4,16 @@ import React, { useState } from "react";
 import { AssetTable } from "@/app/assets/asset-table";
 import { AssetSearch } from "@/app/assets/asset-search";
 import { Asset } from "@/types/custom-types";
-import { Empty } from "@/components/ui/empty";
 import { EmptyComponent } from "@/app/empty-component";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const Watchlist = () => {
   const [watchlistAssets, setWatchlistAssets] = useState<Asset[]>([]);
   const [filteredWatchlistAssets, setFilteredWatchlistAssets] = useState<
     Asset[]
   >([]);
-  const user_id = localStorage.getItem("user_id");
+  const { user } = useAuth0();
+  const user_id = user?.sub ?? null;
 
   React.useEffect(() => {
     getWatchlist(user_id, setWatchlistAssets, setFilteredWatchlistAssets);
