@@ -18,11 +18,11 @@ const AssetPageWrapper = () => {
   >(undefined);
   const [timeseries, setTimeseries] = useState<Portfolio[]>([]);
   const [timeseriesRange, setTimeseriesRange] = useState<string>("1Y");
+  const { user } = useAuth0();
+  const user_id = user?.sub ?? null;
 
   const fetchData = async () => {
     const asset = await getAssetByTicker(ticker);
-    const { user } = useAuth0();
-    const user_id = user?.sub ?? null;
     const assetInWatchlist = await checkAssetInWatchlist(ticker, user_id);
 
     if (!asset) {
