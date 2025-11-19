@@ -32,7 +32,6 @@ const TransactionHistory = () => {
       </div>
 
       {transactionHistory.length === 0 ? (
-        // <TableSkeleton />
         <EmptyComponent
           title={"No Transactions Yet"}
           description={
