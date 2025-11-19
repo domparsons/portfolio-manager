@@ -36,16 +36,17 @@ class ApiClient {
   private client: AxiosInstance;
 
   constructor() {
-    // Get base URL from environment variables
     const baseURL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
-    // Create axios instance with default configuration
     this.client = axios.create({
       baseURL,
-      timeout: 30000, // 30 seconds
+      timeout: 30000,
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
+      },
+      paramsSerializer: {
+        encode: (param: string) => encodeURIComponent(param),
       },
     });
 
@@ -59,13 +60,6 @@ class ApiClient {
     // Request interceptor - add auth token if available
     this.client.interceptors.request.use(
       (config) => {
-        // Get auth token from localStorage or your auth provider
-        // Example: const token = localStorage.getItem('auth_token');
-        // if (token) {
-        //   config.headers.Authorization = `Bearer ${token}`;
-        // }
-
-        // Log requests in development
         if (import.meta.env.DEV) {
           console.log(
             `[API Request] ${config.method?.toUpperCase()} ${config.url}`,
@@ -84,10 +78,8 @@ class ApiClient {
       },
     );
 
-    // Response interceptor - handle responses and errors globally
     this.client.interceptors.response.use(
       (response) => {
-        // Log responses in development
         if (import.meta.env.DEV) {
           console.log(
             `[API Response] ${response.status} ${response.config.url}`,
@@ -112,7 +104,6 @@ class ApiClient {
     };
 
     if (error.response) {
-      // Server responded with error status
       apiError.status = error.response.status;
       apiError.detail = error.response.data;
 
@@ -139,7 +130,6 @@ class ApiClient {
           apiError.message = `Request failed with status ${error.response.status}`;
       }
 
-      // If backend provides a detail message, use it
       if (error.response.data && typeof error.response.data === "object") {
         const data = error.response.data as any;
         if (data.detail) {
@@ -152,11 +142,9 @@ class ApiClient {
         }
       }
     } else if (error.request) {
-      // Request made but no response received
       apiError.message = "Network error - please check your connection";
       apiError.status = 0;
     } else {
-      // Error setting up the request
       apiError.message = error.message || "Failed to make request";
     }
 
@@ -264,8 +252,6 @@ class ApiClient {
   }
 }
 
-// Export a singleton instance
 export const apiClient = new ApiClient();
 
-// Export the class for testing or custom instances
 export default ApiClient;

@@ -19,6 +19,7 @@ import { apiClient, ApiError } from "@/lib/api-client";
 import { toast } from "sonner";
 import { Asset } from "@/types/custom-types";
 import { usePortfolioMetrics } from "@/context/portfolio-context";
+import { useAuth0 } from "@auth0/auth0-react";
 
 type TransactionButtonsProps = {
   transactionType: "buy" | "sell";
@@ -37,7 +38,8 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
   );
   const [executionDate, setExecutionDate] = React.useState<Date>();
 
-  const user_id = localStorage.getItem("user_id");
+  const { user } = useAuth0();
+  const user_id = user?.sub ?? null;
 
   const numberOfSharesValid = numberOfShares > 0;
   const executionPriceValid = executionPrice > 0;

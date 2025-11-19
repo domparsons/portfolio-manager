@@ -4,12 +4,14 @@ import { getPortfolioHoldings } from "@/api/portfolio";
 import { usePortfolioMetrics } from "@/context/portfolio-context";
 import { AssetAllocation } from "@/app/metrics/asset-allocation";
 import { RiskMetrics } from "@/app/metrics/risk-metrics";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const Portfolio = () => {
   const [chartData, setChartData] = React.useState<PortfolioHoldings[]>([]);
 
   const { portfolioMetrics } = usePortfolioMetrics();
-  const user_id = localStorage.getItem("user_id");
+  const { user } = useAuth0();
+  const user_id = user?.sub ?? null;
 
   React.useEffect(() => {
     if (user_id) {

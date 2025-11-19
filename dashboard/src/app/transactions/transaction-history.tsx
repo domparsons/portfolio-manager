@@ -1,15 +1,16 @@
-import { TableSkeleton } from "@/app/table-skeleton";
 import React from "react";
 import { getTransactionHistory } from "@/api/transaction";
 import { TransactionHistoryTable } from "@/app/transactions/transaction-history-table";
 import { Transaction } from "@/types/custom-types";
 import { EmptyComponent } from "@/app/empty-component";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const TransactionHistory = () => {
   const [transactionHistory, setTransactionHistory] = React.useState<
     Transaction[]
   >([]);
-  const user_id = localStorage.getItem("user_id");
+  const { user } = useAuth0();
+  const user_id = user?.sub ?? null;
 
   React.useEffect(() => {
     getTransactionHistory(user_id, setTransactionHistory);
@@ -31,7 +32,6 @@ const TransactionHistory = () => {
       </div>
 
       {transactionHistory.length === 0 ? (
-        // <TableSkeleton />
         <EmptyComponent
           title={"No Transactions Yet"}
           description={

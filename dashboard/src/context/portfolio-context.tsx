@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { apiClient, ApiError } from "@/lib/api-client";
 import { toast } from "sonner";
 import { PortfolioMetrics, PortfolioContextType } from "@/types/custom-types";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const PortfolioContext = createContext<PortfolioContextType | undefined>(
   undefined,
@@ -15,7 +16,8 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const user_id = localStorage.getItem("user_id");
+  const { user } = useAuth0();
+  const user_id = user?.sub ?? null;
 
   const fetchMetrics = async () => {
     if (!user_id) {

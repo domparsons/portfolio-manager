@@ -24,12 +24,14 @@ import { deleteTransaction } from "@/api/transaction";
 import { TransactionTableProps } from "@/types/custom-types";
 import { usePortfolioMetrics } from "@/context/portfolio-context";
 import { Badge } from "@/components/ui/badge";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const TransactionHistoryTable: React.FC<TransactionTableProps> = ({
   transactions,
   onDelete,
 }) => {
-  const user_id = localStorage.getItem("user_id");
+  const { user } = useAuth0();
+  const user_id = user?.sub ?? null;
   const { refreshMetrics } = usePortfolioMetrics();
 
   return (

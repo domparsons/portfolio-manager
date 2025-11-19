@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { AssetPage } from "./asset-page";
 import { Asset, Portfolio } from "@/types/custom-types";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const AssetPageWrapper = () => {
   const { ticker } = useParams();
@@ -20,7 +21,8 @@ const AssetPageWrapper = () => {
 
   const fetchData = async () => {
     const asset = await getAssetByTicker(ticker);
-    const user_id = localStorage.getItem("user_id");
+    const { user } = useAuth0();
+    const user_id = user?.sub ?? null;
     const assetInWatchlist = await checkAssetInWatchlist(ticker, user_id);
 
     if (!asset) {
