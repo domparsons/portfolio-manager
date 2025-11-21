@@ -20,7 +20,12 @@ export interface PortfolioHoldings {
   asset_id: string;
   asset_name: string;
   net_quantity_shares: number;
+  average_cost_basis: number;
+  total_cost: number;
+  current_price: number;
   net_value: number;
+  unrealised_gain_loss: number;
+  unrealised_gain_loss_pct: number;
 }
 
 type TransactionType = "buy" | "sell";
