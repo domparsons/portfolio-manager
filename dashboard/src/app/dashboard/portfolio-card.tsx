@@ -6,18 +6,26 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { PortfolioCardProps } from "@/types/custom-types";
+import { PortfolioCardProps, TimeseriesChartData } from "@/types/custom-types";
 import { TimeseriesChart } from "@/app/metrics/timeseries-chart";
 
-const PortfolioCard: React.FC<PortfolioCardProps> = ({
+const PortfolioCard = ({
   portfolioHistory,
   startDate,
   endDate,
   minDomain,
   maxDomain,
+  className,
+}: {
+  portfolioHistory: TimeseriesChartData[];
+  startDate: string;
+  endDate: string;
+  minDomain: number;
+  maxDomain: number;
+  className?: string;
 }) => {
   return (
-    <Card className={"mt-4 col-span-2"}>
+    <Card className={className}>
       <CardHeader>
         <CardTitle>Portfolio</CardTitle>
         <CardDescription>

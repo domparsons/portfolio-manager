@@ -60,13 +60,7 @@ export interface AssetSheetPopoverProps {
   >;
 }
 
-export interface PortfolioCardProps {
-  portfolioHistory: TimeseriesChartData[];
-  startDate: string;
-  endDate: string;
-  minDomain: number;
-  maxDomain: number;
-}
+export interface PortfolioCardProps {}
 
 export interface TransactionTableProps {
   transactions: Transaction[];

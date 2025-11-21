@@ -18,7 +18,7 @@ import React from "react";
 import { apiClient, ApiError } from "@/lib/api-client";
 import { toast } from "sonner";
 import { Asset } from "@/types/custom-types";
-import { usePortfolioMetrics } from "@/context/portfolio-context";
+import { usePortfolioMetrics } from "@/context/portfolio-metrics";
 import { useAuth0 } from "@auth0/auth0-react";
 
 type TransactionButtonsProps = {
