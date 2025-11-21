@@ -7,45 +7,13 @@ import { usePortfolioMetrics } from "@/context/portfolio-metrics";
 import { EmptyComponent } from "@/app/empty-component";
 import { formatCurrencyValue, formatPercentageValue } from "@/utils/formatters";
 import { useAuth0 } from "@auth0/auth0-react";
+import { usePortfolioHistory } from "@/context/portfolio-history";
 
 const Dashboard = () => {
-  const [portfolioHistory, setPortfolioHistory] = React.useState<
-    TimeseriesChartData[]
-  >([]);
-
   const { portfolioMetrics, loading, error } = usePortfolioMetrics();
 
-  const { user } = useAuth0();
-  const user_id = user?.sub ?? null;
-
-  const minValue = Math.min(...portfolioHistory.map((item) => item.value));
-  const maxValue = Math.max(...portfolioHistory.map((item) => item.value));
-  const padding = 5;
-
-  const minDomain = minValue;
-  const maxDomain = maxValue + padding;
-
-  const startDate =
-    portfolioHistory.length > 0
-      ? new Date(portfolioHistory[0].date).toLocaleString("default", {
-          month: "long",
-          year: "numeric",
-        })
-      : "N/A";
-
-  const endDate =
-    portfolioHistory.length > 0
-      ? new Date(
-          portfolioHistory[portfolioHistory.length - 1].date,
-        ).toLocaleString("default", {
-          month: "long",
-          year: "numeric",
-        })
-      : "N/A";
-
-  React.useEffect(() => {
-    getPortfolioHistory(setPortfolioHistory, user_id);
-  }, []);
+  const { portfolioHistory, minDomain, maxDomain, startDate, endDate } =
+    usePortfolioHistory();
 
   return (
     <div className="dashboard">

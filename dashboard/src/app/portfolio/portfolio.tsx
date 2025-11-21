@@ -16,15 +16,8 @@ const Portfolio = () => {
 
   const [chartData, setChartData] = React.useState<PortfolioHoldings[]>([]);
 
-  const {
-    portfolioHistory,
-    loading: historyLoading,
-    error: historyError,
-    minDomain,
-    maxDomain,
-    startDate,
-    endDate,
-  } = usePortfolioHistory();
+  const { portfolioHistory, minDomain, maxDomain, startDate, endDate } =
+    usePortfolioHistory();
 
   const { portfolioMetrics, loading, error } = usePortfolioMetrics();
 
