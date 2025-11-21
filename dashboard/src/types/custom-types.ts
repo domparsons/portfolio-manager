@@ -83,6 +83,7 @@ export interface PortfolioMetrics {
   days_analysed: number;
   sharpe: number;
   max_drawdown: number;
+  volatility: number;
 }
 
 export interface PortfolioContextType {

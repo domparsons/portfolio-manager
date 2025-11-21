@@ -74,3 +74,4 @@ class PortfolioMetrics(BaseModel):
     days_analysed: int
     sharpe: float
     max_drawdown: float
+    volatility: float
