@@ -2,11 +2,11 @@ from app import models, schemas, crud
 from app.services.portfolio_engine import (
     calculate_metrics,
     get_portfolio_data_for_user,
+    calculate_holdings,
 )
 from app.database import get_db
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-import polars as pl
 
 router = APIRouter(prefix="/portfolio", tags=["portfolio"])
 
@@ -66,34 +66,9 @@ def get_portfolio_holdings(
     if not transactions:
         return []
 
-    holdings = {}
     latest_prices = crud.timeseries.get_latest_price_and_changes(db)
-    for transaction in transactions:
-        asset_id = str(transaction.asset_id)
-        asset_name = db.query(models.Asset).get(transaction.asset_id).asset_name
-        if asset_id not in holdings:
-            holdings[asset_id] = schemas.PortfolioHoldings(
-                asset_id=asset_id,
-                asset_name=asset_name,
-                net_quantity_shares=0.0,
-                net_value=0.0,
-            )
 
-        if transaction.type == schemas.TransactionType.buy:
-            holdings[asset_id].net_quantity_shares += transaction.quantity
-        elif transaction.type == schemas.TransactionType.sell:
-            holdings[asset_id].net_quantity_shares -= transaction.quantity
-
-    for asset in holdings.keys():
-        asset_id = int(asset)
-        latest_price_for_asset = (
-            latest_prices.filter(pl.col("asset_id") == asset_id)
-            .select(pl.col("latest_price"))
-            .item()
-        )
-        holdings[asset].net_value = (
-            latest_price_for_asset * holdings[asset].net_quantity_shares
-        )
+    holdings = calculate_holdings(transactions, latest_prices, db)
 
     return list(holdings.values())
 

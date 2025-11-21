@@ -1,20 +1,22 @@
 import React from "react";
-import { PortfolioHoldings, TimeseriesChartData } from "@/types/custom-types";
-import { getPortfolioHistory, getPortfolioHoldings } from "@/api/portfolio";
+import { PortfolioHoldings } from "@/types/custom-types";
+import { getPortfolioHoldings } from "@/api/portfolio";
 import { usePortfolioMetrics } from "@/context/portfolio-metrics";
 import { AssetAllocation } from "@/app/metrics/asset-allocation";
 import { RiskMetrics } from "@/app/metrics/risk-metrics";
 import { useAuth0 } from "@auth0/auth0-react";
-import { Card } from "@/components/ui/card";
 import { ResultValues } from "@/app/metrics/result-values";
 import { PortfolioCard } from "@/app/dashboard/portfolio-card";
 import { usePortfolioHistory } from "@/context/portfolio-history";
+import { PortfolioReturns } from "@/app/portfolio/portfolio-returns";
 
 const Portfolio = () => {
   const { user } = useAuth0();
   const user_id = user?.sub ?? null;
 
-  const [chartData, setChartData] = React.useState<PortfolioHoldings[]>([]);
+  const [portfolioHoldings, setPortfolioHoldings] = React.useState<
+    PortfolioHoldings[]
+  >([]);
 
   const { portfolioHistory, minDomain, maxDomain, startDate, endDate } =
     usePortfolioHistory();
@@ -24,7 +26,9 @@ const Portfolio = () => {
   React.useEffect(() => {
     if (user_id) {
       getPortfolioHoldings(user_id).then((data) => {
-        if (data) setChartData(data);
+        if (data) {
+          setPortfolioHoldings(data);
+        }
       });
     }
   }, []);
@@ -40,9 +44,15 @@ const Portfolio = () => {
           title={"Current Value"}
           className="md:col-span-2 lg:col-span-1"
         />
-        <AssetAllocation
-          chartData={chartData}
-          className="md:col-span-2 lg:col-span-2"
+        <PortfolioReturns
+          holdings={portfolioHoldings}
+          className="md:col-span-2 lg:col-span-1"
+        />
+        <RiskMetrics
+          sharpe={portfolioMetrics?.sharpe ?? null}
+          maxDrawdown={portfolioMetrics?.max_drawdown ?? null}
+          volatility={portfolioMetrics?.volatility ?? null}
+          className="md:col-span-2 lg:col-span-1"
         />
         <PortfolioCard
           portfolioHistory={portfolioHistory}
@@ -50,13 +60,11 @@ const Portfolio = () => {
           endDate={endDate}
           minDomain={minDomain}
           maxDomain={maxDomain}
-          className="md:col-span-2 lg:col-span-2"
+          className="md:col-span-2 lg:col-span-3"
         />
-        <RiskMetrics
-          sharpe={portfolioMetrics?.sharpe ?? null}
-          maxDrawdown={portfolioMetrics?.max_drawdown ?? null}
-          volatility={portfolioMetrics?.volatility ?? null}
-          className="md:col-span-2 lg:col-span-1"
+        <AssetAllocation
+          chartData={portfolioHoldings}
+          className="md:col-span-2 lg:col-span-2"
         />
       </div>
     </div>

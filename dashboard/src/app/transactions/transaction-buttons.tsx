@@ -1,7 +1,5 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Card } from "@/components/ui/card";
 import {
   Dialog,
   DialogClose,
@@ -20,6 +18,7 @@ import { toast } from "sonner";
 import { Asset } from "@/types/custom-types";
 import { usePortfolioMetrics } from "@/context/portfolio-metrics";
 import { useAuth0 } from "@auth0/auth0-react";
+import { DatePicker } from "@/app/date-picker";
 
 type TransactionButtonsProps = {
   transactionType: "buy" | "sell";
@@ -37,9 +36,6 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
     asset.latest_price,
   );
   const [executionDate, setExecutionDate] = React.useState<Date>();
-
-  const { user } = useAuth0();
-  const user_id = user?.sub ?? null;
 
   const numberOfSharesValid = numberOfShares > 0;
   const executionPriceValid = executionPrice > 0;
@@ -96,6 +92,9 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     setModalOpen(false);
     e.preventDefault();
+
+    const { user } = useAuth0();
+    const user_id = user?.sub ?? null;
 
     try {
       await apiClient.post("/transaction/", null, {
@@ -187,14 +186,11 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
             <Label htmlFor="name" className="text-right">
               Date
             </Label>
-            <Card className="w-fit">
-              <Calendar
-                mode="single"
-                captionLayout="dropdown"
-                selected={executionDate}
-                onSelect={setExecutionDate}
-              />
-            </Card>
+            <DatePicker
+              date={executionDate}
+              setDate={setExecutionDate}
+              label={"hi"}
+            />
           </div>
         </div>
         <DialogFooter>

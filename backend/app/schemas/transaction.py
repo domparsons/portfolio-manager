@@ -47,7 +47,12 @@ class PortfolioHoldings(BaseModel):
     asset_id: str
     asset_name: str
     net_quantity_shares: float
+    average_cost_basis: float
+    total_cost: float
+    current_price: float
     net_value: float
+    unrealised_gain_loss: float
+    unrealised_gain_loss_pct: float
 
     class Config:
         from_attributes = True

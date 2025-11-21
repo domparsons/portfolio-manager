@@ -1,13 +1,14 @@
 from datetime import date, datetime
 
+import polars as pl
 from app import models, schemas
 from app.backtesting.metrics import (
     calculate_max_drawdown,
     calculate_sharpe,
     calculate_volatility,
 )
-from sqlalchemy.orm.session import Session
 from fastapi import HTTPException
+from sqlalchemy.orm.session import Session
 
 
 def get_portfolio_data_for_user(
@@ -202,3 +203,65 @@ def calculate_metrics(
         max_drawdown=calculate_max_drawdown(history),
         volatility=calculate_volatility(returns),
     )
+
+
+def calculate_holdings(
+    transactions: list[type[models.Transaction]],
+    latest_prices: pl.DataFrame,
+    db: Session,
+) -> dict:
+    holdings = {}
+
+    for transaction in transactions:
+        asset_id = str(transaction.asset_id)
+        asset_name = db.query(models.Asset).get(transaction.asset_id).asset_name
+        if asset_id not in holdings:
+            holdings[asset_id] = schemas.PortfolioHoldings(
+                asset_id=asset_id,
+                asset_name=asset_name,
+                net_quantity_shares=0.0,
+                average_cost_basis=0.0,
+                total_cost=0.0,
+                current_price=0.0,
+                net_value=0.0,
+                unrealised_gain_loss=0.0,
+                unrealised_gain_loss_pct=0.0,
+            )
+
+        if transaction.type == schemas.TransactionType.buy:
+            holdings[asset_id].total_cost += transaction.quantity * transaction.price
+            holdings[asset_id].net_quantity_shares += transaction.quantity
+            if holdings[asset_id].net_quantity_shares > 0:
+                holdings[asset_id].average_cost_basis = (
+                    holdings[asset_id].total_cost
+                    / holdings[asset_id].net_quantity_shares
+                )
+        elif transaction.type == schemas.TransactionType.sell:
+            cost_reduction = (
+                holdings[asset_id].average_cost_basis * transaction.quantity
+            )
+            holdings[asset_id].total_cost -= cost_reduction
+            holdings[asset_id].net_quantity_shares -= transaction.quantity
+
+    for asset in holdings.values():
+        if asset.net_quantity_shares == 0:
+            continue
+
+        asset_id = int(asset.asset_id)
+        latest_price = (
+            latest_prices.filter(pl.col("asset_id") == asset_id)
+            .select(pl.col("latest_price"))
+            .item()
+        )
+
+        asset.current_price = latest_price
+        asset.net_value = latest_price * asset.net_quantity_shares
+        asset.average_cost_basis = asset.total_cost / asset.net_quantity_shares
+        asset.unrealised_gain_loss = asset.net_value - asset.total_cost
+
+        if asset.total_cost > 0:
+            asset.unrealised_gain_loss_pct = (
+                asset.unrealised_gain_loss / asset.total_cost
+            ) * 100
+
+    return holdings

@@ -77,9 +77,10 @@ export const useTransactionHistory = async (
   setTransactionHistory: (transactions: Transaction[]) => void,
 ) => {
   try {
-    const data = await apiClient.get<Transaction[]>(`/transaction/${user_id}`, {
-      params: { limit: 10 },
-    });
+    const data = await apiClient.get<Transaction[]>(
+      `/transaction/${user_id}`,
+      {},
+    );
     setTransactionHistory(data);
   } catch (error) {
     const apiError = error as ApiError;
