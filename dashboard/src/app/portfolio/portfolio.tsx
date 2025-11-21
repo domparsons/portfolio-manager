@@ -29,7 +29,7 @@ const Portfolio = () => {
         <RiskMetrics
           sharpe={portfolioMetrics?.sharpe ?? null}
           maxDrawdown={portfolioMetrics?.max_drawdown ?? null}
-          volatility={null}
+          volatility={portfolioMetrics?.volatility ?? null}
         />
       </div>
     </div>

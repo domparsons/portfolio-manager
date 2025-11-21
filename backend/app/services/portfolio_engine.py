@@ -4,6 +4,7 @@ from app import models, schemas
 from app.backtesting.metrics import (
     calculate_max_drawdown,
     calculate_sharpe,
+    calculate_volatility,
 )
 from sqlalchemy.orm.session import Session
 from fastapi import HTTPException
@@ -44,7 +45,6 @@ def get_portfolio_data_for_user(
     if not timestamps:
         raise HTTPException(status_code=404, detail="No valid transaction timestamps")
 
-
     start_date = min(timestamps)  # type: ignore[arg-type]
     end_date = datetime.now()
 
@@ -52,7 +52,6 @@ def get_portfolio_data_for_user(
 
     if not trading_days:
         raise HTTPException(status_code=404, detail="No trading data available")
-
 
     unique_asset_ids = list(set(t.asset_id for t in transactions))  # type: ignore[arg-type]
 
@@ -190,8 +189,6 @@ def calculate_metrics(
     total_return_pct = total_return_abs / total_cash_out
 
     returns = [hist.daily_return_pct for hist in history[1:]]
-    sharpe = calculate_sharpe(returns)
-    max_drawdown = calculate_max_drawdown(history)
 
     return schemas.PortfolioMetrics(
         total_invested=round(total_cash_out, 2),
@@ -201,6 +198,7 @@ def calculate_metrics(
         start_date=history[0].date,
         end_date=history[-1].date,
         days_analysed=len(history),
-        sharpe=sharpe,
-        max_drawdown=max_drawdown,
+        sharpe=calculate_sharpe(returns),
+        max_drawdown=calculate_max_drawdown(history),
+        volatility=calculate_volatility(returns),
     )
