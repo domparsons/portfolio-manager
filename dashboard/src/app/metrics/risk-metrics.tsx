@@ -12,10 +12,12 @@ const RiskMetrics = ({
   sharpe,
   maxDrawdown,
   volatility,
+  className,
 }: {
   sharpe: number | null;
   maxDrawdown: number | null;
   volatility: number | null;
+  className?: string;
 }) => {
   const getSharpeRating = (value: number | null) => {
     if (!value) return { label: "—", color: "text-muted-foreground" };
@@ -71,7 +73,7 @@ const RiskMetrics = ({
   ];
 
   return (
-    <Card>
+    <Card className={className}>
       <CardHeader>
         <CardTitle>Risk Metrics</CardTitle>
         <CardDescription>Risk and return characteristics</CardDescription>

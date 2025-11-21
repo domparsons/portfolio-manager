@@ -12,10 +12,14 @@ const ResultValues = ({
   finalValue,
   absoluteReturn,
   percentageReturn,
+  title,
+  className,
 }: {
   finalValue: number | null;
   absoluteReturn: number | null;
   percentageReturn: number | null;
+  title: string;
+  className?: string;
 }) => {
   const isPositive = (absoluteReturn ?? 0) > 0;
   const isNegative = (absoluteReturn ?? 0) < 0;
@@ -28,9 +32,9 @@ const ResultValues = ({
       : "text-muted-foreground";
 
   return (
-    <Card>
+    <Card className={className}>
       <CardHeader>
-        <CardTitle>Final Value</CardTitle>
+        <CardTitle>{title}</CardTitle>
         <CardDescription>Portfolio value and returns</CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">

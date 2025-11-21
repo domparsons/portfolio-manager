@@ -17,7 +17,13 @@ import React from "react";
 import { Cell, Pie, PieChart } from "recharts";
 import { PortfolioHoldings } from "@/types/custom-types";
 
-const AssetAllocation = ({ chartData }: { chartData: PortfolioHoldings[] }) => {
+const AssetAllocation = ({
+  chartData,
+  className,
+}: {
+  chartData: PortfolioHoldings[];
+  className: string;
+}) => {
   const COLORS = [
     "#0088FE",
     "#00C49F",
@@ -43,14 +49,14 @@ const AssetAllocation = ({ chartData }: { chartData: PortfolioHoldings[] }) => {
   }, [chartData]);
 
   return (
-    <Card className="flex flex-col col-span-2">
+    <Card className={className}>
       <CardHeader className="items-center pb-0">
         <CardTitle>Portfolio Breakdown</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px]"
+          className="mx-auto aspect-square max-h-[350px]"
         >
           <PieChart>
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
@@ -65,6 +71,7 @@ const AssetAllocation = ({ chartData }: { chartData: PortfolioHoldings[] }) => {
             </Pie>
             <ChartLegend
               content={<ChartLegendContent nameKey="asset_name" />}
+              className="flex flex-wrap w-full"
             />
           </PieChart>
         </ChartContainer>

@@ -3,7 +3,7 @@ import { TransactionHistoryCard } from "@/app/dashboard/transaction-history-card
 import { PortfolioCard } from "@/app/dashboard/portfolio-card";
 import { TimeseriesChartData } from "@/types/custom-types";
 import { getPortfolioHistory } from "@/api/portfolio";
-import { usePortfolioMetrics } from "@/context/portfolio-context";
+import { usePortfolioMetrics } from "@/context/portfolio-metrics";
 import { EmptyComponent } from "@/app/empty-component";
 import { formatCurrencyValue, formatPercentageValue } from "@/utils/formatters";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -21,11 +21,6 @@ const Dashboard = () => {
   const minValue = Math.min(...portfolioHistory.map((item) => item.value));
   const maxValue = Math.max(...portfolioHistory.map((item) => item.value));
   const padding = 5;
-
-  const portfolioValue =
-    portfolioHistory.length > 0
-      ? portfolioHistory[portfolioHistory.length - 1].value.toFixed(2)
-      : "0.00";
 
   const minDomain = minValue;
   const maxDomain = maxValue + padding;
@@ -57,7 +52,9 @@ const Dashboard = () => {
       <h1 className="text-2xl font-semibold">Dashboard</h1>
       <div className="flex flex-col justify-between mt-4 mb-2">
         <div className="flex flex-row space-x-2 items-center">
-          <h2 className={"text-xl font-semibold"}>${portfolioValue}</h2>
+          <h2 className={"text-xl font-semibold"}>
+            ${portfolioMetrics?.current_value}
+          </h2>
           <p
             className={`font-semibold ${
               portfolioMetrics &&
@@ -81,13 +78,14 @@ const Dashboard = () => {
         <p>Portfolio Value</p>
       </div>
       {portfolioHistory.length > 0 ? (
-        <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-3 mt-4">
           <PortfolioCard
             portfolioHistory={portfolioHistory}
             startDate={startDate}
             endDate={endDate}
             minDomain={minDomain}
             maxDomain={maxDomain}
+            className={"col-span-2"}
           />
           <TransactionHistoryCard />
         </div>

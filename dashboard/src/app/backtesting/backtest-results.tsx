@@ -39,6 +39,7 @@ const BacktestResults = ({
           finalValue={results.data.final_value}
           absoluteReturn={results.data.total_return_abs}
           percentageReturn={results.data.total_return_pct}
+          title={"Final Value"}
         />
         <BacktestInfo
           totalInvested={results.data.total_invested}

@@ -22,7 +22,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { TransactionHistory } from "@/app/transactions/transaction-history";
-import { PortfolioProvider } from "@/context/portfolio-context";
+import { PortfolioProvider } from "@/context/portfolio-metrics";
 import NoAccess from "@/app/login/no-access";
 import LoadingPage from "@/app/login/loading-page";
 import ErrorPage from "@/app/login/error-page";

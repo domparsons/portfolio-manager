@@ -20,7 +20,7 @@ const TransactionHistoryCard = () => {
   }, []);
 
   return (
-    <Card className={"mt-4"}>
+    <Card>
       <CardHeader>
         <CardTitle>Recent Transaction History (USD)</CardTitle>
       </CardHeader>
