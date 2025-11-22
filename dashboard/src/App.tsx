@@ -82,7 +82,7 @@ const App = () => {
             </div>
           </SidebarInset>
         </SidebarProvider>
-        <Toaster />
+        <Toaster visibleToasts={10} />
         <Analytics />
         <SpeedInsights />
       </ThemeProvider>

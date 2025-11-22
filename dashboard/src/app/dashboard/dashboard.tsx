@@ -1,19 +1,19 @@
 import React from "react";
 import { TransactionHistoryCard } from "@/app/dashboard/transaction-history-card";
 import { PortfolioCard } from "@/app/dashboard/portfolio-card";
-import { TimeseriesChartData } from "@/types/custom-types";
-import { getPortfolioHistory } from "@/api/portfolio";
 import { usePortfolioMetrics } from "@/context/portfolio-metrics";
 import { EmptyComponent } from "@/app/empty-component";
 import { formatCurrencyValue, formatPercentageValue } from "@/utils/formatters";
-import { useAuth0 } from "@auth0/auth0-react";
 import { usePortfolioHistory } from "@/context/portfolio-history";
+import { useWatchlistAlerts } from "@/api/watchlist";
 
 const Dashboard = () => {
   const { portfolioMetrics, loading, error } = usePortfolioMetrics();
 
   const { portfolioHistory, minDomain, maxDomain, startDate, endDate } =
     usePortfolioHistory();
+
+  useWatchlistAlerts();
 
   return (
     <div className="dashboard">
