@@ -77,6 +77,7 @@ def get_latest_timeseries_for_asset(asset_id: int, db: Session) -> pl.DataFrame:
     timeseries = (
         db.query(Timeseries)
         .filter(Timeseries.asset_id == asset_id, Timeseries.timestamp >= one_month_ago)
+        .order_by(Timeseries.timestamp)
         .all()
     )
     timeseries_data = [ts.__dict__ for ts in timeseries]

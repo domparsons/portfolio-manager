@@ -20,3 +20,14 @@ class WatchlistAssets(WatchlistItemBase):
 
 class WatchlistItem(WatchlistItemBase):
     user_id: str
+
+
+class WatchlistAssetAlert(BaseModel):
+    id: int
+    ticker: str
+    change_pct: float
+    current_price: float
+    previous_close: float
+
+    class Config:
+        from_attributes = True
