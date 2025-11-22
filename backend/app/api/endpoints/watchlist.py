@@ -1,6 +1,11 @@
+from datetime import date, timedelta
+
+import polars as pl
 from app import core, crud, models, schemas
-from app.crud import watchlist
+from app.crud import get_latest_timeseries_for_asset, watchlist
 from app.database import get_db
+from app.schemas import WatchlistAssetAlert
+from app.services.price_service import PriceService
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -80,3 +85,58 @@ def get_watchlist(
     asset_list = core.asset.generate_asset_list(assets, latest_timeseries)
 
     return asset_list
+
+
+@router.get("/alerts/{user_id}", response_model=list[schemas.WatchlistAssetAlert])
+def get_watchlist_alerts(user_id: str, db: Session = Depends(get_db)):
+    yesterday = date.today() - timedelta(days=1)
+
+    yesterday_trading_day = PriceService(db).is_trading_day(yesterday)
+
+    if not yesterday_trading_day:
+        return []
+
+    watchlist_items = watchlist.get_watchlist_items(
+        user_id=user_id,
+        db=db,
+    )
+
+    asset_data = []
+
+    for item in watchlist_items:
+        asset_id: int = item.asset_id  # type: ignore
+        timeseries_df = get_latest_timeseries_for_asset(asset_id=asset_id, db=db)
+
+        if timeseries_df.is_empty():
+            continue
+
+        closes = (
+            timeseries_df.sort(pl.col("timestamp"), descending=True)
+            .select(pl.col("adj_close"))
+            .head(2)
+            .to_series()
+            .to_list()
+        )
+
+        if len(closes) < 2:
+            continue
+
+        latest_price = closes[0]
+        previous_price = closes[1]
+
+        change_pct = (latest_price - previous_price) / previous_price
+
+        if abs(change_pct) < 0.05:
+            continue
+
+        recent_asset_data = WatchlistAssetAlert(
+            id=asset_id,
+            ticker=item.asset.ticker,
+            change_pct=change_pct,
+            current_price=latest_price,
+            previous_close=previous_price,
+        )
+
+        asset_data.append(recent_asset_data)
+
+    return asset_data

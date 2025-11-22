@@ -133,3 +133,7 @@ class PriceService:
             return float(price_data[0])
 
         return None
+
+    @staticmethod
+    def is_trading_day(day: date) -> bool:
+        return day.weekday() < 5

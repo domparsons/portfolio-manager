@@ -24,7 +24,6 @@ export function usePortfolioHistory() {
       .finally(() => setLoading(false));
   }, [user_id]);
 
-  // Derived values
   const chartDomain = calculateChartDomain(portfolioHistory);
   const dateRange = getDateRange(portfolioHistory);
 

@@ -10,7 +10,7 @@ from .transaction import (
     TransactionType,  # noqa: F401
 )
 from .user import User, UserBase  # noqa: F401
-from .watchlist import WatchlistItem, WatchlistItemBase  # noqa: F401
+from .watchlist import WatchlistItem, WatchlistItemBase, WatchlistAssetAlert  # noqa: F401
 from .backtest import (
     BacktestRequest,  # noqa: F401
     BacktestMetrics,  # noqa: F401

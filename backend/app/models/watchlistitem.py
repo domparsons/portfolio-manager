@@ -1,6 +1,7 @@
 from app.database import Base
 from sqlalchemy import Column, ForeignKey, Index, Integer, String
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql.schema import UniqueConstraint
 
 
 class WatchlistItem(Base):
@@ -20,4 +21,5 @@ class WatchlistItem(Base):
         Index("ix_watchlist_user_id", "user_id"),
         Index("ix_watchlist_asset_id", "asset_id"),
         Index("ix_watchlist_user_asset", "user_id", "asset_id"),
+        UniqueConstraint("user_id", "asset_id", name="uq_user_asset"),
     )
