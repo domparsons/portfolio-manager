@@ -103,8 +103,8 @@ def get_watchlist_alerts(user_id: str, db: Session = Depends(get_db)):
 
     asset_data = []
 
-    for asset in watchlist_items:
-        asset_id: int = asset.asset_id  # type: ignore
+    for item in watchlist_items:
+        asset_id: int = item.asset_id  # type: ignore
         timeseries_df = get_latest_timeseries_for_asset(asset_id=asset_id, db=db)
 
         if timeseries_df.is_empty():
@@ -131,7 +131,7 @@ def get_watchlist_alerts(user_id: str, db: Session = Depends(get_db)):
 
         recent_asset_data = WatchlistAssetAlert(
             id=asset_id,
-            ticker=asset.asset.ticker,
+            ticker=item.asset.ticker,
             change_pct=change_pct,
             current_price=latest_price,
             previous_close=previous_price,
