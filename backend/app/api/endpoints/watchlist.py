@@ -1,10 +1,11 @@
 from datetime import date, timedelta
 
 import polars as pl
-from app import core, crud, models, schemas
+from app import crud, models, schemas
 from app.crud import get_latest_timeseries_for_asset, watchlist
 from app.database import get_db
 from app.schemas import WatchlistAssetAlert
+from app.services.asset_service import generate_asset_list
 from app.services.price_service import PriceService
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -82,7 +83,7 @@ def get_watchlist(
     assets = crud.asset.get_all_assets(db)
     latest_timeseries = crud.timeseries.get_latest_price_and_changes(db)
     assets = [asset for asset in assets if asset.id in asset_ids]
-    asset_list = core.asset.generate_asset_list(assets, latest_timeseries)
+    asset_list = generate_asset_list(assets, latest_timeseries)
 
     return asset_list
 

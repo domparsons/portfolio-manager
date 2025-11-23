@@ -1,7 +1,8 @@
 import polars as pl
-from app import core, crud
+from app import crud
 from app.database import get_db
 from app.schemas.asset import AssetListSchema, AssetSchema
+from app.services.asset_service import generate_asset_list
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
@@ -17,7 +18,7 @@ def get_all_assets(db: Session = Depends(get_db)):
 def get_asset_list(db: Session = Depends(get_db)):
     assets = crud.asset.get_all_assets(db)
     latest_timeseries = crud.timeseries.get_latest_price_and_changes(db)
-    asset_list = core.asset.generate_asset_list(assets, latest_timeseries)
+    asset_list = generate_asset_list(assets, latest_timeseries)
 
     return asset_list
 
