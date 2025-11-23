@@ -1,4 +1,3 @@
-from .asset import *  # noqa: F403
 from app.services.portfolio_engine import (
     calculate_metrics,
     calculate_portfolio_history,
