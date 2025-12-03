@@ -104,6 +104,11 @@ class BacktestEngine:
 
             elif isinstance(action, SellAction):
                 current_shares = holdings.get(action.asset_id, 0.0)
+                if action.quantity > current_shares:
+                    raise ValueError(
+                        f"Cannot sell {action.quantity} shares, only {current_shares} available"
+                    )
+                current_shares = holdings.get(action.asset_id, 0.0)
                 proceeds = action.quantity * price
                 holdings[action.asset_id] = current_shares - action.quantity
                 cash_flow -= proceeds
