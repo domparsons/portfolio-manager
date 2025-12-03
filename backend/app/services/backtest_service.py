@@ -7,6 +7,7 @@ from app.backtesting.strategies import base
 from app.backtesting.strategies.base import BacktestStrategy
 from app.backtesting.strategies.buy_hold import BuyAndHoldStrategy
 from app.backtesting.strategies.dca import DCAStrategy
+from app.backtesting.strategies.va import VAStrategy
 from app.core import PriceService
 from fastapi import HTTPException
 from sqlalchemy.orm.session import Session
@@ -15,11 +16,13 @@ from sqlalchemy.orm.session import Session
 class StrategyType(str, Enum):
     BUY_AND_HOLD = "buy_and_hold"
     DCA = "dca"
+    VA = "va"
 
 
 STRATEGY_REGISTRY: dict[StrategyType | str, type[BacktestStrategy]] = {
     StrategyType.BUY_AND_HOLD: BuyAndHoldStrategy,
     StrategyType.DCA: DCAStrategy,
+    StrategyType.VA: VAStrategy,
 }
 
 
@@ -88,6 +91,8 @@ class BacktestService:
             return self._create_buy_hold_strategy(request)
         elif request.strategy == StrategyType.DCA:
             return self._create_dca_strategy(request)
+        elif request.strategy == StrategyType.VA:
+            return self._create_va_strategy(request)
 
         raise ValueError(f"Unhandled strategy: {request.strategy}")
 
@@ -121,4 +126,22 @@ class BacktestService:
             initial_investment=request.initial_cash,
             amount_per_period=amount_per_period,
             frequency=frequency,
+        )
+
+    def _create_va_strategy(
+        self,
+        request: schemas.BacktestRequest,
+    ) -> VAStrategy:
+        asset_id = request.asset_ids[0]
+        target_increment_amount = request.parameters.get("target_increment_amount")
+        trading_days = self.price_service.get_trading_days(
+            request.start_date, request.end_date
+        )
+
+        return VAStrategy(
+            asset_id=asset_id,
+            initial_investment=request.initial_cash,
+            target_increment_amount=target_increment_amount,
+            trading_days=trading_days,
+            price_service=self.price_service,
         )
