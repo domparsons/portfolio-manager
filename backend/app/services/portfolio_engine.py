@@ -191,6 +191,8 @@ def calculate_metrics(
 
     returns = [hist.daily_return_pct for hist in history[1:]]
 
+    max_drawdown_response = calculate_max_drawdown(history)
+
     return schemas.PortfolioMetrics(
         total_invested=round(total_cash_out, 2),
         current_value=round(current_value, 2),
@@ -200,7 +202,8 @@ def calculate_metrics(
         end_date=history[-1].date,
         days_analysed=len(history),
         sharpe=calculate_sharpe(returns),
-        max_drawdown=calculate_max_drawdown(history),
+        max_drawdown=max_drawdown_response.max_drawdown,
+        max_drawdown_duration=max_drawdown_response.max_drawdown_duration,
         volatility=calculate_volatility(returns),
     )
 

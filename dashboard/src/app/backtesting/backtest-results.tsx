@@ -49,6 +49,7 @@ const BacktestResults = ({
         <RiskMetrics
           sharpe={results.data.metrics.sharpe}
           maxDrawdown={results.data.metrics.max_drawdown}
+          maxDrawdownDuration={results.data.metrics.max_drawdown_duration}
           volatility={results.data.metrics.volatility}
         />
         <Card className={"col-span-full"}>

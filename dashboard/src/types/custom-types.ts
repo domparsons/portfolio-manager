@@ -82,6 +82,7 @@ export interface PortfolioMetrics {
   days_analysed: number;
   sharpe: number;
   max_drawdown: number;
+  max_drawdown_duration: number;
   volatility: number;
 }
 

@@ -1,7 +1,7 @@
 import enum
 from datetime import date, datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class TransactionType(str, enum.Enum):
@@ -19,8 +19,7 @@ class TransactionBase(BaseModel):
     price: float
     timestamp: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class TransactionCreate(TransactionBase):
@@ -31,16 +30,14 @@ class TransactionOut(TransactionBase):
     asset_name: str
     ticker: str
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class Portfolio(BaseModel):
     portfolio_name: str
     transactions: list[TransactionBase]
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class PortfolioHoldings(BaseModel):
@@ -54,8 +51,7 @@ class PortfolioHoldings(BaseModel):
     unrealised_gain_loss: float
     unrealised_gain_loss_pct: float
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class PortfolioValueHistory(BaseModel):
@@ -65,8 +61,7 @@ class PortfolioValueHistory(BaseModel):
     daily_return_val: float
     cash_flow: float = 0.0
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class PortfolioMetrics(BaseModel):
@@ -79,4 +74,5 @@ class PortfolioMetrics(BaseModel):
     days_analysed: int
     sharpe: float
     max_drawdown: float
+    max_drawdown_duration: int
     volatility: float

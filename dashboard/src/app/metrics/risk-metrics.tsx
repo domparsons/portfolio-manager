@@ -1,4 +1,4 @@
-import { Activity, TrendingDown, BarChart3 } from "lucide-react";
+import { Activity, TrendingDown, BarChart3, Calendar } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -11,11 +11,13 @@ import React from "react";
 const RiskMetrics = ({
   sharpe,
   maxDrawdown,
+  maxDrawdownDuration,
   volatility,
   className,
 }: {
   sharpe: number | null;
   maxDrawdown: number | null;
+  maxDrawdownDuration: number | null;
   volatility: number | null;
   className?: string;
 }) => {
@@ -62,6 +64,13 @@ const RiskMetrics = ({
       description: "Peak-to-trough decline",
       rating: drawdownRating,
       icon: TrendingDown,
+    },
+    {
+      label: "Maximum Drawdown Duration",
+      value: maxDrawdown ? `${maxDrawdownDuration}` : "—",
+      description: "Trading days",
+      rating: drawdownRating,
+      icon: Calendar,
     },
     {
       label: "Volatility",

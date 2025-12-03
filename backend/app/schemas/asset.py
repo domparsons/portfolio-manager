@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class AssetSchema(BaseModel):
@@ -17,8 +17,7 @@ class AssetSchema(BaseModel):
     asset_class: Optional[str] = None
     description: Optional[str] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class AssetListSchema(AssetSchema):
@@ -27,5 +26,4 @@ class AssetListSchema(AssetSchema):
     percentage_change: Optional[float] = None
     timestamp: Optional[datetime] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
