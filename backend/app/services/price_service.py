@@ -137,3 +137,20 @@ class PriceService:
     @staticmethod
     def is_trading_day(day: date) -> bool:
         return day.weekday() < 5
+
+    @staticmethod
+    def is_first_trading_day_of_month(
+        current_date: date, trading_days: list[date]
+    ) -> bool:
+        month_days = [
+            d
+            for d in trading_days
+            if d.year == current_date.year and d.month == current_date.month
+        ]
+
+        if not month_days:
+            return False
+
+        first_trading_day_of_month = min(month_days)
+
+        return current_date == first_trading_day_of_month
