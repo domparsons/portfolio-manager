@@ -162,6 +162,7 @@ class BacktestEngine:
             return BacktestMetrics(
                 sharpe=0.0,
                 max_drawdown=0.0,
+                max_drawdown_duration=0,
                 volatility=0.0,
                 days_analysed=len(history),
                 investments_made=len(all_actions),
@@ -169,9 +170,12 @@ class BacktestEngine:
 
         returns = [day.daily_return_pct for day in history[1:]]
 
+        max_drawdown_result = calculate_max_drawdown(history)
+
         return BacktestMetrics(
             sharpe=calculate_sharpe(returns),
-            max_drawdown=calculate_max_drawdown(history),
+            max_drawdown=max_drawdown_result.max_drawdown,
+            max_drawdown_duration=max_drawdown_result.max_drawdown_duration,
             volatility=calculate_volatility(returns),
             days_analysed=len(history),
             investments_made=len(all_actions),

@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import date
 
 
@@ -10,8 +10,7 @@ class BacktestRequest(BaseModel):
     initial_cash: float
     parameters: dict
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class DailySnapshot(BaseModel):
@@ -26,6 +25,7 @@ class DailySnapshot(BaseModel):
 class BacktestMetrics(BaseModel):
     sharpe: float
     max_drawdown: float
+    max_drawdown_duration: int
     volatility: float
     days_analysed: int
     investments_made: int
@@ -47,3 +47,8 @@ class BacktestResponse(BaseModel):
     strategy: str
     parameters: dict
     data: BacktestResult
+
+
+class MaxDrawdownResponse(BaseModel):
+    max_drawdown: float
+    max_drawdown_duration: int

@@ -16,6 +16,7 @@ export interface BacktestResult {
     metrics: {
       sharpe: number;
       max_drawdown: number;
+      max_drawdown_duration: number;
       volatility: number;
       days_analysed: number;
       investments_made: number;

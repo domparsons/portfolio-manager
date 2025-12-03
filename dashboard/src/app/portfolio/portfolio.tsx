@@ -51,6 +51,7 @@ const Portfolio = () => {
         <RiskMetrics
           sharpe={portfolioMetrics?.sharpe ?? null}
           maxDrawdown={portfolioMetrics?.max_drawdown ?? null}
+          maxDrawdownDuration={portfolioMetrics?.max_drawdown_duration ?? null}
           volatility={portfolioMetrics?.volatility ?? null}
           className="md:col-span-2 lg:col-span-1"
         />

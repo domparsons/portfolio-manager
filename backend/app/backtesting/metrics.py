@@ -2,6 +2,8 @@ import statistics
 from datetime import date
 from typing import Protocol
 
+from app.schemas.backtest import MaxDrawdownResponse
+
 
 class HistoryEntry(Protocol):
     """Protocol defining what a history entry needs for metrics."""
@@ -26,22 +28,29 @@ def calculate_sharpe(returns: list[float], risk_free_rate: float = 0.04 / 252) -
     return (mean_return - risk_free_rate) / std_dev * (252**0.5)
 
 
-def calculate_max_drawdown(history: list[HistoryEntry]) -> float:
+def calculate_max_drawdown(history: list[HistoryEntry]) -> MaxDrawdownResponse:
     """Calculate maximum drawdown from history."""
     max_drawdown = 0.0
+    max_drawdown_duration = 0
     value = 1.0
     running_max = 0.0
+    running_max_date = None
 
     for day in history:
         value = value * (1 + day.daily_return_pct)
         if value > running_max:
             running_max = value
+            running_max_date = day.date
 
-        if running_max > 0:
+        if running_max > 0 and running_max_date is not None:
             current_drawdown = (value - running_max) / running_max
-            max_drawdown = min(current_drawdown, max_drawdown)
+            if current_drawdown < max_drawdown:
+                max_drawdown = current_drawdown
+                max_drawdown_duration = (day.date - running_max_date).days
 
-    return max_drawdown
+    return MaxDrawdownResponse(
+        max_drawdown=max_drawdown, max_drawdown_duration=max_drawdown_duration
+    )
 
 
 def calculate_volatility(returns: list[float]) -> float:

@@ -1,12 +1,11 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class WatchlistItemBase(BaseModel):
     id: int
     asset_id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class WatchlistAssets(WatchlistItemBase):
@@ -29,5 +28,4 @@ class WatchlistAssetAlert(BaseModel):
     current_price: float
     previous_close: float
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
