@@ -1,6 +1,6 @@
 import { Asset } from "@/types/custom-types";
 
-export type BacktestStrategy = "dca" | "buy_and_hold";
+export type BacktestStrategy = "dca" | "buy_and_hold" | "va";
 
 export interface BacktestResult {
   backtest_id: string;

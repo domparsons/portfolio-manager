@@ -12,15 +12,18 @@ import { BuyAndHoldForm } from "@/app/backtesting/strategies/buy-and-hold";
 import { DCAForm } from "@/app/backtesting/strategies/dca";
 import { Asset } from "@/types/custom-types";
 import { getAssetList } from "@/api/asset";
+import { VAForm } from "@/app/backtesting/strategies/va";
 
 const STRATEGY_NAMES: Record<BacktestStrategy, string> = {
   dca: "Dollar Cost Averaging",
   buy_and_hold: "Buy and Hold",
+  va: "Value Averaging",
 };
 
 const STRATEGY_FORMS: Record<BacktestStrategy, React.FC<StrategyFormProps>> = {
   buy_and_hold: BuyAndHoldForm,
   dca: DCAForm,
+  va: VAForm,
 };
 
 const Backtesting = () => {
