@@ -1,14 +1,15 @@
 from datetime import date, timedelta
 
 import polars as pl
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+
 from app import crud, models, schemas
 from app.crud import get_latest_timeseries_for_asset, watchlist
 from app.database import get_db
 from app.schemas import WatchlistAssetAlert
 from app.services.asset_service import generate_asset_list
 from app.services.price_service import PriceService
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/watchlist", tags=["watchlist"])
 
@@ -105,6 +106,9 @@ def get_watchlist_alerts(user_id: str, db: Session = Depends(get_db)):
     asset_data = []
 
     for item in watchlist_items:
+        if item.alert_percentage_change is None:
+            continue
+
         asset_id: int = item.asset_id  # type: ignore
         timeseries_df = get_latest_timeseries_for_asset(asset_id=asset_id, db=db)
 
@@ -127,7 +131,7 @@ def get_watchlist_alerts(user_id: str, db: Session = Depends(get_db)):
 
         change_pct = (latest_price - previous_price) / previous_price
 
-        if abs(change_pct) < 0.05:
+        if abs(change_pct) < item.alert_percentage_change:
             continue
 
         recent_asset_data = WatchlistAssetAlert(

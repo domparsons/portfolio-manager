@@ -13,11 +13,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import React from "react";
-import { apiClient, ApiError } from "@/lib/api-client";
-import { toast } from "sonner";
 import { Asset } from "@/types/custom-types";
 import { usePortfolioMetrics } from "@/context/portfolio-metrics";
+import { toast } from "sonner";
 import { useAuth0 } from "@auth0/auth0-react";
+import { createTransaction } from "@/api/transaction";
+import { ApiError } from "@/lib/api-client";
 import { DatePicker } from "@/app/date-picker";
 
 type TransactionButtonsProps = {
@@ -86,29 +87,23 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
       </DialogDescription>
     );
   }
+  const { user } = useAuth0();
+  const user_id = user?.sub ?? null;
 
   const [modalOpen, setModalOpen] = React.useState(false);
-
   const handleSubmit = async (e: React.FormEvent) => {
     setModalOpen(false);
     e.preventDefault();
 
-    const { user } = useAuth0();
-    const user_id = user?.sub ?? null;
-
     try {
-      await apiClient.post("/transaction/", null, {
-        params: {
-          user_id,
-          portfolio_name: "Placeholder",
-          asset_id: asset.id,
-          type: transactionType,
-          quantity: numberOfShares,
-          price: executionPrice,
-          purchase_date: executionDate?.toISOString(),
-          user_timezone: "Europe/London",
-        },
-      });
+      await createTransaction(
+        user_id,
+        asset,
+        transactionType,
+        numberOfShares,
+        executionPrice,
+        executionDate,
+      );
       toast("Transaction created successfully!");
     } catch (error) {
       const apiError = error as ApiError;
@@ -118,9 +113,8 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
       await refreshMetrics();
     }
   };
-
   return (
-    <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+    <Dialog open={modalOpen} onOpenChange={setModalOpen} modal={false}>
       <DialogTrigger asChild>
         <Button
           className={"bg-green-600"}
@@ -189,7 +183,8 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
             <DatePicker
               date={executionDate}
               setDate={setExecutionDate}
-              label={"hi"}
+              label={"something"}
+              className="col-span-3"
             />
           </div>
         </div>

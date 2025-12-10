@@ -3,8 +3,7 @@ import {
   getAssetByTicker,
   getTimeseriesDataForAsset,
 } from "@/api/asset";
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { AssetPage } from "./asset-page";
 import { Asset, Portfolio } from "@/types/custom-types";
@@ -13,6 +12,9 @@ import { useAuth0 } from "@auth0/auth0-react";
 const AssetPageWrapper = () => {
   const { ticker } = useParams();
   const [pageAsset, setPageAsset] = useState<Asset>();
+  const [pageAssetAlertPercentage, setPageAssetAlertPercentage] = useState<
+    number | undefined
+  >();
   const [pageAssetInWatchlist, setPageAssetInWatchlist] = useState<
     boolean | undefined
   >(undefined);
@@ -31,7 +33,12 @@ const AssetPageWrapper = () => {
     }
 
     setPageAsset(asset);
-    setPageAssetInWatchlist(assetInWatchlist);
+    setPageAssetInWatchlist(assetInWatchlist?.asset_in_watchlist);
+    setPageAssetAlertPercentage(
+      assetInWatchlist?.alert_percentage
+        ? assetInWatchlist.alert_percentage * 100
+        : undefined,
+    );
     await getTimeseriesDataForAsset(asset.id, setTimeseries, timeseriesRange);
   };
 
@@ -57,6 +64,7 @@ const AssetPageWrapper = () => {
       timeseriesRange={timeseriesRange}
       setTimeseriesRange={setTimeseriesRange}
       pageAssetInWatchlist={pageAssetInWatchlist}
+      pageAssetAlertPercentage={pageAssetAlertPercentage}
       setPageAssetInWatchlist={setPageAssetInWatchlist}
     />
   );

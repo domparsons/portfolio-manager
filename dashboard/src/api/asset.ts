@@ -59,22 +59,59 @@ export const getAssetByTicker = async (ticker: string | undefined) => {
   }
 };
 
+export interface AssetInWatchlist {
+  asset_in_watchlist: boolean;
+  alert_percentage: number;
+}
+
 export const checkAssetInWatchlist = async (
   ticker: string | undefined,
   user_id: string | null,
-) => {
-  if (!ticker || !user_id) return;
+): Promise<AssetInWatchlist | undefined> => {
+  if (!ticker || !user_id) return undefined;
 
   try {
-    return await apiClient.get<boolean>("/asset/check_asset_in_watchlist/", {
-      params: {
-        ticker,
-        user_id,
+    return await apiClient.get<AssetInWatchlist>(
+      "/asset/check_asset_in_watchlist",
+      {
+        params: {
+          ticker,
+          user_id,
+        },
       },
-    });
+    );
   } catch (error) {
     const apiError = error as ApiError;
     console.error("Error fetching asset data:", apiError);
     toast("There was an error fetching asset data.");
+  }
+};
+
+export const saveAlertsChange = async (
+  assetId: number | undefined,
+  user_id: string | null,
+  enablePriceAlerts: boolean,
+  assetAlertPercentage: number,
+) => {
+  if (assetId === undefined || user_id === null) {
+    toast.error("An error occurred.");
+    return;
+  }
+
+  try {
+    await apiClient.post("/asset/watchlist_alerts", null, {
+      params: {
+        asset_id: assetId,
+        user_id: user_id,
+        enable_price_alerts: enablePriceAlerts,
+        asset_alert_percentage: assetAlertPercentage,
+      },
+    });
+
+    toast.success("Alert settings updated successfully");
+  } catch (error) {
+    console.error("Failed to update alert settings:", error);
+    toast.error("Failed to update alert settings");
+    throw error;
   }
 };

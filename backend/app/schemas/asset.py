@@ -27,3 +27,10 @@ class AssetListSchema(AssetSchema):
     timestamp: Optional[datetime] = None
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class AssetInWatchlist(BaseModel):
+    asset_in_watchlist: bool
+    alert_percentage: Optional[float]
+
+    model_config = ConfigDict(from_attributes=True)

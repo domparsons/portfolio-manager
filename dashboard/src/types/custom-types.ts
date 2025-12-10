@@ -60,6 +60,7 @@ export interface AssetSheetPopoverProps {
   timeseriesRange: string;
   setTimeseriesRange: React.Dispatch<React.SetStateAction<string>>;
   pageAssetInWatchlist: boolean | undefined;
+  pageAssetAlertPercentage: number | undefined;
   setPageAssetInWatchlist: React.Dispatch<
     React.SetStateAction<boolean | undefined>
   >;
