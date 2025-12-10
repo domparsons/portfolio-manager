@@ -6,11 +6,12 @@ from typing import Dict
 import matplotlib.pyplot as plt
 import numpy as np
 import polars as pl
-from app.crud import get_latest_timeseries_for_asset
-from app.database import get_db
 from fastapi import APIRouter, Depends, Query
 from scipy import stats
 from sqlalchemy.orm import Session
+
+from app.crud import get_latest_timeseries_for_asset
+from app.database import get_db
 
 router = APIRouter(prefix="/monte_carlo", tags=["monte_carlo"])
 
@@ -255,7 +256,7 @@ class MonteCarloEngine:
 
         for sim in range(portfolio_paths.shape[0]):
             # Calculate invested amount at each point
-            invested_amounts = np.arange(portfolio_paths.shape[1]) * monthly_investment
+            # invested_amounts = np.arange(portfolio_paths.shape[1]) * monthly_investment
 
             # Calculate running maximum of portfolio value
             portfolio_values = portfolio_paths[sim, :]
@@ -334,7 +335,7 @@ class MonteCarloEngine:
 
         if len(monthly_prices) < config.investment_months:
             # Use available data and extrapolate
-            available_months = len(monthly_prices)
+            # available_months = len(monthly_prices)
             prices = monthly_prices.select("price").to_numpy().flatten()
         else:
             prices = (

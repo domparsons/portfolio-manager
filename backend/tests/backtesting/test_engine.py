@@ -85,7 +85,9 @@ class TestExecuteActions:
 
         action = SellAction(asset_id=1, quantity=10.0)
 
-        with pytest.raises(ValueError, match="Cannot sell 10.0 shares, only 5.0 available"):
+        with pytest.raises(
+            ValueError, match="Cannot sell 10.0 shares, only 5.0 available"
+        ):
             BacktestEngine._execute_actions(
                 actions=[action],
                 current_date=date(2024, 1, 1),

@@ -1,7 +1,7 @@
 import React from "react";
 import { apiClient, ApiError } from "@/lib/api-client";
 import { toast } from "sonner";
-import { Transaction } from "@/types/custom-types";
+import { Asset, Transaction } from "@/types/custom-types";
 
 export const deleteTransaction = async (
   transactionId: number | undefined | null,
@@ -87,4 +87,26 @@ export const useTransactionHistory = async (
     console.error("Error fetching transaction history:", apiError);
     toast("There was an error fetching transaction history.");
   }
+};
+
+export const createTransaction = async (
+  user_id: string | null,
+  asset: Asset,
+  transactionType: "buy" | "sell",
+  numberOfShares: number,
+  executionPrice: number,
+  executionDate: Date | undefined,
+) => {
+  await apiClient.post("/transaction/", null, {
+    params: {
+      user_id,
+      portfolio_name: "Placeholder",
+      asset_id: asset.id,
+      type: transactionType,
+      quantity: numberOfShares,
+      price: executionPrice,
+      purchase_date: executionDate?.toISOString(),
+      user_timezone: "Europe/London",
+    },
+  });
 };

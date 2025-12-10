@@ -7,11 +7,14 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Minus, Plus } from "lucide-react";
 import React from "react";
 import { AssetSheetPopoverProps, Transaction } from "@/types/custom-types";
-import { useTransactionType } from "@/api/asset";
+import { saveAlertsChange, useTransactionType } from "@/api/asset";
 import { getTransactionsByAsset } from "@/api/transaction";
 import { formatTimestampShort } from "@/utils/formatters";
 import { Badge } from "@/components/ui/badge";
 import { useAuth0 } from "@auth0/auth0-react";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 const AssetDetail: React.FC<{
   label: string;
@@ -30,6 +33,7 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
   timeseriesRange,
   setTimeseriesRange,
   pageAssetInWatchlist,
+  pageAssetAlertPercentage,
   setPageAssetInWatchlist,
 }) => {
   const [transactionType, setTransactionType] = useTransactionType();
@@ -38,12 +42,44 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
   const [transactionHistory, setTransactionHistory] = React.useState<
     Transaction[]
   >([]);
+  const [enablePriceAlerts, setEnablePriceAlerts] =
+    React.useState<boolean>(false);
+  const [displayAssetAlertPercentage, setDisplayAssetAlertPercentage] =
+    React.useState<number>(0);
+
+  React.useEffect(() => {
+    if (pageAssetAlertPercentage) {
+      setEnablePriceAlerts(true);
+      setDisplayAssetAlertPercentage(pageAssetAlertPercentage);
+    } else {
+      setEnablePriceAlerts(false);
+      setDisplayAssetAlertPercentage(0);
+    }
+  }, [pageAssetAlertPercentage]);
 
   React.useEffect(() => {
     if (user_id) {
       getTransactionsByAsset(user_id, pageAsset.id, setTransactionHistory);
     }
-  }, [transactionHistory]);
+  }, [user_id, pageAsset.id]);
+
+  const [isSaving, setIsSaving] = React.useState<boolean>(false);
+
+  const handleUpdateAlert = async () => {
+    setIsSaving(true);
+
+    try {
+      await saveAlertsChange(
+        pageAsset.id,
+        user_id,
+        enablePriceAlerts,
+        displayAssetAlertPercentage,
+      );
+    } catch (error) {
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <>
@@ -153,8 +189,8 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
           <AssetDetail label="Currency" value={pageAsset?.currency} />
         </CardContent>
       </Card>
-      {transactionHistory.length > 0 ? (
-        <div className={"grid w-full grid-cols-3"}>
+      <div className={"grid w-full grid-cols-3 gap-4"}>
+        {transactionHistory.length > 0 ? (
           <Card className={"col-span-1"}>
             <CardHeader>
               <CardTitle>
@@ -183,10 +219,41 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
               </div>
             </CardContent>
           </Card>
-        </div>
-      ) : (
-        <></>
-      )}
+        ) : (
+          <></>
+        )}
+        {pageAssetInWatchlist && (
+          <Card className={"col-span-1"}>
+            <CardHeader>
+              <CardTitle>Alerts for {pageAsset.asset_name}</CardTitle>
+            </CardHeader>
+            <CardContent className={"space-y-4"}>
+              <div className={"flex items-center space-x-3"}>
+                <Switch
+                  checked={enablePriceAlerts}
+                  onCheckedChange={(checked) => setEnablePriceAlerts(checked)}
+                />
+                <Label>Enable price alerts</Label>
+              </div>
+
+              <div className={"flex flex-row items-center space-x-3"}>
+                <Label>Alert threshold</Label>
+                <Input
+                  value={displayAssetAlertPercentage}
+                  className={"w-16"}
+                  onChange={(e) =>
+                    setDisplayAssetAlertPercentage(Number(e.target.value))
+                  }
+                />
+                <div>%</div>
+              </div>
+              <Button onClick={handleUpdateAlert} disabled={isSaving}>
+                {isSaving ? "Saving..." : "Update Alert"}
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+      </div>
     </>
   );
 };

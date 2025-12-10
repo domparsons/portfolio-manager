@@ -1,9 +1,9 @@
 """Tests for Dollar-Cost Averaging (DCA) Strategy"""
 
-import pytest
 from datetime import date, timedelta
-from app.backtesting.strategies.dca import DCAStrategy
+
 from app.backtesting.actions import BuyAction
+from app.backtesting.strategies.dca import DCAStrategy
 from tests.backtesting.helpers import create_mock_context
 
 

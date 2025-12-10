@@ -1,5 +1,5 @@
 from app.database import Base
-from sqlalchemy import Column, ForeignKey, Index, Integer, String
+from sqlalchemy import Column, ForeignKey, Index, Integer, String, Double
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import UniqueConstraint
 
@@ -10,6 +10,7 @@ class WatchlistItem(Base):
     id = Column(Integer, primary_key=True)
     asset_id = Column(Integer, ForeignKey("assets.id"), nullable=False)
     user_id = Column(String, ForeignKey("users.id"), nullable=False)
+    alert_percentage_change = Column(Double, nullable=True)
     asset = relationship("Asset", back_populates="watchlist_items")
     owner = relationship("User", back_populates="watchlists")
 
