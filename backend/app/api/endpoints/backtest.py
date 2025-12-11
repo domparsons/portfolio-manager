@@ -1,8 +1,11 @@
+import uuid
+
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm.session import Session
+
 from app.database import get_db
 from app.schemas import BacktestRequest, BacktestResponse
 from app.services.backtest_service import BacktestService
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm.session import Session
 
 router = APIRouter(prefix="/backtest", tags=["backtest"])
 
@@ -20,7 +23,7 @@ def run_backtest(
     parameters = request.model_dump(exclude={"strategy"})
 
     backtest_response = BacktestResponse(
-        backtest_id="backtestid",
+        backtest_id=uuid.uuid4(),
         strategy=request.strategy,
         parameters=parameters,
         data=backtest_result,

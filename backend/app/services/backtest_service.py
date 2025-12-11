@@ -1,5 +1,9 @@
-from datetime import timedelta, date
+import json
+from datetime import date, timedelta
 from enum import Enum
+
+from fastapi import HTTPException
+from sqlalchemy.orm.session import Session
 
 from app import crud, schemas
 from app.backtesting.engine import BacktestEngine
@@ -9,8 +13,7 @@ from app.backtesting.strategies.buy_hold import BuyAndHoldStrategy
 from app.backtesting.strategies.dca import DCAStrategy
 from app.backtesting.strategies.va import VAStrategy
 from app.core import PriceService
-from fastapi import HTTPException
-from sqlalchemy.orm.session import Session
+from app.logger import logger
 
 
 class StrategyType(str, Enum):
@@ -35,6 +38,10 @@ class BacktestService:
     def run_backtest(self, request: schemas.BacktestRequest) -> schemas.BacktestResult:
         strategy = self._create_strategy(request)
 
+        logger.info(
+            f"Running {request.strategy} on asset(s) {request.asset_ids} from {request.start_date} to {request.end_date} with initial investment {request.initial_cash} and parameters {request.parameters}"
+        )
+
         backtest_result = self.engine.run(
             strategy=strategy,
             start_date=request.start_date,
@@ -45,17 +52,29 @@ class BacktestService:
         return backtest_result
 
     def validate_request(self, request: schemas.BacktestRequest):
-        if not self._validate_assets_exist(request.asset_ids):
-            raise HTTPException(status_code=404, detail="Asset not found")
+        invalid_assets = self._validate_assets_exist(request.asset_ids)
+        if invalid_assets:
+            logger.warning(f"Asset(s) not found: {invalid_assets}")
+            raise HTTPException(
+                status_code=404, detail=f"Asset(s) not found {invalid_assets}"
+            )
 
         if request.start_date >= date.today():
+            logger.warning(
+                f"Start date {request.start_date} cannot be in the future or today"
+            )
             raise HTTPException(
-                status_code=400, detail="Start date cannot be in the future or today"
+                status_code=400,
+                detail=f"Start date {request.start_date} cannot be in the future or today",
             )
 
         if request.end_date >= date.today():
+            logger.warning(
+                f"End date {request.end_date} cannot be in the future or today"
+            )
             raise HTTPException(
-                status_code=400, detail="End date cannot be in the future or today"
+                status_code=400,
+                detail=f"End date {request.end_date} cannot be in the future or today",
             )
 
         if request.start_date >= request.end_date:
@@ -66,23 +85,26 @@ class BacktestService:
 
         date_range = request.end_date - request.start_date
         if date_range > timedelta(days=365 * 10):
+            logger.warning("Date range cannot exceed 10 years")
             raise HTTPException(
                 status_code=400, detail="Date range cannot exceed 10 years"
             )
 
         if date_range < timedelta(days=7):
+            logger.warning("Date range must be at least 7 days")
             raise HTTPException(
                 status_code=400, detail="Date range must be at least 7 days"
             )
 
-    def _validate_assets_exist(self, requested_asset_ids) -> bool:
+    def _validate_assets_exist(self, requested_asset_ids) -> list[int]:
         all_assets = crud.get_all_assets(db=self.db)
         all_asset_ids = [asset.id for asset in all_assets]
+        assets_not_found = []
         for requested_asset in requested_asset_ids:
             if requested_asset not in all_asset_ids:
-                return False
+                assets_not_found.append(requested_asset)
 
-        return True
+        return assets_not_found
 
     def _create_strategy(
         self, request: schemas.BacktestRequest
@@ -94,6 +116,7 @@ class BacktestService:
         elif request.strategy == StrategyType.VA:
             return self._create_va_strategy(request)
 
+        logger.error(f"Unhandled strategy: {request.strategy}")
         raise ValueError(f"Unhandled strategy: {request.strategy}")
 
     @staticmethod

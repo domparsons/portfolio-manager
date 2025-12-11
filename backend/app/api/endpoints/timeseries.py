@@ -2,11 +2,13 @@ from datetime import datetime, timedelta, timezone
 from enum import Enum
 
 import polars as pl
-from app.crud.timeseries import get_latest_timeseries_for_asset
-from app.database import get_db
-from app.schemas.timeseries import TimeseriesSchema
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
+
+from app.crud.timeseries import get_latest_timeseries_for_asset
+from app.database import get_db
+from app.logger import logger
+from app.schemas.timeseries import TimeseriesSchema
 
 router = APIRouter(prefix="/timeseries", tags=["timeseries"])
 
@@ -39,13 +41,17 @@ def get_latest_timeseries(
     db: Session = Depends(get_db),
 ):
     timeseries_df = get_latest_timeseries_for_asset(asset_id, db)
-
     start_date = get_start_date_from_range(timeseries_range).replace(tzinfo=None)
+
     if timeseries_range != TimeSeriesRange.all:
         timeseries_df = timeseries_df.filter(pl.col("timestamp") >= pl.lit(start_date))
+
     timeseries_df_sorted = timeseries_df.sort(by="timestamp")
     timeseries_df_rounded = timeseries_df_sorted.with_columns(
         pl.col("close").round(2).alias("close"),
     )
     timeseries_list = timeseries_df_rounded.to_dicts()
+    logger.info(
+        f"Fetched latest timeseries for asset id {asset_id} with range {timeseries_range.value}"
+    )
     return timeseries_list

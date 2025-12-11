@@ -1,10 +1,11 @@
 import polars as pl
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app import crud
 from app.crud import update_watchlist_item_alert_percentage
 from app.database import get_db
+from app.logger import logger
 from app.schemas.asset import AssetInWatchlist, AssetListSchema, AssetSchema
 from app.services.asset_service import generate_asset_list
 
@@ -28,12 +29,21 @@ def get_asset_list(db: Session = Depends(get_db)):
 @router.get("/get_asset_by_ticker", response_model=AssetListSchema)
 def get_asset_by_ticker(ticker: str, db: Session = Depends(get_db)):
     asset = crud.asset.get_asset_by_ticker(db, ticker)
+
+    if asset is None:
+        logger.warning(f"Asset not found: ticker={ticker}")
+        raise HTTPException(status_code=404, detail=f"Asset {ticker} not found")
+
     latest_timeseries = crud.timeseries.get_latest_price_and_changes(db)
     filtered = latest_timeseries.filter(pl.col("asset_id") == asset["id"])
-    ts_data = filtered.to_dicts()[0]
+
+    if len(filtered) == 0:
+        logger.warning(
+            f"No price data available: ticker={ticker}, asset_id={asset['id']}"
+        )
+
+    ts_data = filtered.to_dicts()[0] if len(filtered) > 0 else {}
     asset.update(ts_data)
-    if asset is None:
-        return None
 
     return asset
 
@@ -41,7 +51,7 @@ def get_asset_by_ticker(ticker: str, db: Session = Depends(get_db)):
 @router.get("/check_asset_in_watchlist", response_model=AssetInWatchlist)
 def check_asset_in_watchlist(
     ticker: str, user_id: str, db: Session = Depends(get_db)
-) -> AssetInWatchlist:
+) -> AssetInWatchlist | None:
     asset = crud.asset.get_asset_by_ticker(db, ticker)
     user_watchlist_items = crud.get_watchlist_items(user_id, db)
     watchlist_ids = [item.asset_id for item in user_watchlist_items]
@@ -56,9 +66,6 @@ def check_asset_in_watchlist(
     )
 
 
-from fastapi import HTTPException, status
-
-
 @router.post("/watchlist_alerts")
 def watchlist_alerts(
     asset_id: int,
@@ -71,6 +78,9 @@ def watchlist_alerts(
     watchlist_ids = [item.asset_id for item in user_watchlist_items]
 
     if asset_id not in watchlist_ids:
+        logger.warning(
+            f"Alert config failed - asset not in watchlist: asset_id={asset_id}"
+        )
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Asset not found in watchlist"
         )
@@ -80,8 +90,18 @@ def watchlist_alerts(
     )
 
     if not result:
+        logger.error(f"Failed to update watchlist alert: asset_id={asset_id}")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Watchlist item not found"
+        )
+
+    if enable_price_alerts:
+        logger.info(
+            f"Watchlist alert enabled: asset_id={asset_id}, user=...{user_id[-8:]}, threshold={asset_alert_percentage}%"
+        )
+    else:
+        logger.info(
+            f"Watchlist alert disabled: asset_id={asset_id}, user=...{user_id[-8:]}"
         )
 
     return {

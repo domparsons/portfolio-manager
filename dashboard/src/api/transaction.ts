@@ -18,6 +18,7 @@ export const deleteTransaction = async (
         transaction_id: transactionId,
       },
     });
+    toast("Transaction successfully deleted.");
     refreshHistory();
   } catch (error) {
     const apiError = error as ApiError;

@@ -25,12 +25,14 @@ type TransactionButtonsProps = {
   transactionType: "buy" | "sell";
   setTransactionType: React.Dispatch<React.SetStateAction<"buy" | "sell">>;
   asset: Asset;
+  onTransactionSuccess?: () => void;
 };
 
 const TransactionButtons: React.FC<TransactionButtonsProps> = ({
   transactionType,
   setTransactionType,
   asset,
+  onTransactionSuccess,
 }) => {
   const [numberOfShares, setNumberOfShares] = React.useState<number>(1);
   const [executionPrice, setExecutionPrice] = React.useState<number>(
@@ -105,6 +107,7 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
         executionDate,
       );
       toast("Transaction created successfully!");
+      onTransactionSuccess?.(); // Refresh transaction history
     } catch (error) {
       const apiError = error as ApiError;
       console.error("Failed to create transaction:", apiError);
