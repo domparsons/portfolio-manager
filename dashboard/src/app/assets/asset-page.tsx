@@ -57,11 +57,15 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
     }
   }, [pageAssetAlertPercentage]);
 
-  React.useEffect(() => {
+  const refreshTransactionHistory = React.useCallback(() => {
     if (user_id) {
       getTransactionsByAsset(user_id, pageAsset.id, setTransactionHistory);
     }
   }, [user_id, pageAsset.id]);
+
+  React.useEffect(() => {
+    refreshTransactionHistory();
+  }, [refreshTransactionHistory]);
 
   const [isSaving, setIsSaving] = React.useState<boolean>(false);
 
@@ -92,6 +96,7 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
             transactionType={transactionType}
             setTransactionType={setTransactionType}
             asset={pageAsset}
+            onTransactionSuccess={refreshTransactionHistory}
           />
         </div>
         <Button

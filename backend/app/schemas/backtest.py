@@ -1,5 +1,7 @@
-from pydantic import BaseModel, ConfigDict
 from datetime import date
+from uuid import UUID
+
+from pydantic import BaseModel, ConfigDict
 
 
 class BacktestRequest(BaseModel):
@@ -43,7 +45,7 @@ class BacktestResult(BaseModel):
 
 
 class BacktestResponse(BaseModel):
-    backtest_id: str
+    backtest_id: UUID
     strategy: str
     parameters: dict
     data: BacktestResult

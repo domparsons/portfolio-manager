@@ -1,3 +1,9 @@
+import re
+import time
+
+from fastapi import APIRouter, FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+
 from app.api.endpoints import (
     admin,
     asset,
@@ -9,10 +15,28 @@ from app.api.endpoints import (
     user,
     watchlist,
 )
-from fastapi import APIRouter, FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from app.logger import logger
 
 app = FastAPI(title="Portfolio Manager")
+
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    start_time = time.time()
+    path = request.url.path
+    pattern = r"(auth0(?:\||%7C)[a-zA-Z0-9]+)"
+
+    def redact_to_last_8(match):
+        user_id = match.group(1)
+        return f"...{user_id[-8:]}"
+
+    path = re.sub(pattern, redact_to_last_8, path, flags=re.IGNORECASE)
+    response = await call_next(request)
+    duration = time.time() - start_time
+    logger.info(f"{request.method} {path} - {response.status_code} ({duration:.3f}s)")
+
+    return response
+
 
 api_router = APIRouter()
 

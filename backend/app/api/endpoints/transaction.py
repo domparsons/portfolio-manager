@@ -1,12 +1,14 @@
 from datetime import datetime, timezone
 
 import pytz
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+
 from app import crud, models, schemas
 from app.crud.asset import get_asset_by_id
 from app.database import get_db
+from app.logger import logger
 from app.utils.convert_to_utc import convert_to_utc
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/transaction", tags=["transaction"])
 
@@ -25,20 +27,24 @@ def create_transaction(
 ):
     asset = get_asset_by_id(asset_id, db)
     if asset is None:
+        logger.error(f"Asset not found for asset id {asset_id}")
         raise HTTPException(status_code=404, detail="Asset not found")
 
     user = crud.user.get_user_by_id(db, user_id=user_id)
     if user is None:
+        logger.error("User not found")
         raise HTTPException(status_code=404, detail="User not found")
 
     if user_timezone not in pytz.all_timezones:
+        logger.error(f"Invalid timezone: {user_timezone}")
         raise HTTPException(status_code=400, detail="Invalid timezone")
 
     utc_date = convert_to_utc(purchase_date, user_timezone)
 
     if utc_date > datetime.now(timezone.utc):
+        logger.warning(f"Purchase date {utc_date} cannot be in the future")
         raise HTTPException(
-            status_code=400, detail="Purchase date cannot be in the future"
+            status_code=400, detail=f"Purchase date {utc_date} cannot be in the future"
         )
 
     transaction = models.Transaction(
@@ -65,10 +71,13 @@ def create_transaction(
         timestamp=transaction.timestamp,
     )
 
-    # Create the portfolio object with the transaction
     portfolio = schemas.transaction.Portfolio(
         portfolio_name=portfolio_name,
         transactions=[transaction_base],
+    )
+    logger.info(
+        f"Transaction created: asset_id={asset_id}, type={type}, "
+        f"quantity={quantity}, total=${quantity * price:.2f}"
     )
     return portfolio
 
@@ -111,12 +120,20 @@ def delete_transaction(
         db, transaction_id=transaction_id
     )
     if not transaction:
+        logger.warning(
+            f"Transaction {transaction_id} not found for user {user_id[-8:]}"
+        )
         raise HTTPException(status_code=404, detail="Transaction not found")
 
     if transaction.user_id != user_id:
+        logger.info(f"User {user_id[-8:]} not authorised to delete this transactions")
         raise HTTPException(
-            status_code=403, detail="Not authorized to delete this transaction"
+            status_code=403,
+            detail=f"User {user_id[-8:]} not authorised to delete this transactions",
         )
 
     crud.transaction.delete_transaction(db, transaction_id=transaction_id)
+    logger.info(
+        f"Transaction {transaction_id} successfully deleted for user {user_id[-8:]}"
+    )
     return {"detail": "Transaction deleted successfully"}

@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from app import crud, models, schemas
 from app.crud import get_latest_timeseries_for_asset, watchlist
 from app.database import get_db
+from app.logger import logger
 from app.schemas import WatchlistAssetAlert
 from app.services.asset_service import generate_asset_list
 from app.services.price_service import PriceService
@@ -22,6 +23,7 @@ def add_to_watchlist(
 ):
     user = crud.user.get_user_by_id(db, user_id=user_id)
     if user is None:
+        logger.error(f"User {user_id[-8:]} not found")
         raise HTTPException(status_code=404, detail="User not found")
 
     return watchlist.create_watchlist_item(
@@ -42,6 +44,7 @@ def remove_from_watchlist(
 ):
     user = crud.user.get_user_by_id(db, user_id=user_id)
     if user is None:
+        logger.error(f"User {user_id[-8:]} not found")
         raise HTTPException(status_code=404, detail="User not found")
 
     watchlist_item = (
@@ -54,11 +57,14 @@ def remove_from_watchlist(
     )
 
     if not watchlist_item:
+        logger.error(
+            f"Watchlist item not found for user {user_id} and asset {asset_id}"
+        )
         raise HTTPException(status_code=404, detail="Watchlist item not found")
 
     db.delete(watchlist_item)
     db.commit()
-
+    logger.info(f"Asset {asset_id} removed from user {user_id[-8:]} watchlist")
     return watchlist_item
 
 
@@ -69,6 +75,7 @@ def get_watchlist(
 ):
     user = crud.user.get_user_by_id(db, user_id=user_id)
     if user is None:
+        logger.error(f"User {user_id[-8:]} not found")
         raise HTTPException(status_code=404, detail="User not found")
 
     watchlist_items = watchlist.get_watchlist_items(
@@ -77,6 +84,7 @@ def get_watchlist(
     )
 
     if not watchlist_items:
+        logger.info(f"No watchlist items fund for user {user_id[-8:]}")
         return []
 
     asset_ids = [item.asset_id for item in watchlist_items]
@@ -85,6 +93,8 @@ def get_watchlist(
     latest_timeseries = crud.timeseries.get_latest_price_and_changes(db)
     assets = [asset for asset in assets if asset.id in asset_ids]
     asset_list = generate_asset_list(assets, latest_timeseries)
+
+    logger.info(f"Fetched watchlist for user {user_id[-8:]}")
 
     return asset_list
 
@@ -95,7 +105,9 @@ def get_watchlist_alerts(user_id: str, db: Session = Depends(get_db)):
 
     yesterday_trading_day = PriceService(db).is_trading_day(yesterday)
 
+    # If prev day (latest data) is not a trading day, there will be no price change dod
     if not yesterday_trading_day:
+        logger.info(f"No new trading data since {yesterday_trading_day}")
         return []
 
     watchlist_items = watchlist.get_watchlist_items(
@@ -143,5 +155,10 @@ def get_watchlist_alerts(user_id: str, db: Session = Depends(get_db)):
         )
 
         asset_data.append(recent_asset_data)
+
+    logger.info(
+        f"Checked {len(watchlist_items)} watchlist items for user {user_id[-8:]}, "
+        f"triggered {len(asset_data)} alerts"
+    )
 
     return asset_data

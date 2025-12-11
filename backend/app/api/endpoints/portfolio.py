@@ -1,12 +1,14 @@
-from app import models, schemas, crud
-from app.services.portfolio_engine import (
-    calculate_metrics,
-    get_portfolio_data_for_user,
-    calculate_holdings,
-)
-from app.database import get_db
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+
+from app import crud, models, schemas
+from app.database import get_db
+from app.logger import logger
+from app.services.portfolio_engine import (
+    calculate_holdings,
+    calculate_metrics,
+    get_portfolio_data_for_user,
+)
 
 router = APIRouter(prefix="/portfolio", tags=["portfolio"])
 
@@ -23,6 +25,7 @@ def get_portfolio_transactions(
     )
 
     if not transactions:
+        logger.info(f"No transactions found for user {user_id[-8:]}")
         return []
 
     portfolios = {}
@@ -52,6 +55,9 @@ def get_portfolio_transactions(
         )
         portfolio_list.append(portfolio)
 
+    logger.info(
+        f"Fetched {len(portfolio_list)} portfolio transactions for user {user_id[-8:]}"
+    )
     return portfolio_list
 
 
@@ -64,12 +70,16 @@ def get_portfolio_holdings(
     )
 
     if not transactions:
+        logger.info(f"No transactions found for user {user_id[-8:]}")
         return []
 
     latest_prices = crud.timeseries.get_latest_price_and_changes(db)
 
     holdings = calculate_holdings(transactions, latest_prices, db)
 
+    logger.info(
+        f"Calculated holdings for user {user_id[-8:]}: {len(holdings)} positions"
+    )
     return list(holdings.values())
 
 
@@ -84,8 +94,10 @@ def get_portfolio_over_time(
     """
     try:
         _, history = get_portfolio_data_for_user(user_id, db)
+        logger.info(f"Fetched portfolio timeseries data for user {user_id[-8:]}")
         return history
     except ValueError as e:
+        logger.error(f"Failed to get portfolio timeseries for user {user_id[-8:]}: {e}")
         raise HTTPException(status_code=404, detail=str(e))
 
 
@@ -101,10 +113,15 @@ def get_portfolio_metrics(
         metrics = calculate_metrics(transactions, history)
 
         if metrics is None:
+            logger.warning(
+                f"Insufficient data to calculate metrics for user {user_id[-8:]}"
+            )
             raise HTTPException(
                 status_code=400, detail="Insufficient data to calculate metrics"
             )
 
+        logger.info(f"Fetched portfolio metrics for user {user_id[-8:]}")
         return metrics
     except ValueError as e:
+        logger.error(f"An error occurred while getting portfolio metrics: {e}")
         raise HTTPException(status_code=404, detail=str(e))
