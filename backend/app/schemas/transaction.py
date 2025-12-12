@@ -1,7 +1,8 @@
 import enum
 from datetime import date, datetime
+from decimal import Decimal
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_serializer
 
 
 class TransactionType(str, enum.Enum):
@@ -15,11 +16,15 @@ class TransactionBase(BaseModel):
     portfolio_name: str
     asset_id: int
     type: TransactionType
-    quantity: float
-    price: float
+    quantity: Decimal
+    price: Decimal
     timestamp: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+    @field_serializer('quantity', 'price', when_used='json')
+    def serialize_decimal(self, value: Decimal) -> float:
+        return float(value)
 
 
 class TransactionCreate(TransactionBase):
@@ -43,36 +48,61 @@ class Portfolio(BaseModel):
 class PortfolioHoldings(BaseModel):
     asset_id: str
     asset_name: str
-    net_quantity_shares: float
-    average_cost_basis: float
-    total_cost: float
-    current_price: float
-    net_value: float
-    unrealised_gain_loss: float
-    unrealised_gain_loss_pct: float
+    net_quantity_shares: Decimal
+    average_cost_basis: Decimal
+    total_cost: Decimal
+    current_price: Decimal
+    net_value: Decimal
+    unrealised_gain_loss: Decimal
+    unrealised_gain_loss_pct: Decimal
 
     model_config = ConfigDict(from_attributes=True)
+
+    @field_serializer(
+        'net_quantity_shares', 'average_cost_basis', 'total_cost',
+        'current_price', 'net_value', 'unrealised_gain_loss',
+        'unrealised_gain_loss_pct', when_used='json'
+    )
+    def serialize_decimal(self, value: Decimal) -> float:
+        return float(value)
 
 
 class PortfolioValueHistory(BaseModel):
     date: date
-    value: float
-    daily_return_pct: float
-    daily_return_val: float
-    cash_flow: float = 0.0
+    value: Decimal
+    daily_return_pct: Decimal
+    daily_return_val: Decimal
+    cash_flow: Decimal = Decimal("0.0")
 
     model_config = ConfigDict(from_attributes=True)
 
+    @field_serializer(
+        'value', 'daily_return_pct', 'daily_return_val', 'cash_flow',
+        when_used='json'
+    )
+    def serialize_decimal(self, value: Decimal) -> float:
+        return float(value)
+
 
 class PortfolioMetrics(BaseModel):
-    total_invested: float
-    current_value: float
-    total_return_abs: float
-    total_return_pct: float
+    total_invested: Decimal
+    current_value: Decimal
+    total_return_abs: Decimal
+    total_return_pct: Decimal
     start_date: date
     end_date: date
     days_analysed: int
-    sharpe: float
-    max_drawdown: float
+    sharpe: Decimal
+    max_drawdown: Decimal
     max_drawdown_duration: int
-    volatility: float
+    volatility: Decimal
+
+    model_config = ConfigDict(from_attributes=True)
+
+    @field_serializer(
+        'total_invested', 'current_value', 'total_return_abs',
+        'total_return_pct', 'sharpe', 'max_drawdown', 'volatility',
+        when_used='json'
+    )
+    def serialize_decimal(self, value: Decimal) -> float:
+        return float(value)

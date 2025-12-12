@@ -1,5 +1,6 @@
 import statistics
 from datetime import date
+from decimal import Decimal
 from typing import Protocol
 
 from app.schemas.backtest import MaxDrawdownResponse
@@ -9,35 +10,37 @@ class HistoryEntry(Protocol):
     """Protocol defining what a history entry needs for metrics."""
 
     date: date
-    value: float
-    daily_return_pct: float
-    cash_flow: float
+    value: Decimal
+    daily_return_pct: Decimal
+    cash_flow: Decimal
 
 
-def calculate_sharpe(returns: list[float], risk_free_rate: float = 0.04 / 252) -> float:
+def calculate_sharpe(
+    returns: list[Decimal], risk_free_rate: Decimal = Decimal("0.04") / Decimal("252")
+) -> Decimal:
     """Calculate annualised Sharpe ratio."""
     if len(returns) < 2:
-        return 0.0
+        return Decimal("0")
 
-    mean_return = statistics.mean(returns)
-    std_dev = statistics.stdev(returns)
+    mean_return = Decimal(statistics.mean(returns))
+    std_dev = Decimal(statistics.stdev(returns))
 
     if std_dev == 0:
-        return 0.0
+        return Decimal("0")
 
-    return (mean_return - risk_free_rate) / std_dev * (252**0.5)
+    return (mean_return - Decimal(risk_free_rate)) / std_dev * Decimal(252**0.5)
 
 
 def calculate_max_drawdown(history: list[HistoryEntry]) -> MaxDrawdownResponse:
     """Calculate maximum drawdown from history."""
-    max_drawdown = 0.0
+    max_drawdown = Decimal("0")
     max_drawdown_duration = 0
-    value = 1.0
-    running_max = 0.0
+    value = Decimal("1")
+    running_max = Decimal("0")
     running_max_date = None
 
     for day in history:
-        value = value * (1 + day.daily_return_pct)
+        value = value * (Decimal("1") + day.daily_return_pct)
         if value > running_max:
             running_max = value
             running_max_date = day.date
@@ -49,13 +52,13 @@ def calculate_max_drawdown(history: list[HistoryEntry]) -> MaxDrawdownResponse:
                 max_drawdown_duration = (day.date - running_max_date).days
 
     return MaxDrawdownResponse(
-        max_drawdown=max_drawdown, max_drawdown_duration=max_drawdown_duration
+        max_drawdown=Decimal(max_drawdown), max_drawdown_duration=max_drawdown_duration
     )
 
 
-def calculate_volatility(returns: list[float]) -> float:
+def calculate_volatility(returns: list[Decimal]) -> Decimal:
     """Calculate annualized volatility."""
     if len(returns) < 2:
-        return 0.0
+        return Decimal("0")
 
-    return statistics.stdev(returns) * (252**0.5)
+    return Decimal(statistics.stdev(returns)) * (252 ** Decimal("0.5"))

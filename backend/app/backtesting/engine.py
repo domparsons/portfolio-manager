@@ -1,4 +1,7 @@
 from datetime import date
+from decimal import Decimal
+
+from sqlalchemy.orm.session import Session
 
 from app import schemas
 from app.backtesting.actions import Action, BuyAction, SellAction
@@ -11,7 +14,6 @@ from app.backtesting.metrics import (
 from app.backtesting.strategies.base import BacktestStrategy
 from app.schemas.backtest import BacktestMetrics, DailySnapshot
 from app.services.price_service import PriceService
-from sqlalchemy.orm.session import Session
 
 
 class BacktestEngine:
@@ -23,7 +25,7 @@ class BacktestEngine:
         strategy: BacktestStrategy,
         start_date: date,
         end_date: date,
-        initial_cash: float,
+        initial_cash: Decimal,
     ) -> schemas.BacktestResult:
         trading_days = self.price_service.get_trading_days(start_date, end_date)
         asset_ids = strategy.get_asset_ids()
@@ -52,8 +54,8 @@ class BacktestEngine:
                 value=portfolio_value,
                 holdings=holdings.copy(),
                 cash_flow=cash_flow,
-                daily_return_pct=0,
-                daily_return_abs=0,
+                daily_return_pct=Decimal("0"),
+                daily_return_abs=Decimal("0"),
             )
             history.append(daily_snapshot)
 
@@ -86,31 +88,34 @@ class BacktestEngine:
         current_date: date,
         holdings: dict,
         price_lookup: dict,
-    ) -> float:
+    ) -> Decimal:
         if not actions:
-            return 0.0
+            return Decimal("0")
 
-        cash_flow = 0
+        cash_flow = Decimal("0")
         for action in actions:
             price = price_lookup.get((action.asset_id, current_date))
             if price is None:
                 continue
 
+            price_decimal = Decimal(str(price))
+
             if isinstance(action, BuyAction):
-                number_of_shares = action.dollar_amount / price
-                cash_flow += action.dollar_amount
-                current_shares = holdings.get(action.asset_id, 0.0)
+                dollar_amount = Decimal(str(action.dollar_amount))
+                number_of_shares = dollar_amount / price_decimal
+                cash_flow += dollar_amount
+                current_shares = holdings.get(action.asset_id, Decimal("0"))
                 holdings[action.asset_id] = current_shares + number_of_shares
 
             elif isinstance(action, SellAction):
-                current_shares = holdings.get(action.asset_id, 0.0)
-                if action.quantity > current_shares:
+                quantity = Decimal(str(action.quantity))
+                current_shares = holdings.get(action.asset_id, Decimal("0"))
+                if quantity > current_shares:
                     raise ValueError(
-                        f"Cannot sell {action.quantity} shares, only {current_shares} available"
+                        f"Cannot sell {quantity} shares, only {current_shares} available"
                     )
-                current_shares = holdings.get(action.asset_id, 0.0)
-                proceeds = action.quantity * price
-                holdings[action.asset_id] = current_shares - action.quantity
+                proceeds = quantity * price_decimal
+                holdings[action.asset_id] = current_shares - quantity
                 cash_flow -= proceeds
 
         return cash_flow
@@ -118,8 +123,8 @@ class BacktestEngine:
     @staticmethod
     def _calculate_value(
         holdings: dict, current_date: date, price_lookup: dict
-    ) -> float:
-        holdings_value = 0
+    ) -> Decimal:
+        holdings_value = Decimal("0")
         for asset, shares in holdings.items():
             if shares <= 0:
                 continue
@@ -128,11 +133,10 @@ class BacktestEngine:
             if not price:
                 continue
 
-            holdings_value += price * shares
+            price_decimal = Decimal(str(price))
+            holdings_value += price_decimal * shares
 
-        portfolio_value = holdings_value
-
-        return portfolio_value
+        return holdings_value
 
     @staticmethod
     def _calculate_daily_returns(
@@ -141,8 +145,8 @@ class BacktestEngine:
         if len(history) == 0:
             return history
 
-        history[0].daily_return_pct = 0
-        history[0].daily_return_abs = 0
+        history[0].daily_return_pct = Decimal("0")
+        history[0].daily_return_abs = Decimal("0")
 
         for i in range(1, len(history)):
             prev_value = history[i - 1].value
@@ -155,7 +159,7 @@ class BacktestEngine:
             if prev_value > 0:
                 history[i].daily_return_pct = value_change / prev_value
             else:
-                history[i].daily_return_pct = 0.0
+                history[i].daily_return_pct = Decimal("0")
 
         return history
 
@@ -165,10 +169,10 @@ class BacktestEngine:
     ) -> BacktestMetrics:
         if len(history) < 2:
             return BacktestMetrics(
-                sharpe=0.0,
-                max_drawdown=0.0,
+                sharpe=Decimal("0"),
+                max_drawdown=Decimal("0"),
                 max_drawdown_duration=0,
-                volatility=0.0,
+                volatility=Decimal("0"),
                 days_analysed=len(history),
                 investments_made=len(all_actions),
             )

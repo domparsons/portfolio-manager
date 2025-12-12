@@ -1,22 +1,24 @@
-from app.backtesting.metrics import calculate_sharpe, calculate_max_drawdown
+from decimal import Decimal
+
+from app.backtesting.metrics import calculate_max_drawdown, calculate_sharpe
 
 
 def test_max_drawdown_basic(simple_drawdown_case):
     result = calculate_max_drawdown(simple_drawdown_case)
-    expected = -0.15
-    assert abs(result.max_drawdown - expected) < 0.01
+    expected = Decimal("-0.15")
+    assert abs(result.max_drawdown - expected) < Decimal("0.01")
 
 
 def test_no_drawdown(no_drawdown_case):
     result = calculate_max_drawdown(no_drawdown_case)
-    expected = 0
-    assert abs(result.max_drawdown - expected) < 0.01
+    expected = Decimal("0")
+    assert abs(result.max_drawdown - expected) < Decimal("0.01")
 
 
 def test_sharpe_ratio_basic(sample_portfolio_history):
     result = calculate_sharpe(sample_portfolio_history)
-    expected = 2.45
-    assert abs(result - expected) < 0.01
+    expected = Decimal("2.45")
+    assert abs(result - expected) < Decimal("0.01")
 
 
 def test_sharpe_negative_returns(negative_sharpe_returns):

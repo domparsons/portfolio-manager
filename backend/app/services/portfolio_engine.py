@@ -1,14 +1,16 @@
 from datetime import date, datetime
+from decimal import Decimal
 
 import polars as pl
+from fastapi import HTTPException
+from sqlalchemy.orm.session import Session
+
 from app import models, schemas
 from app.backtesting.metrics import (
     calculate_max_drawdown,
     calculate_sharpe,
     calculate_volatility,
 )
-from fastapi import HTTPException
-from sqlalchemy.orm.session import Session
 
 
 def get_portfolio_data_for_user(
@@ -88,7 +90,7 @@ def calculate_portfolio_history(
     transaction_index = 0
 
     for day in trading_days:
-        net_cash_flow = 0.0
+        net_cash_flow = Decimal("0")
 
         while (
             transaction_index < len(transactions)
@@ -97,35 +99,35 @@ def calculate_portfolio_history(
             txn = transactions[transaction_index]
 
             if txn.type == "buy":
-                holdings[txn.asset_id] = holdings.get(txn.asset_id, 0.0) + txn.quantity
+                holdings[txn.asset_id] = holdings.get(txn.asset_id, Decimal("0")) + txn.quantity
                 net_cash_flow += txn.quantity * txn.price
 
             elif txn.type == "sell":
-                holdings[txn.asset_id] = holdings.get(txn.asset_id, 0.0) - txn.quantity
+                holdings[txn.asset_id] = holdings.get(txn.asset_id, Decimal("0")) - txn.quantity
                 net_cash_flow -= txn.quantity * txn.price
 
             transaction_index += 1
 
-        total_value = 0.0
+        total_value = Decimal("0")
         for asset_id, quantity in holdings.items():
             if quantity > 0:
                 price = price_lookup.get((asset_id, day))
                 if price is not None:
-                    total_value += quantity * price
+                    total_value += quantity * Decimal(str(price))
 
         results.append(
             schemas.PortfolioValueHistory(
                 date=day,
-                value=round(total_value, 2),
-                daily_return_pct=0.0,
-                daily_return_val=0.0,
-                cash_flow=round(net_cash_flow, 2),
+                value=total_value.quantize(Decimal("0.01")),
+                daily_return_pct=Decimal("0"),
+                daily_return_val=Decimal("0"),
+                cash_flow=net_cash_flow.quantize(Decimal("0.01")),
             )
         )
 
     if results:
-        results[0].daily_return_pct = 0.0
-        results[0].daily_return_val = 0.0
+        results[0].daily_return_pct = Decimal("0")
+        results[0].daily_return_val = Decimal("0")
 
     for i in range(1, len(results)):
         prev_value = results[i - 1].value
@@ -133,18 +135,18 @@ def calculate_portfolio_history(
         cash_flow = results[i].cash_flow
 
         if prev_value > 0:
-            results[i].daily_return_pct = round(
-                (curr_value - prev_value - cash_flow) / prev_value, 6
-            )
-            results[i].daily_return_val = round(curr_value - prev_value - cash_flow, 2)
+            results[i].daily_return_pct = (
+                (curr_value - prev_value - cash_flow) / prev_value
+            ).quantize(Decimal("0.000001"))
+            results[i].daily_return_val = (curr_value - prev_value - cash_flow).quantize(Decimal("0.01"))
         else:
-            results[i].daily_return_pct = 0.0
-            results[i].daily_return_val = 0.0
+            results[i].daily_return_pct = Decimal("0")
+            results[i].daily_return_val = Decimal("0")
 
     return results
 
 
-def get_current_holdings(transactions: list) -> dict[int, float]:
+def get_current_holdings(transactions: list) -> dict[int, Decimal]:
     """
     Calculate current holdings from transaction history.
 
@@ -158,9 +160,9 @@ def get_current_holdings(transactions: list) -> dict[int, float]:
 
     for txn in transactions:
         if txn.type == "buy":
-            holdings[txn.asset_id] = holdings.get(txn.asset_id, 0.0) + txn.quantity
+            holdings[txn.asset_id] = holdings.get(txn.asset_id, Decimal("0")) + txn.quantity
         elif txn.type == "sell":
-            holdings[txn.asset_id] = holdings.get(txn.asset_id, 0.0) - txn.quantity
+            holdings[txn.asset_id] = holdings.get(txn.asset_id, Decimal("0")) - txn.quantity
 
     return {
         asset_id: quantity for asset_id, quantity in holdings.items() if quantity > 0
@@ -194,17 +196,17 @@ def calculate_metrics(
     max_drawdown_response = calculate_max_drawdown(history)
 
     return schemas.PortfolioMetrics(
-        total_invested=round(total_cash_out, 2),
-        current_value=round(current_value, 2),
-        total_return_abs=round(total_return_abs, 2),
-        total_return_pct=round(total_return_pct, 6),
+        total_invested=total_cash_out.quantize(Decimal("0.01")),
+        current_value=current_value.quantize(Decimal("0.01")),
+        total_return_abs=total_return_abs.quantize(Decimal("0.01")),
+        total_return_pct=total_return_pct.quantize(Decimal("0.000001")),
         start_date=history[0].date,
         end_date=history[-1].date,
         days_analysed=len(history),
-        sharpe=calculate_sharpe(returns),
-        max_drawdown=max_drawdown_response.max_drawdown,
+        sharpe=Decimal(str(calculate_sharpe(returns))),
+        max_drawdown=Decimal(str(max_drawdown_response.max_drawdown)),
         max_drawdown_duration=max_drawdown_response.max_drawdown_duration,
-        volatility=calculate_volatility(returns),
+        volatility=Decimal(str(calculate_volatility(returns))),
     )
 
 
@@ -222,13 +224,13 @@ def calculate_holdings(
             holdings[asset_id] = schemas.PortfolioHoldings(
                 asset_id=asset_id,
                 asset_name=asset_name,
-                net_quantity_shares=0.0,
-                average_cost_basis=0.0,
-                total_cost=0.0,
-                current_price=0.0,
-                net_value=0.0,
-                unrealised_gain_loss=0.0,
-                unrealised_gain_loss_pct=0.0,
+                net_quantity_shares=Decimal("0"),
+                average_cost_basis=Decimal("0"),
+                total_cost=Decimal("0"),
+                current_price=Decimal("0"),
+                net_value=Decimal("0"),
+                unrealised_gain_loss=Decimal("0"),
+                unrealised_gain_loss_pct=Decimal("0"),
             )
 
         if transaction.type == schemas.TransactionType.buy:
@@ -251,11 +253,12 @@ def calculate_holdings(
             continue
 
         asset_id = int(asset.asset_id)
-        latest_price = (
+        latest_price_float = (
             latest_prices.filter(pl.col("asset_id") == asset_id)
             .select(pl.col("latest_price"))
             .item()
         )
+        latest_price = Decimal(str(latest_price_float))
 
         asset.current_price = latest_price
         asset.net_value = latest_price * asset.net_quantity_shares
@@ -264,7 +267,7 @@ def calculate_holdings(
 
         if asset.total_cost > 0:
             asset.unrealised_gain_loss_pct = (
-                asset.unrealised_gain_loss / asset.total_cost
-            ) * 100
+                (asset.unrealised_gain_loss / asset.total_cost) * Decimal("100")
+            )
 
     return holdings

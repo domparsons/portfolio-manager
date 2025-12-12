@@ -1,10 +1,12 @@
+from decimal import Decimal
+
 from app.backtesting.actions import Action, BuyAction
 from app.backtesting.context import BacktestContext
 from app.backtesting.strategies.base import BacktestStrategy
 
 
 class BuyAndHoldStrategy(BacktestStrategy):
-    def __init__(self, allocation: dict, initial_investment: float):
+    def __init__(self, allocation: dict, initial_investment: Decimal):
         self.allocation = allocation
         self.initial_investment = initial_investment
         self.already_invested = False
@@ -17,7 +19,7 @@ class BuyAndHoldStrategy(BacktestStrategy):
 
         actions = []
         for asset_id, weight in self.allocation.items():
-            amount = self.initial_investment * weight
+            amount = self.initial_investment * Decimal(weight)
             actions.append(BuyAction(asset_id, amount))
 
         return actions
