@@ -29,3 +29,5 @@ dashboard/.env.development
 dashboard/.env.production
 backend/.env
 *.pyc
+__pycache__/
+*.pyo
