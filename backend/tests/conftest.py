@@ -1,6 +1,7 @@
 import pytest
 from app.schemas import PortfolioValueHistory
 from datetime import date
+from decimal import Decimal
 
 
 @pytest.fixture
@@ -8,25 +9,25 @@ def simple_drawdown_case():
     """Portfolio with one clear drawdown: +20%, -15%, +10%"""
     return [
         PortfolioValueHistory(
-            date=date(2024, 1, 1), value=1000, daily_return_pct=0.0, daily_return_val=0
+            date=date(2024, 1, 1), value=Decimal("1000"), daily_return_pct=Decimal("0.0"), daily_return_val=Decimal("0")
         ),
         PortfolioValueHistory(
             date=date(2024, 1, 2),
-            value=1200,
-            daily_return_pct=0.2,
-            daily_return_val=200,
+            value=Decimal("1200"),
+            daily_return_pct=Decimal("0.2"),
+            daily_return_val=Decimal("200"),
         ),
         PortfolioValueHistory(
             date=date(2024, 1, 3),
-            value=1020,
-            daily_return_pct=-0.15,
-            daily_return_val=-180,
+            value=Decimal("1020"),
+            daily_return_pct=Decimal("-0.15"),
+            daily_return_val=Decimal("-180"),
         ),
         PortfolioValueHistory(
             date=date(2024, 1, 4),
-            value=1122,
-            daily_return_pct=0.1,
-            daily_return_val=102,
+            value=Decimal("1122"),
+            daily_return_pct=Decimal("0.1"),
+            daily_return_val=Decimal("102"),
         ),
     ]
     # Expected max drawdown: -15% (from 1200 to 1020)
@@ -37,16 +38,16 @@ def no_drawdown_case():
     """Portfolio with only gains"""
     return [
         PortfolioValueHistory(
-            date=date(2024, 1, 1), value=1000, daily_return_pct=0.0, daily_return_val=0
+            date=date(2024, 1, 1), value=Decimal("1000"), daily_return_pct=Decimal("0.0"), daily_return_val=Decimal("0")
         ),
         PortfolioValueHistory(
-            date=date(2024, 1, 2), value=1050, daily_return_pct=5.0, daily_return_val=50
+            date=date(2024, 1, 2), value=Decimal("1050"), daily_return_pct=Decimal("5.0"), daily_return_val=Decimal("50")
         ),
         PortfolioValueHistory(
             date=date(2024, 1, 3),
-            value=1100,
-            daily_return_pct=4.76,
-            daily_return_val=50,
+            value=Decimal("1100"),
+            daily_return_pct=Decimal("4.76"),
+            daily_return_val=Decimal("50"),
         ),
     ]
 

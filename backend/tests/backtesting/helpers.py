@@ -1,13 +1,14 @@
 """Test helpers for backtesting tests"""
 
 from datetime import date
+from decimal import Decimal
 from app.backtesting.context import BacktestContext
 from app.schemas.backtest import DailySnapshot
 
 
 def create_mock_context(
     current_date: date,
-    holdings: dict[int, float] | None = None,
+    holdings: dict[int, Decimal] | None = None,
     price_data: dict[tuple[int, date], float] | None = None,
     history: list[DailySnapshot] | None = None,
 ) -> BacktestContext:

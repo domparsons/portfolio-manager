@@ -1,7 +1,8 @@
 from datetime import date
+from decimal import Decimal
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_serializer
 
 
 class BacktestRequest(BaseModel):
@@ -9,39 +10,67 @@ class BacktestRequest(BaseModel):
     asset_ids: list[int]
     start_date: date
     end_date: date
-    initial_cash: float
+    initial_cash: Decimal
     parameters: dict
 
     model_config = ConfigDict(from_attributes=True)
 
+    @field_serializer("initial_cash", when_used="json")
+    def serialize_decimal(self, value: Decimal) -> float:
+        return float(value)
+
 
 class DailySnapshot(BaseModel):
     date: date
-    value: float
-    holdings: dict[int, float]
-    cash_flow: float
-    daily_return_pct: float
-    daily_return_abs: float
+    value: Decimal
+    holdings: dict[int, Decimal]
+    cash_flow: Decimal
+    daily_return_pct: Decimal
+    daily_return_abs: Decimal
+
+    @field_serializer(
+        "value", "cash_flow", "daily_return_pct", "daily_return_abs", when_used="json"
+    )
+    def serialize_decimal(self, value: Decimal) -> float:
+        return float(value)
+
+    @field_serializer("holdings", when_used="json")
+    def serialize_holdings(self, value: dict[int, Decimal]) -> dict[int, float]:
+        return {k: float(v) for k, v in value.items()}
 
 
 class BacktestMetrics(BaseModel):
-    sharpe: float
-    max_drawdown: float
+    sharpe: Decimal
+    max_drawdown: Decimal
     max_drawdown_duration: int
-    volatility: float
+    volatility: Decimal
     days_analysed: int
     investments_made: int
+
+    @field_serializer("sharpe", "max_drawdown", "volatility", when_used="json")
+    def serialize_decimal(self, value: Decimal) -> float:
+        return float(value)
 
 
 class BacktestResult(BaseModel):
     start_date: date
     end_date: date
-    total_invested: float
-    final_value: float
-    total_return_pct: float
-    total_return_abs: float
+    total_invested: Decimal
+    final_value: Decimal
+    total_return_pct: Decimal
+    total_return_abs: Decimal
     metrics: BacktestMetrics
     history: list[DailySnapshot]
+
+    @field_serializer(
+        "total_invested",
+        "final_value",
+        "total_return_pct",
+        "total_return_abs",
+        when_used="json",
+    )
+    def serialize_decimal(self, value: Decimal) -> float:
+        return float(value)
 
 
 class BacktestResponse(BaseModel):
@@ -52,5 +81,5 @@ class BacktestResponse(BaseModel):
 
 
 class MaxDrawdownResponse(BaseModel):
-    max_drawdown: float
+    max_drawdown: Decimal
     max_drawdown_duration: int
