@@ -18,7 +18,7 @@ class TestExecuteActions:
         holdings = {}
         price_lookup = {(1, date(2024, 1, 1)): 100.0}
 
-        action = BuyAction(asset_id=1, dollar_amount=1000.0)
+        action = BuyAction(asset_id=1, dollar_amount=Decimal("1000"))
         cash_flow = BacktestEngine._execute_actions(
             actions=[action],
             current_date=date(2024, 1, 1),
