@@ -1,10 +1,5 @@
-import React, { useEffect, useState } from "react";
-import {
-  BacktestParams,
-  BacktestResult,
-  BacktestStrategy,
-  StrategyFormProps,
-} from "@/types/backtest-types";
+import React, { useState } from "react";
+import { BacktestParams, BacktestResult, BacktestStrategy, StrategyFormProps } from "@/types/backtest-types";
 import { StrategySelector } from "@/app/backtesting/strategy-selector";
 import { BacktestResults } from "@/app/backtesting/backtest-results";
 import { runBacktest } from "@/api/backtest";
@@ -13,6 +8,9 @@ import { DCAForm } from "@/app/backtesting/strategies/dca";
 import { Asset } from "@/types/custom-types";
 import { getAssetList } from "@/api/asset";
 import { VAForm } from "@/app/backtesting/strategies/va";
+import { ApiError } from "@/lib/api-client";
+import { toast } from "sonner";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const STRATEGY_NAMES: Record<BacktestStrategy, string> = {
   dca: "Dollar Cost Averaging",
@@ -54,9 +52,35 @@ const Backtesting = () => {
   const [assets, setAssets] = useState<Asset[]>([]);
   const [filteredAssets, setFilteredAssets] = useState<Asset[]>([]);
 
-  useEffect(() => {
-    getAssetList(setAssets, setFilteredAssets);
-  }, []);
+  const { user } = useAuth0();
+  const user_id = user?.sub ?? null;
+
+  const loadAssets = async () => {
+    try {
+      const data = await getAssetList();
+      setAssets(data);
+      setFilteredAssets(data);
+    } catch (error) {
+      const apiError = error as ApiError;
+
+      if (apiError.status === 404) {
+        setAssets([]);
+        setFilteredAssets([]);
+      } else if (apiError.status === 401) {
+        toast.error("Authentication required");
+      } else if (apiError.status >= 500) {
+        toast.error("Failed to load assets");
+      } else {
+        toast.error("Failed to load assets");
+      }
+
+      console.error("Assets load failed:", apiError);
+    }
+  };
+
+  React.useEffect(() => {
+    loadAssets();
+  }, [user_id]);
 
   return (
     <div className="dashboard">
