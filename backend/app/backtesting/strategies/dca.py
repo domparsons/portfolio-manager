@@ -1,15 +1,18 @@
+from datetime import date
+
+from polars import Decimal
+
 from app.backtesting.actions import Action, BuyAction
 from app.backtesting.context import BacktestContext
 from app.backtesting.strategies.base import BacktestStrategy
-from datetime import date
 
 
 class DCAStrategy(BacktestStrategy):
     def __init__(
         self,
         asset_id: int,
-        initial_investment: float,
-        amount_per_period: float,
+        initial_investment: Decimal,
+        amount_per_period: Decimal,
         frequency: str,
     ):
         self.asset_id = asset_id
