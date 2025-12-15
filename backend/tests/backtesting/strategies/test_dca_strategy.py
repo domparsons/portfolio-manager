@@ -1,6 +1,7 @@
 """Tests for Dollar-Cost Averaging (DCA) Strategy"""
 
 from datetime import date, timedelta
+from decimal import Decimal
 
 from app.backtesting.actions import BuyAction
 from app.backtesting.strategies.dca import DCAStrategy
@@ -14,8 +15,8 @@ class TestDCAStrategyInitialization:
         """Verify get_parameters returns correct configuration"""
         strategy = DCAStrategy(
             asset_id=1,
-            initial_investment=1000.0,
-            amount_per_period=100.0,
+            initial_investment=Decimal("1000.0"),
+            amount_per_period=Decimal("100.0"),
             frequency="monthly",
         )
 
@@ -33,8 +34,8 @@ class TestDCAStrategyInitialization:
         """Verify get_asset_ids returns single asset"""
         strategy = DCAStrategy(
             asset_id=42,
-            initial_investment=1000.0,
-            amount_per_period=100.0,
+            initial_investment=Decimal("1000.0"),
+            amount_per_period=Decimal("100.0"),
             frequency="weekly",
         )
 
@@ -46,8 +47,8 @@ class TestDCAStrategyInitialization:
         """Verify strategy starts with correct initial state"""
         strategy = DCAStrategy(
             asset_id=1,
-            initial_investment=1000.0,
-            amount_per_period=100.0,
+            initial_investment=Decimal("1000.0"),
+            amount_per_period=Decimal("100.0"),
             frequency="daily",
         )
 
@@ -62,8 +63,8 @@ class TestDCAInitialInvestment:
         """First trading day should invest initial_investment amount"""
         strategy = DCAStrategy(
             asset_id=1,
-            initial_investment=1000.0,
-            amount_per_period=100.0,
+            initial_investment=Decimal("1000.0"),
+            amount_per_period=Decimal("100.0"),
             frequency="monthly",
         )
 
@@ -79,8 +80,8 @@ class TestDCAInitialInvestment:
         """First investment should set already_invested_initial flag"""
         strategy = DCAStrategy(
             asset_id=1,
-            initial_investment=1000.0,
-            amount_per_period=100.0,
+            initial_investment=Decimal("1000.0"),
+            amount_per_period=Decimal("100.0"),
             frequency="weekly",
         )
 
@@ -95,8 +96,8 @@ class TestDCAInitialInvestment:
         """First investment should record the date"""
         strategy = DCAStrategy(
             asset_id=1,
-            initial_investment=1000.0,
-            amount_per_period=100.0,
+            initial_investment=Decimal("1000.0"),
+            amount_per_period=Decimal("100.0"),
             frequency="daily",
         )
 
@@ -115,8 +116,8 @@ class TestDCADailyFrequency:
         """Daily frequency should invest on consecutive days"""
         strategy = DCAStrategy(
             asset_id=1,
-            initial_investment=1000.0,
-            amount_per_period=100.0,
+            initial_investment=Decimal("1000.0"),
+            amount_per_period=Decimal("100.0"),
             frequency="daily",
         )
 
@@ -142,8 +143,8 @@ class TestDCADailyFrequency:
         """After initial investment, should use amount_per_period"""
         strategy = DCAStrategy(
             asset_id=1,
-            initial_investment=5000.0,
-            amount_per_period=250.0,
+            initial_investment=Decimal("5000.0"),
+            amount_per_period=Decimal("250.0"),
             frequency="daily",
         )
 
@@ -165,8 +166,8 @@ class TestDCAWeeklyFrequency:
         """Weekly frequency should invest after 7+ days"""
         strategy = DCAStrategy(
             asset_id=1,
-            initial_investment=1000.0,
-            amount_per_period=100.0,
+            initial_investment=Decimal("1000.0"),
+            amount_per_period=Decimal("100.0"),
             frequency="weekly",
         )
 
@@ -196,8 +197,8 @@ class TestDCAWeeklyFrequency:
         """Weekly investment should update last_investment_date"""
         strategy = DCAStrategy(
             asset_id=1,
-            initial_investment=1000.0,
-            amount_per_period=100.0,
+            initial_investment=Decimal("1000.0"),
+            amount_per_period=Decimal("100.0"),
             frequency="weekly",
         )
 
@@ -215,8 +216,8 @@ class TestDCAWeeklyFrequency:
         """Should not invest if less than 7 days have passed"""
         strategy = DCAStrategy(
             asset_id=1,
-            initial_investment=1000.0,
-            amount_per_period=100.0,
+            initial_investment=Decimal("1000.0"),
+            amount_per_period=Decimal("100.0"),
             frequency="weekly",
         )
 
@@ -239,8 +240,8 @@ class TestDCAMonthlyFrequency:
         """Monthly frequency should invest when month changes"""
         strategy = DCAStrategy(
             asset_id=1,
-            initial_investment=1000.0,
-            amount_per_period=100.0,
+            initial_investment=Decimal("1000.0"),
+            amount_per_period=Decimal("100.0"),
             frequency="monthly",
         )
 
@@ -265,8 +266,8 @@ class TestDCAMonthlyFrequency:
         """Should not invest multiple times in same month"""
         strategy = DCAStrategy(
             asset_id=1,
-            initial_investment=1000.0,
-            amount_per_period=100.0,
+            initial_investment=Decimal("1000.0"),
+            amount_per_period=Decimal("100.0"),
             frequency="monthly",
         )
 
@@ -288,8 +289,8 @@ class TestDCAMonthlyFrequency:
         """Should invest once per month for multiple months"""
         strategy = DCAStrategy(
             asset_id=1,
-            initial_investment=1000.0,
-            amount_per_period=100.0,
+            initial_investment=Decimal("1000.0"),
+            amount_per_period=Decimal("100.0"),
             frequency="monthly",
         )
 
@@ -315,8 +316,8 @@ class TestDCAMonthlyFrequency:
         """Should invest when year changes (Dec -> Jan)"""
         strategy = DCAStrategy(
             asset_id=1,
-            initial_investment=1000.0,
-            amount_per_period=100.0,
+            initial_investment=Decimal("1000.0"),
+            amount_per_period=Decimal("100.0"),
             frequency="monthly",
         )
 
@@ -339,8 +340,8 @@ class TestDCAEdgeCases:
         """Invalid frequency should result in no investments"""
         strategy = DCAStrategy(
             asset_id=1,
-            initial_investment=1000.0,
-            amount_per_period=100.0,
+            initial_investment=Decimal("1000.0"),
+            amount_per_period=Decimal("100.0"),
             frequency="yearly",  # Not a valid frequency
         )
 
@@ -358,8 +359,8 @@ class TestDCAEdgeCases:
         """Strategy should handle $0 initial investment"""
         strategy = DCAStrategy(
             asset_id=1,
-            initial_investment=0.0,
-            amount_per_period=100.0,
+            initial_investment=Decimal("0.0"),
+            amount_per_period=Decimal("100.0"),
             frequency="monthly",
         )
 
@@ -373,8 +374,8 @@ class TestDCAEdgeCases:
         """Strategy should handle $0 periodic investment"""
         strategy = DCAStrategy(
             asset_id=1,
-            initial_investment=1000.0,
-            amount_per_period=0.0,
+            initial_investment=Decimal("1000.0"),
+            amount_per_period=Decimal("0.0"),
             frequency="daily",
         )
 
@@ -393,8 +394,8 @@ class TestDCAEdgeCases:
         """Strategy should work with any asset_id"""
         strategy = DCAStrategy(
             asset_id=999,
-            initial_investment=1000.0,
-            amount_per_period=100.0,
+            initial_investment=Decimal("1000.0"),
+            amount_per_period=Decimal("100.0"),
             frequency="daily",
         )
 
@@ -411,8 +412,8 @@ class TestDCAStateManagement:
         """Verify state variables persist between on_day calls"""
         strategy = DCAStrategy(
             asset_id=1,
-            initial_investment=1000.0,
-            amount_per_period=100.0,
+            initial_investment=Decimal("1000.0"),
+            amount_per_period=Decimal("100.0"),
             frequency="weekly",
         )
 
@@ -436,8 +437,8 @@ class TestDCAStateManagement:
         """last_investment_date should only update when investment occurs"""
         strategy = DCAStrategy(
             asset_id=1,
-            initial_investment=1000.0,
-            amount_per_period=100.0,
+            initial_investment=Decimal("1000.0"),
+            amount_per_period=Decimal("100.0"),
             frequency="weekly",
         )
 

@@ -19,7 +19,7 @@ class BuyAndHoldStrategy(BacktestStrategy):
 
         actions = []
         for asset_id, weight in self.allocation.items():
-            amount = self.initial_investment * Decimal(weight)
+            amount = self.initial_investment * Decimal(str(weight))
             actions.append(BuyAction(asset_id, amount))
 
         return actions
