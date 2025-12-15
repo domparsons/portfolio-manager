@@ -17,21 +17,29 @@ const Portfolio = () => {
   const [portfolioHoldings, setPortfolioHoldings] = React.useState<
     PortfolioHoldings[]
   >([]);
+  const [holdingsLoading, setHoldingsLoading] = React.useState<boolean>(true);
 
-  const { portfolioHistory, minDomain, maxDomain, startDate, endDate } =
+  const { portfolioHistory, minDomain, maxDomain, startDate, endDate, loading: historyLoading } =
     usePortfolioHistory();
 
   const { portfolioMetrics, loading, error } = usePortfolioMetrics();
 
   React.useEffect(() => {
     if (user_id) {
-      getPortfolioHoldings(user_id).then((data) => {
-        if (data) {
-          setPortfolioHoldings(data);
-        }
-      });
+      setHoldingsLoading(true);
+      getPortfolioHoldings(user_id)
+        .then((data) => {
+          if (data) {
+            setPortfolioHoldings(data);
+          }
+        })
+        .finally(() => {
+          setHoldingsLoading(false);
+        });
+    } else {
+      setHoldingsLoading(false);
     }
-  }, []);
+  }, [user_id]);
 
   return (
     <div className="portfolio">
@@ -43,10 +51,12 @@ const Portfolio = () => {
           percentageReturn={portfolioMetrics?.total_return_pct ?? null}
           title={"Current Value"}
           className="md:col-span-2 lg:col-span-1"
+          loading={loading}
         />
         <PortfolioReturns
           holdings={portfolioHoldings}
           className="md:col-span-2 lg:col-span-1"
+          loading={holdingsLoading}
         />
         <RiskMetrics
           sharpe={portfolioMetrics?.sharpe ?? null}
@@ -54,6 +64,7 @@ const Portfolio = () => {
           maxDrawdownDuration={portfolioMetrics?.max_drawdown_duration ?? null}
           volatility={portfolioMetrics?.volatility ?? null}
           className="md:col-span-2 lg:col-span-1"
+          loading={loading}
         />
         <PortfolioCard
           portfolioHistory={portfolioHistory}
@@ -62,10 +73,12 @@ const Portfolio = () => {
           minDomain={minDomain}
           maxDomain={maxDomain}
           className="md:col-span-2 lg:col-span-3"
+          loading={historyLoading}
         />
         <AssetAllocation
           chartData={portfolioHoldings}
           className="md:col-span-2 lg:col-span-2"
+          loading={holdingsLoading}
         />
       </div>
     </div>

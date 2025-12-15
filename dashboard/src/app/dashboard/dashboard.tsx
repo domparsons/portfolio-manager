@@ -2,15 +2,15 @@ import React from "react";
 import { TransactionHistoryCard } from "@/app/dashboard/transaction-history-card";
 import { PortfolioCard } from "@/app/dashboard/portfolio-card";
 import { usePortfolioMetrics } from "@/context/portfolio-metrics";
-import { EmptyComponent } from "@/app/empty-component";
 import { formatCurrencyValue, formatPercentageValue } from "@/utils/formatters";
 import { usePortfolioHistory } from "@/context/portfolio-history";
 import { useWatchlistAlerts } from "@/api/watchlist";
+import { Loader2 } from "lucide-react";
 
 const Dashboard = () => {
   const { portfolioMetrics, loading, error } = usePortfolioMetrics();
 
-  const { portfolioHistory, minDomain, maxDomain, startDate, endDate } =
+  const { portfolioHistory, minDomain, maxDomain, startDate, endDate, loading: historyLoading } =
     usePortfolioHistory();
 
   useWatchlistAlerts();
@@ -45,26 +45,28 @@ const Dashboard = () => {
         </div>
         <p>Portfolio Value</p>
       </div>
-      {portfolioHistory.length > 0 ? (
-        <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-3 mt-4">
-          <PortfolioCard
-            portfolioHistory={portfolioHistory}
-            startDate={startDate}
-            endDate={endDate}
-            minDomain={minDomain}
-            maxDomain={maxDomain}
-            className={"col-span-2"}
-          />
-          <TransactionHistoryCard />
+
+      {loading && (
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="flex flex-col items-center gap-4">
+            <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+            <p className="text-gray-500">Loading portfolio...</p>
+          </div>
         </div>
-      ) : (
-        <EmptyComponent
-          title={"No Transactions Yet"}
-          description={
-            "You haven't created any transactions yet. Get started by creating your first transaction in the Assets List."
-          }
-        />
       )}
+
+      <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-3 mt-4">
+        <PortfolioCard
+          portfolioHistory={portfolioHistory}
+          startDate={startDate}
+          endDate={endDate}
+          minDomain={minDomain}
+          maxDomain={maxDomain}
+          className={"col-span-2"}
+          loading={historyLoading}
+        />
+        <TransactionHistoryCard />
+      </div>
     </div>
   );
 };

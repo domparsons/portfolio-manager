@@ -1,14 +1,14 @@
 import { AssetTable } from "@/app/assets/asset-table";
-import { TableSkeleton } from "@/app/table-skeleton";
 import { Badge } from "@/components/ui/badge";
 import React, { useState } from "react";
 import { AssetSearch } from "@/app/assets/asset-search";
 import { Asset } from "@/types/custom-types";
-import { getWatchlist } from "@/api/watchlist";
 import { ApiError } from "@/lib/api-client";
 import { toast } from "sonner";
 import { useAuth0 } from "@auth0/auth0-react";
 import { EmptyComponent } from "@/app/empty-component";
+import { getAssetList } from "@/api/asset";
+import { Loader2 } from "lucide-react";
 
 const AssetList = () => {
   const [assets, setAssets] = useState<Asset[]>([]);
@@ -27,7 +27,7 @@ const AssetList = () => {
     setError(null);
 
     try {
-      const data = await getWatchlist(user_id);
+      const data = await getAssetList();
       setAssets(data);
       setFilteredAssets(data);
     } catch (error) {
@@ -68,10 +68,17 @@ const AssetList = () => {
         )}
       </div>
 
-      {isAssetListLoading && <TableSkeleton />}
+      {isAssetListLoading && (
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="flex flex-col items-center gap-4">
+            <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+            <p className="text-gray-500">Loading assets...</p>
+          </div>
+        </div>
+      )}
 
       {!isAssetListLoading && error && (
-        <EmptyComponent title={"Failed to Load Asserts"} description={error} />
+        <EmptyComponent title={"Failed to Load Assets"} description={error} />
       )}
 
       {!isAssetListLoading && !error && assets.length === 0 && (
@@ -88,7 +95,14 @@ const AssetList = () => {
             setFilteredAssets={setFilteredAssets}
             searchListName={"assets"}
           />
-          <AssetTable filteredAssets={filteredAssets} />
+          {filteredAssets.length === 0 ? (
+            <EmptyComponent
+              title="No Matching Assets"
+              description="No assets match your search criteria"
+            />
+          ) : (
+            <AssetTable filteredAssets={filteredAssets} />
+          )}
         </div>
       )}
     </div>

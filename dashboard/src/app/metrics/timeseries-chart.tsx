@@ -23,6 +23,14 @@ const TimeseriesChart = ({
     },
   } satisfies ChartConfig;
 
+  if (chartData.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-64 text-sm text-muted-foreground">
+        No data available
+      </div>
+    );
+  }
+
   const transformedData = chartData.map((item: TimeseriesChartData) => ({
     ...item,
     timestamp: new Date(item.date).getTime(),
