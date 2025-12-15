@@ -1,10 +1,9 @@
-import { addToWatchlist, removeFromWatchlist } from "@/api/watchlist";
 import AssetChart from "@/app/charts/asset-chart";
 import TransactionButtons from "@/app/transactions/transaction-buttons";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Minus, Plus } from "lucide-react";
+import { Loader2, Minus, Plus } from "lucide-react";
 import React from "react";
 import { AssetSheetPopoverProps, Transaction } from "@/types/custom-types";
 import { saveAlertsChange, useTransactionType } from "@/api/asset";
@@ -15,6 +14,9 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { ApiError } from "@/lib/api-client";
+import { addToWatchlist, removeFromWatchlist } from "@/api/watchlist";
+import { toast } from "sonner";
 
 const AssetDetail: React.FC<{
   label: string;
@@ -68,6 +70,8 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
   }, [refreshTransactionHistory]);
 
   const [isSaving, setIsSaving] = React.useState<boolean>(false);
+  const [isWatchlistLoading, setIsWatchlistLoading] =
+    React.useState<boolean>(false);
 
   const handleUpdateAlert = async () => {
     setIsSaving(true);
@@ -80,8 +84,57 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
         displayAssetAlertPercentage,
       );
     } catch (error) {
+      const apiError = error as ApiError;
+
+      console.error("Alert update failed:", {
+        asset: pageAsset.ticker,
+        error: apiError.message,
+        status: apiError.status,
+      });
+
+      if (apiError.status === 404) {
+        setPageAssetInWatchlist(false);
+      }
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleWatchlistToggle = async () => {
+    setIsWatchlistLoading(true);
+
+    const isCurrentlyInWatchlist = pageAssetInWatchlist;
+    const action = isCurrentlyInWatchlist ? "remove" : "add";
+
+    setPageAssetInWatchlist(!isCurrentlyInWatchlist);
+
+    try {
+      if (isCurrentlyInWatchlist) {
+        await removeFromWatchlist(user_id, pageAsset?.id);
+        toast.success(`${pageAsset.ticker} removed from watchlist`);
+      } else {
+        await addToWatchlist(user_id, pageAsset?.id);
+        toast.success(`${pageAsset.ticker} added to watchlist`);
+      }
+    } catch (error) {
+      setPageAssetInWatchlist(isCurrentlyInWatchlist);
+
+      const apiError = error as ApiError;
+      console.error(`Failed to ${action} watchlist item:`, {
+        asset: pageAsset.ticker,
+        action,
+        error: apiError.message,
+      });
+
+      if (apiError.status === 404) {
+        toast.error("Asset not found. Please refresh the page.");
+      } else if (apiError.status === 500) {
+        toast.error("Server error. Please try again in a moment.");
+      } else {
+        toast.error(`Failed to ${action} ${pageAsset.ticker} from watchlist`);
+      }
+    } finally {
+      setIsWatchlistLoading(false);
     }
   };
 
@@ -100,19 +153,23 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
           />
         </div>
         <Button
-          onClick={() => {
-            if (pageAssetInWatchlist) {
-              removeFromWatchlist(user_id, pageAsset?.id);
-              setPageAssetInWatchlist(false);
-            } else {
-              addToWatchlist(user_id, pageAsset?.id);
-              setPageAssetInWatchlist(true);
-            }
-          }}
+          onClick={handleWatchlistToggle}
           variant="outline"
+          disabled={isWatchlistLoading}
         >
-          {pageAssetInWatchlist ? <Minus /> : <Plus />}
-          {pageAssetInWatchlist ? "Remove from watchlist" : "Add to watchlist"}
+          {isWatchlistLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              {pageAssetInWatchlist ? "Removing..." : "Adding..."}
+            </>
+          ) : (
+            <>
+              {pageAssetInWatchlist ? <Minus /> : <Plus />}
+              {pageAssetInWatchlist
+                ? "Remove from watchlist"
+                : "Add to watchlist"}
+            </>
+          )}
         </Button>
       </div>
       {timeseries.length > 0 ? (

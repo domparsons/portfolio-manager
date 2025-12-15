@@ -7,18 +7,18 @@ export function useTransactionType() {
   return React.useState<"buy" | "sell">("buy");
 }
 
-export const getAssetList = async (
-  setAssets: (assets: Asset[]) => void,
-  setFilteredAssets: (assets: Asset[]) => void,
-) => {
+export const getAssetList = async () => {
   try {
-    const data = await apiClient.get<Asset[]>("/asset/asset_list");
-    setAssets(data);
-    setFilteredAssets(data);
+    return await apiClient.get<Asset[]>("/asset/asset_list");
   } catch (error) {
     const apiError = error as ApiError;
-    console.error("Error fetching asset data:", apiError);
-    toast("There was an error fetching asset data.");
+
+    console.error("Asset list fetch failed:", {
+      status: apiError.status,
+      error: apiError.message,
+    });
+
+    throw apiError;
   }
 };
 

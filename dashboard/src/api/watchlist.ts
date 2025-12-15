@@ -4,24 +4,23 @@ import { Asset } from "@/types/custom-types";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect } from "react";
 
-export const getWatchlist = async (
-  user_id: string | null,
-  setWatchlistAssets: (assets: Asset[]) => void,
-  setFilteredWatchlistAssets: (assets: Asset[]) => void,
-) => {
-  if (!user_id) return;
+export const getWatchlist = async (user_id: string): Promise<Asset[]> => {
+  if (!user_id) {
+    throw new Error("User ID is required");
+  }
 
   try {
-    const data = await apiClient.get<Asset[]>(`/watchlist/${user_id}`);
-    setWatchlistAssets(data);
-    setFilteredWatchlistAssets(data);
+    return await apiClient.get<Asset[]>(`/watchlist/${user_id}`); // ✅
   } catch (error) {
     const apiError = error as ApiError;
-    if (apiError.status === 404) {
-      toast.error("User not found");
-    } else {
-      toast.error("Failed to fetch watchlist");
-    }
+
+    console.error("Watchlist fetch failed:", {
+      user_id: user_id.slice(-8),
+      status: apiError.status,
+      error: apiError.message,
+    });
+
+    throw apiError;
   }
 };
 
