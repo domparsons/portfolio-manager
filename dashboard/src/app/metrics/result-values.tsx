@@ -1,4 +1,4 @@
-import { TrendingUp, TrendingDown } from "lucide-react";
+import { Loader2, TrendingDown, TrendingUp } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -7,6 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { formatCurrencyValue } from "@/utils/formatters";
+import React from "react";
 
 const ResultValues = ({
   finalValue,
@@ -14,12 +15,14 @@ const ResultValues = ({
   percentageReturn,
   title,
   className,
+  loading = false,
 }: {
   finalValue: number | null;
   absoluteReturn: number | null;
   percentageReturn: number | null;
   title: string;
   className?: string;
+  loading?: boolean;
 }) => {
   const isPositive = (absoluteReturn ?? 0) > 0;
   const isNegative = (absoluteReturn ?? 0) < 0;
@@ -38,22 +41,30 @@ const ResultValues = ({
         <CardDescription>Portfolio value and returns</CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
-        <div className="text-2xl font-bold">
-          {formatCurrencyValue(finalValue)}
-        </div>
+        {loading ? (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="h-6 w-6 animate-spin text-gray-500" />
+          </div>
+        ) : (
+          <>
+            <div className="text-2xl font-bold">
+              {formatCurrencyValue(finalValue)}
+            </div>
 
-        <div
-          className={`flex items-center gap-1.5 text-sm font-semibold ${colorClass}`}
-        >
-          {absoluteReturn !== 0 && <Icon className="h-4 w-4" />}
-          <span>
-            {isPositive && "+"}
-            {formatCurrencyValue(absoluteReturn)}
-          </span>
-          <span className="text-xs text-muted-foreground">
-            ({((percentageReturn ?? 0) * 100).toFixed(2)}%)
-          </span>
-        </div>
+            <div
+              className={`flex items-center gap-1.5 text-sm font-semibold ${colorClass}`}
+            >
+              {absoluteReturn !== 0 && <Icon className="h-4 w-4" />}
+              <span>
+                {isPositive && "+"}
+                {formatCurrencyValue(absoluteReturn)}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                ({((percentageReturn ?? 0) * 100).toFixed(2)}%)
+              </span>
+            </div>
+          </>
+        )}
       </CardContent>
     </Card>
   );

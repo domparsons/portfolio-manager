@@ -1,4 +1,4 @@
-import { Activity, TrendingDown, BarChart3, Calendar } from "lucide-react";
+import { Activity, TrendingDown, BarChart3, Calendar, Loader2 } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -14,12 +14,14 @@ const RiskMetrics = ({
   maxDrawdownDuration,
   volatility,
   className,
+  loading = false,
 }: {
   sharpe: number | null;
   maxDrawdown: number | null;
   maxDrawdownDuration: number | null;
   volatility: number | null;
   className?: string;
+  loading?: boolean;
 }) => {
   const getSharpeRating = (value: number | null) => {
     if (!value) return { label: "—", color: "text-muted-foreground" };
@@ -88,25 +90,33 @@ const RiskMetrics = ({
         <CardDescription>Risk and return characteristics</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {metrics.map((metric) => {
-          const Icon = metric.icon;
-          return (
-            <div
-              key={metric.label}
-              className="flex items-center justify-between"
-            >
-              <div className="flex items-center gap-2">
-                <Icon className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">
-                  {metric.label}
-                </span>
-              </div>
-              <span className={`text-sm font-semibold ${metric.rating.color}`}>
-                {metric.value}
-              </span>
-            </div>
-          );
-        })}
+        {loading ? (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="h-6 w-6 animate-spin text-gray-500" />
+          </div>
+        ) : (
+          <>
+            {metrics.map((metric) => {
+              const Icon = metric.icon;
+              return (
+                <div
+                  key={metric.label}
+                  className="flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-2">
+                    <Icon className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm text-muted-foreground">
+                      {metric.label}
+                    </span>
+                  </div>
+                  <span className={`text-sm font-semibold ${metric.rating.color}`}>
+                    {metric.value}
+                  </span>
+                </div>
+              );
+            })}
+          </>
+        )}
       </CardContent>
     </Card>
   );
