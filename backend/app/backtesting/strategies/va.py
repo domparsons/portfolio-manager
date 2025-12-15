@@ -1,8 +1,9 @@
+from datetime import date
+from decimal import Decimal
+
 from app.backtesting.actions import Action, BuyAction
 from app.backtesting.context import BacktestContext
 from app.backtesting.strategies.base import BacktestStrategy
-from datetime import date
-
 from app.services.price_service import PriceService
 
 
@@ -10,8 +11,8 @@ class VAStrategy(BacktestStrategy):
     def __init__(
         self,
         asset_id: int,
-        initial_investment: float,
-        target_increment_amount: float,
+        initial_investment: Decimal,
+        target_increment_amount: Decimal,
         trading_days=list[date] | None,
         price_service=PriceService,
     ):
@@ -45,7 +46,7 @@ class VAStrategy(BacktestStrategy):
 
     def get_parameters(self) -> dict:
         return {
-            "strategy": "dca",
+            "strategy": "va",
             "asset_id": self.asset_id,
             "initial_investment": self.initial_investment,
             "target_increment_amount": self.target_increment_amount,
