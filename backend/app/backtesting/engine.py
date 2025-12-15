@@ -67,13 +67,20 @@ class BacktestEngine:
         if total_invested == 0:
             total_invested = initial_cash
 
-        total_return_abs = history[-1].value - total_invested
-        total_return_pct = total_return_abs / total_invested
+        if history:
+            total_return_abs = history[-1].value - total_invested
+            total_return_pct = total_return_abs / total_invested
+            final_value = history[-1].value
+        else:
+            total_return_abs = Decimal("0")
+            total_return_pct = Decimal("0")
+            final_value = Decimal("0")
+
         result = schemas.BacktestResult(
             start_date=start_date,
             end_date=end_date,
             total_invested=total_invested,
-            final_value=history[-1].value,
+            final_value=final_value,
             total_return_pct=total_return_pct,
             total_return_abs=total_return_abs,
             metrics=metrics,
