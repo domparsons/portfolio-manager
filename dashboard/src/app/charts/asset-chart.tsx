@@ -22,6 +22,15 @@ const AssetChart = ({ data }: { data: Portfolio[] | null }) => {
       year: "numeric",
     }),
   }));
+
+  if (chartData.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-64 text-sm text-muted-foreground">
+        No data available
+      </div>
+    );
+  }
+
   const minValue = Math.min(...chartData.map((item) => item.close));
   const maxValue = Math.max(...chartData.map((item) => item.close));
 

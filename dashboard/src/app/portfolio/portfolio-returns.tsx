@@ -28,7 +28,10 @@ const PortfolioReturns = ({
       <CardContent className="space-y-4 overflow-auto flex-1">
         {loading ? (
           <div className="flex items-center justify-center py-8">
-            <Loader2 className="h-6 w-6 animate-spin text-gray-500" />
+            <div className="flex flex-col items-center gap-2">
+              <Loader2 className="h-6 w-6 animate-spin text-gray-500" />
+              <p className="text-sm text-gray-500">Loading holdings...</p>
+            </div>
           </div>
         ) : holdings.length === 0 ? (
           <div className="flex items-center justify-center py-8 text-sm text-muted-foreground">
