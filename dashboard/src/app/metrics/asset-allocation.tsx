@@ -16,13 +16,16 @@ import {
 import React from "react";
 import { Cell, Pie, PieChart } from "recharts";
 import { PortfolioHoldings } from "@/types/custom-types";
+import { Loader2 } from "lucide-react";
 
 const AssetAllocation = ({
   chartData,
   className,
+  loading = false,
 }: {
   chartData: PortfolioHoldings[];
   className: string;
+  loading?: boolean;
 }) => {
   const COLORS = [
     "#0088FE",
@@ -54,27 +57,37 @@ const AssetAllocation = ({
         <CardTitle>Portfolio Breakdown</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
-        <ChartContainer
-          config={chartConfig}
-          className="mx-auto aspect-square max-h-[350px]"
-        >
-          <PieChart>
-            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-            <Pie data={chartData} dataKey="net_value" nameKey="asset_name">
-              {" "}
-              {chartData.map((_, index) => (
-                <Cell
-                  key={`cell-${chartData}`}
-                  fill={COLORS[index % COLORS.length]}
-                />
-              ))}
-            </Pie>
-            <ChartLegend
-              content={<ChartLegendContent nameKey="asset_name" />}
-              className="flex flex-wrap w-full"
-            />
-          </PieChart>
-        </ChartContainer>
+        {loading ? (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="h-6 w-6 animate-spin text-gray-500" />
+          </div>
+        ) : chartData.length === 0 ? (
+          <div className="flex items-center justify-center py-8 text-sm text-muted-foreground">
+            No holdings yet
+          </div>
+        ) : (
+          <ChartContainer
+            config={chartConfig}
+            className="mx-auto aspect-square max-h-[350px]"
+          >
+            <PieChart>
+              <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+              <Pie data={chartData} dataKey="net_value" nameKey="asset_name">
+                {" "}
+                {chartData.map((_, index) => (
+                  <Cell
+                    key={`cell-${chartData}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
+                ))}
+              </Pie>
+              <ChartLegend
+                content={<ChartLegendContent nameKey="asset_name" />}
+                className="flex flex-wrap w-full"
+              />
+            </PieChart>
+          </ChartContainer>
+        )}
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm"></CardFooter>
     </Card>
