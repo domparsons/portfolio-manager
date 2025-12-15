@@ -72,6 +72,9 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
   const [isSaving, setIsSaving] = React.useState<boolean>(false);
   const [isWatchlistLoading, setIsWatchlistLoading] =
     React.useState<boolean>(false);
+  const [watchlistAction, setWatchlistAction] = React.useState<
+    "add" | "remove" | null
+  >(null);
 
   const handleUpdateAlert = async () => {
     setIsSaving(true);
@@ -105,6 +108,7 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
 
     const isCurrentlyInWatchlist = pageAssetInWatchlist;
     const action = isCurrentlyInWatchlist ? "remove" : "add";
+    setWatchlistAction(action);
 
     setPageAssetInWatchlist(!isCurrentlyInWatchlist);
 
@@ -135,6 +139,7 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
       }
     } finally {
       setIsWatchlistLoading(false);
+      setWatchlistAction(null);
     }
   };
 
@@ -160,7 +165,7 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
           {isWatchlistLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              {pageAssetInWatchlist ? "Removing..." : "Adding..."}
+              {watchlistAction === "remove" ? "Removing..." : "Adding..."}
             </>
           ) : (
             <>
