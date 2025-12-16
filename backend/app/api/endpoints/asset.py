@@ -1,13 +1,14 @@
-import polars as pl
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from datetime import date
 
+import polars as pl
 from app import crud
 from app.crud import update_watchlist_item_alert_percentage
 from app.database import get_db
 from app.logger import logger
 from app.schemas.asset import AssetInWatchlist, AssetListSchema, AssetSchema
 from app.services.asset_service import generate_asset_list
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/asset", tags=["asset"])
 
@@ -46,6 +47,14 @@ def get_asset_by_ticker(ticker: str, db: Session = Depends(get_db)):
     asset.update(ts_data)
 
     return asset
+
+
+@router.get("/price_on_date", response_model=float | None)
+def price_on_date(
+    asset_id: int, date: date, db: Session = Depends(get_db)
+) -> float | None:
+    price = crud.asset.get_price_on_date(asset_id, date, db)
+    return price
 
 
 @router.get("/check_asset_in_watchlist", response_model=AssetInWatchlist)
