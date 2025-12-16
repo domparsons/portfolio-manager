@@ -1,4 +1,8 @@
 import { Asset } from "@/types/custom-types";
+import React from "react";
+import { BuyAndHoldForm } from "@/app/backtesting/strategies/buy-and-hold";
+import { DCAForm } from "@/app/backtesting/strategies/dca";
+import { VAForm } from "@/app/backtesting/strategies/va";
 
 export type BacktestStrategy = "dca" | "buy_and_hold" | "va";
 
@@ -42,6 +46,18 @@ export interface BacktestParams {
   parameters: Record<string, any>;
 }
 
+export interface LLMBacktestParams {
+  strategy: BacktestStrategy;
+  asset_ids: number[];
+  tickers: string[];
+  start_date: string;
+  end_date: string;
+  initial_cash: number | undefined;
+  parameters: Record<string, any>;
+  comment: string;
+  reasoning: string;
+}
+
 export interface StrategyFormProps {
   onSubmit: (params: BacktestParams) => Promise<void>;
   isLoading: boolean;
@@ -66,3 +82,18 @@ export type DCAFrequencies =
   (typeof DCA_FREQUENCIES)[keyof typeof DCA_FREQUENCIES];
 
 export const DCA_FREQUENCY_OPTIONS = Object.values(DCA_FREQUENCIES);
+
+export const STRATEGY_NAMES: Record<BacktestStrategy, string> = {
+  dca: "Dollar Cost Averaging",
+  buy_and_hold: "Buy and Hold",
+  va: "Value Averaging",
+};
+
+export const STRATEGY_FORMS: Record<
+  BacktestStrategy,
+  React.FC<StrategyFormProps>
+> = {
+  buy_and_hold: BuyAndHoldForm,
+  dca: DCAForm,
+  va: VAForm,
+};

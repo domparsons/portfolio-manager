@@ -28,7 +28,7 @@ const Watchlist = () => {
     setError(null);
 
     try {
-      const data = await getWatchlist(user_id);
+      const data = await getWatchlist();
       setWatchlistAssets(data);
       setFilteredWatchlistAssets(data);
     } catch (error) {

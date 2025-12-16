@@ -1,59 +1,71 @@
 import React, { useState } from "react";
-import { BacktestParams, BacktestResult, BacktestStrategy, StrategyFormProps } from "@/types/backtest-types";
+import { useAuth0 } from "@auth0/auth0-react";
+import { toast } from "sonner";
 import { StrategySelector } from "@/app/backtesting/strategy-selector";
 import { BacktestResults } from "@/app/backtesting/backtest-results";
 import { runBacktest } from "@/api/backtest";
-import { BuyAndHoldForm } from "@/app/backtesting/strategies/buy-and-hold";
-import { DCAForm } from "@/app/backtesting/strategies/dca";
-import { Asset } from "@/types/custom-types";
 import { getAssetList } from "@/api/asset";
-import { VAForm } from "@/app/backtesting/strategies/va";
+import { parameteriseNaturalLanguageStrategy } from "@/api/llm";
+
+import {
+  BacktestParams,
+  BacktestResult,
+  BacktestStrategy,
+  LLMBacktestParams,
+  STRATEGY_FORMS,
+  STRATEGY_NAMES,
+} from "@/types/backtest-types";
+import { Asset } from "@/types/custom-types";
 import { ApiError } from "@/lib/api-client";
-import { toast } from "sonner";
-import { useAuth0 } from "@auth0/auth0-react";
-
-const STRATEGY_NAMES: Record<BacktestStrategy, string> = {
-  dca: "Dollar Cost Averaging",
-  buy_and_hold: "Buy and Hold",
-  va: "Value Averaging",
-};
-
-const STRATEGY_FORMS: Record<BacktestStrategy, React.FC<StrategyFormProps>> = {
-  buy_and_hold: BuyAndHoldForm,
-  dca: DCAForm,
-  va: VAForm,
-};
+import { NaturalLanguageModal } from "@/app/backtesting/natural-language-modal";
 
 const Backtesting = () => {
   const [selectedStrategy, setSelectedStrategy] =
-    React.useState<BacktestStrategy>("buy_and_hold");
+    useState<BacktestStrategy>("buy_and_hold");
   const [backtestResults, setBacktestResults] = useState<
     BacktestResult | undefined
   >(undefined);
+  const [LLMBacktestResponse, setLLMBacktestResponse] = useState<
+    LLMBacktestParams | undefined
+  >(undefined);
+  const [userNaturalLanguageInput, setUserNaturalLanguageInput] = useState("");
+  const [isBacktestLoading, setIsBacktestLoading] = useState(false);
+  const [isLLMLoading, setIsLLMLoading] = useState(false);
+  const [assets, setAssets] = useState<Asset[]>([]);
+  const [filteredAssets, setFilteredAssets] = useState<Asset[]>([]);
+
+  const { user } = useAuth0();
+  const user_id = user?.sub ?? null;
+
   const handleStrategyChange = (strategy: BacktestStrategy) => {
     setSelectedStrategy(strategy);
     setBacktestResults(undefined);
   };
-  const [isLoading, setIsLoading] = useState(false);
+
+  const handleUserInputLLM = async (userInput: string) => {
+    setIsLLMLoading(true);
+    try {
+      const results = await parameteriseNaturalLanguageStrategy(userInput);
+      setLLMBacktestResponse(results);
+      toast.info("Natural language successfully transformed into strategy");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLLMLoading(false);
+    }
+  };
 
   const handleBacktestSubmit = async (params: BacktestParams) => {
-    setIsLoading(true);
+    setIsBacktestLoading(true);
     try {
       const results = await runBacktest(params);
       setBacktestResults(results);
     } catch (error) {
       console.log(error);
     } finally {
-      setIsLoading(false);
+      setIsBacktestLoading(false);
     }
   };
-  const StrategyForm = STRATEGY_FORMS[selectedStrategy];
-
-  const [assets, setAssets] = useState<Asset[]>([]);
-  const [filteredAssets, setFilteredAssets] = useState<Asset[]>([]);
-
-  const { user } = useAuth0();
-  const user_id = user?.sub ?? null;
 
   const loadAssets = async () => {
     try {
@@ -82,11 +94,21 @@ const Backtesting = () => {
     loadAssets();
   }, [user_id]);
 
+  const StrategyForm = STRATEGY_FORMS[selectedStrategy];
+
   return (
     <div className="dashboard">
       <h1 className="text-2xl font-semibold">Backtesting</h1>
-      <div className={"mt-8"}>
-        <h2 className={"mb-2 font-semibold"}>Select a strategy</h2>
+      <div className={"mt-6"}>
+        <NaturalLanguageModal
+          userNaturalLanguageInput={userNaturalLanguageInput}
+          setUserNaturalLanguageInput={setUserNaturalLanguageInput}
+          handleUserInputLLM={handleUserInputLLM}
+          isLLMLoading={isLLMLoading}
+          LLMBacktestResponse={LLMBacktestResponse}
+          onSubmit={handleBacktestSubmit}
+        />
+        <h2 className={"mb-2 font-semibold mt-4"}>Select a strategy</h2>
         <StrategySelector
           selectedStrategy={selectedStrategy}
           setSelectedStrategy={handleStrategyChange}
@@ -95,7 +117,7 @@ const Backtesting = () => {
       </div>
       <StrategyForm
         onSubmit={handleBacktestSubmit}
-        isLoading={isLoading}
+        isLoading={isBacktestLoading}
         assets={assets}
         setFilteredAssets={setFilteredAssets}
         filteredAssets={filteredAssets}

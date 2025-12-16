@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { getPortfolioHistory } from "@/api/portfolio";
 import type { TimeseriesChartData } from "@/types/custom-types";
@@ -19,7 +19,7 @@ export function usePortfolioHistory() {
       return;
     }
 
-    getPortfolioHistory(setPortfolioHistory, user_id)
+    getPortfolioHistory(setPortfolioHistory)
       .catch((err) => setError(err))
       .finally(() => setLoading(false));
   }, [user_id]);

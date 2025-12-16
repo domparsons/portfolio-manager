@@ -24,6 +24,7 @@ class BacktestRequest(BaseModel):
 class LLMBacktestParams(BaseModel):
     strategy: str
     asset_ids: list[int]
+    tickers: list[str]
     start_date: date
     end_date: date
     initial_cash: Decimal

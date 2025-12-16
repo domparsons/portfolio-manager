@@ -38,7 +38,6 @@ def strategise_natural_language(user_input: str) -> LLMBacktestParams | None:
     if not user_input or not user_input.strip():
         raise HTTPException(status_code=400, detail="Input text cannot be empty")
 
-    # Try with retries for transient failures
     for attempt in range(MAX_RETRIES):
         try:
             result = _call_llm(user_input)
@@ -64,6 +63,7 @@ def strategise_natural_language(user_input: str) -> LLMBacktestParams | None:
             raise HTTPException(
                 status_code=400, detail=f"Could not parse strategy: {str(e)}"
             )
+    return None
 
 
 def _call_llm(user_input: str) -> LLMBacktestParams:

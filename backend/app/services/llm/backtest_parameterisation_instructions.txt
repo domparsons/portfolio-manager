@@ -7,6 +7,7 @@ Buy and Hold:
 {
     "strategy": "buy_and_hold",
     "asset_ids": [4],
+    "tickers": ["AMZN"],
     "start_date": datetime.date(2025, 12, 1),
     "end_date": datetime.date(2025, 12, 12),
     "initial_cash": Decimal("1000"),
@@ -19,6 +20,7 @@ Dollar Cost Averaging:
 {
     "strategy": "dca",
     "asset_ids": [1],
+    "tickers": ["AAPL"],
     "start_date": datetime.date(2025, 8, 1),
     "end_date": datetime.date(2025, 12, 10),
     "initial_cash": Decimal("1000"),
@@ -32,6 +34,7 @@ Value Averaging:
 {
     "strategy": "va",
     "asset_ids": [5],
+    "tickers": ["TSLA"],
     "start_date": datetime.date(2025, 9, 3),
     "end_date": datetime.date(2025, 12, 11),
     "initial_cash": Decimal("1000"),
