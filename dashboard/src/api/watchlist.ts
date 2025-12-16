@@ -4,18 +4,13 @@ import { Asset } from "@/types/custom-types";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect } from "react";
 
-export const getWatchlist = async (user_id: string): Promise<Asset[]> => {
-  if (!user_id) {
-    throw new Error("User ID is required");
-  }
-
+export const getWatchlist = async (): Promise<Asset[]> => {
   try {
-    return await apiClient.get<Asset[]>(`/watchlist/${user_id}`); // ✅
+    return await apiClient.get<Asset[]>("/watchlist/");
   } catch (error) {
     const apiError = error as ApiError;
 
     console.error("Watchlist fetch failed:", {
-      user_id: user_id.slice(-8),
       status: apiError.status,
       error: apiError.message,
     });
@@ -24,16 +19,12 @@ export const getWatchlist = async (user_id: string): Promise<Asset[]> => {
   }
 };
 
-export const addToWatchlist = async (
-  user_id: string | null,
-  asset_id: number | undefined,
-) => {
-  if (!user_id || !asset_id) return;
+export const addToWatchlist = async (asset_id: number | undefined) => {
+  if (!asset_id) return;
 
   try {
     await apiClient.post("/watchlist/add_to_watchlist", null, {
       params: {
-        user_id,
         asset_id,
       },
     });
@@ -47,16 +38,12 @@ export const addToWatchlist = async (
   }
 };
 
-export const removeFromWatchlist = async (
-  user_id: string | null,
-  asset_id: number | undefined,
-) => {
-  if (!user_id || !asset_id) return;
+export const removeFromWatchlist = async (asset_id: number | undefined) => {
+  if (!asset_id) return;
 
   try {
     await apiClient.delete("/watchlist/remove_from_watchlist", {
       params: {
-        user_id,
         asset_id,
       },
     });
@@ -71,20 +58,19 @@ export const removeFromWatchlist = async (
 };
 
 export const useWatchlistAlerts = () => {
-  const { user } = useAuth0();
-  const user_id = user?.sub ?? null;
+  const { isAuthenticated } = useAuth0();
 
   useEffect(() => {
     const checkAlerts = async () => {
       const lastChecked = sessionStorage.getItem("alerts_last_checked");
       const today = new Date().toISOString().split("T")[0];
 
-      if (lastChecked === today || !user_id) {
+      if (lastChecked === today || !isAuthenticated) {
         return;
       }
 
       try {
-        const response = await apiClient.get(`/watchlist/alerts/${user_id}`);
+        const response = await apiClient.get("/watchlist/alerts");
         const alerts = await response;
 
         alerts.forEach((alert: { ticker: any; change_pct: number }) => {
@@ -104,5 +90,5 @@ export const useWatchlistAlerts = () => {
     };
 
     checkAlerts();
-  }, [user_id]);
+  }, [isAuthenticated]);
 };

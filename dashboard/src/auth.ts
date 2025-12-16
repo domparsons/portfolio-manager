@@ -33,7 +33,7 @@ export const useAuthInit = () => {
         }
 
         console.log(">>> Making API call...");
-        await apiClient.post(`/user/create_or_get/${auth0UserId}`);
+        await apiClient.post("/user/create_or_get");
         console.log(">>> API SUCCESS");
         setStatus("approved");
         console.log(">>> Status set to approved");

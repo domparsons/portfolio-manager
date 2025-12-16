@@ -29,7 +29,7 @@ const TransactionHistoryCard = () => {
     setError(null);
 
     try {
-      await getTransactionHistory(user_id, setTransactionHistory);
+      await getTransactionHistory(setTransactionHistory);
     } catch (error) {
       const apiError = error as ApiError;
       console.error("Failed to load transaction history:", apiError);
