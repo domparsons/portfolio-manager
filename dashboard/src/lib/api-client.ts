@@ -1,9 +1,4 @@
-import axios, {
-  AxiosInstance,
-  AxiosRequestConfig,
-  AxiosResponse,
-  AxiosError,
-} from "axios";
+import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 
 /**
  * API Client Configuration
@@ -51,6 +46,7 @@ class ApiClient {
     });
 
     this.setupInterceptors();
+    this.attachAuthToken();
   }
 
   /**
@@ -150,6 +146,35 @@ class ApiClient {
 
     console.error("[API Error]", apiError);
     return Promise.reject(apiError);
+  }
+
+  private attachAuthToken(): void {
+    if (typeof window === "undefined") return;
+
+    try {
+      const { useAuth0 } = require("@auth0/auth0-react");
+
+      const auth = useAuth0();
+      if (!auth) return;
+
+      const { getAccessTokenSilently, isAuthenticated } = auth;
+
+      if (!isAuthenticated) return;
+
+      getAccessTokenSilently({
+        authorizationParams: {
+          audience: import.meta.env.VITE_API_AUDIENCE,
+        },
+      })
+        .then((token: string) => {
+          this.setAuthToken(token);
+        })
+        .catch((err: any) => {
+          console.error("Failed to get Auth0 token:", err);
+        });
+    } catch (err) {
+      // ignore if not running in SPA
+    }
   }
 
   /**
