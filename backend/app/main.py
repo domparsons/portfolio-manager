@@ -1,14 +1,11 @@
 import re
 import time
 
-from fastapi import APIRouter, Depends, FastAPI, Request
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import OAuth2AuthorizationCodeBearer
-
 from app.api.endpoints import (
     admin,
     asset,
     backtest,
+    llm,
     monte_carlo,
     portfolio,
     timeseries,
@@ -18,6 +15,9 @@ from app.api.endpoints import (
 )
 from app.config.settings import settings
 from app.logger import logger
+from fastapi import APIRouter, FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2AuthorizationCodeBearer
 
 oauth2_scheme = OAuth2AuthorizationCodeBearer(
     authorizationUrl=f"https://{settings.AUTH0_DOMAIN}/authorize",
@@ -92,3 +92,4 @@ app.include_router(timeseries.router)
 app.include_router(user.router)
 app.include_router(monte_carlo.router)
 app.include_router(admin.router)
+app.include_router(llm.router)

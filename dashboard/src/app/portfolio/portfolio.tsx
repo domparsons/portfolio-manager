@@ -19,15 +19,21 @@ const Portfolio = () => {
   >([]);
   const [holdingsLoading, setHoldingsLoading] = React.useState<boolean>(true);
 
-  const { portfolioHistory, minDomain, maxDomain, startDate, endDate, loading: historyLoading } =
-    usePortfolioHistory();
+  const {
+    portfolioHistory,
+    minDomain,
+    maxDomain,
+    startDate,
+    endDate,
+    loading: historyLoading,
+  } = usePortfolioHistory();
 
   const { portfolioMetrics, loading, error } = usePortfolioMetrics();
 
   React.useEffect(() => {
     if (user_id) {
       setHoldingsLoading(true);
-      getPortfolioHoldings(user_id)
+      getPortfolioHoldings()
         .then((data) => {
           if (data) {
             setPortfolioHoldings(data);

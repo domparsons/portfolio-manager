@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import { BacktestResult } from "@/types/backtest-types";
 import { format } from "date-fns";
 import { ResultValues } from "@/app/metrics/result-values";
@@ -13,11 +13,10 @@ import {
 import { BacktestInfo } from "@/app/metrics/backtest-info";
 import { RiskMetrics } from "@/app/metrics/risk-metrics";
 
-const BacktestResults = ({
-  results,
-}: {
-  results: BacktestResult | undefined;
-}) => {
+const BacktestResults = forwardRef<
+  HTMLDivElement,
+  { results: BacktestResult | undefined }
+>(({ results }, ref) => {
   if (!results) {
     return null;
   }
@@ -26,7 +25,7 @@ const BacktestResults = ({
   const maxValue = Math.max(...results.data.history.map((item) => item.value));
 
   return (
-    <div className="mt-8 space-y-6">
+    <div className="mt-8 space-y-6" ref={ref}>
       <div>
         <h2 className="text-xl font-semibold">Backtest Results</h2>
         <p className="text-sm text-muted-foreground">
@@ -68,6 +67,8 @@ const BacktestResults = ({
       </div>
     </div>
   );
-};
+});
+
+BacktestResults.displayName = "BacktestResults";
 
 export { BacktestResults };

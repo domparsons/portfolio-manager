@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     AUTH0_CLIENT_ID: str = os.getenv("AUTH0_CLIENT_ID", "")
     ADMIN_CLIENT_ID: str = os.getenv("ADMIN_CLIENT_ID", "")
     AUTH0_CLIENT_SECRET: str = os.getenv("AUTH0_CLIENT_SECRET", "")
+    OPEN_AI_API_KEY: str = os.getenv("OPEN_AI_API_KEY", "")
     AUTH0_AUDIENCE: str = f"https://{AUTH0_DOMAIN}/api/v2/"
 
 

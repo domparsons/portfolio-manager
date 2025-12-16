@@ -1,59 +1,76 @@
-import React, { useState } from "react";
-import { BacktestParams, BacktestResult, BacktestStrategy, StrategyFormProps } from "@/types/backtest-types";
+import React, { useRef, useState } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
+import { toast } from "sonner";
 import { StrategySelector } from "@/app/backtesting/strategy-selector";
 import { BacktestResults } from "@/app/backtesting/backtest-results";
 import { runBacktest } from "@/api/backtest";
-import { BuyAndHoldForm } from "@/app/backtesting/strategies/buy-and-hold";
-import { DCAForm } from "@/app/backtesting/strategies/dca";
-import { Asset } from "@/types/custom-types";
 import { getAssetList } from "@/api/asset";
-import { VAForm } from "@/app/backtesting/strategies/va";
+import { parameteriseNaturalLanguageStrategy } from "@/api/llm";
+
+import {
+  BacktestParams,
+  BacktestResult,
+  BacktestStrategy,
+  LLMBacktestParams,
+  STRATEGY_FORMS,
+  STRATEGY_NAMES
+} from "@/types/backtest-types";
+import { Asset } from "@/types/custom-types";
 import { ApiError } from "@/lib/api-client";
-import { toast } from "sonner";
-import { useAuth0 } from "@auth0/auth0-react";
-
-const STRATEGY_NAMES: Record<BacktestStrategy, string> = {
-  dca: "Dollar Cost Averaging",
-  buy_and_hold: "Buy and Hold",
-  va: "Value Averaging",
-};
-
-const STRATEGY_FORMS: Record<BacktestStrategy, React.FC<StrategyFormProps>> = {
-  buy_and_hold: BuyAndHoldForm,
-  dca: DCAForm,
-  va: VAForm,
-};
+import { NaturalLanguageCard } from "@/app/backtesting/natural-language-card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { SlidersHorizontal, Sparkles } from "lucide-react";
 
 const Backtesting = () => {
   const [selectedStrategy, setSelectedStrategy] =
-    React.useState<BacktestStrategy>("buy_and_hold");
+    useState<BacktestStrategy>("buy_and_hold");
   const [backtestResults, setBacktestResults] = useState<
     BacktestResult | undefined
   >(undefined);
+  const [LLMBacktestResponse, setLLMBacktestResponse] = useState<
+    LLMBacktestParams | undefined
+  >(undefined);
+  const [userNaturalLanguageInput, setUserNaturalLanguageInput] = useState("");
+  const [isBacktestLoading, setIsBacktestLoading] = useState(false);
+  const [isLLMLoading, setIsLLMLoading] = useState(false);
+  const [assets, setAssets] = useState<Asset[]>([]);
+  const [filteredAssets, setFilteredAssets] = useState<Asset[]>([]);
+
+  const { user } = useAuth0();
+  const user_id = user?.sub ?? null;
+
+  const StrategyForm = STRATEGY_FORMS[selectedStrategy];
+
+  const resultsRef = useRef<HTMLDivElement>(null);
+
   const handleStrategyChange = (strategy: BacktestStrategy) => {
     setSelectedStrategy(strategy);
     setBacktestResults(undefined);
   };
-  const [isLoading, setIsLoading] = useState(false);
+
+  const handleUserInputLLM = async (userInput: string) => {
+    setIsLLMLoading(true);
+    try {
+      const results = await parameteriseNaturalLanguageStrategy(userInput);
+      setLLMBacktestResponse(results);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLLMLoading(false);
+    }
+  };
 
   const handleBacktestSubmit = async (params: BacktestParams) => {
-    setIsLoading(true);
+    setIsBacktestLoading(true);
     try {
       const results = await runBacktest(params);
       setBacktestResults(results);
     } catch (error) {
       console.log(error);
     } finally {
-      setIsLoading(false);
+      setIsBacktestLoading(false);
     }
   };
-  const StrategyForm = STRATEGY_FORMS[selectedStrategy];
-
-  const [assets, setAssets] = useState<Asset[]>([]);
-  const [filteredAssets, setFilteredAssets] = useState<Asset[]>([]);
-
-  const { user } = useAuth0();
-  const user_id = user?.sub ?? null;
 
   const loadAssets = async () => {
     try {
@@ -82,25 +99,58 @@ const Backtesting = () => {
     loadAssets();
   }, [user_id]);
 
+  React.useEffect(() => {
+    if (backtestResults && resultsRef.current) {
+      setTimeout(() => {
+        resultsRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 100);
+    }
+  }, [backtestResults]);
+
   return (
     <div className="dashboard">
       <h1 className="text-2xl font-semibold">Backtesting</h1>
-      <div className={"mt-8"}>
-        <h2 className={"mb-2 font-semibold"}>Select a strategy</h2>
-        <StrategySelector
-          selectedStrategy={selectedStrategy}
-          setSelectedStrategy={handleStrategyChange}
-          strategyNames={STRATEGY_NAMES}
-        />
-      </div>
-      <StrategyForm
-        onSubmit={handleBacktestSubmit}
-        isLoading={isLoading}
-        assets={assets}
-        setFilteredAssets={setFilteredAssets}
-        filteredAssets={filteredAssets}
-      />
-      <BacktestResults results={backtestResults} />
+      <Tabs defaultValue="natural" className="mt-8">
+        <TabsList className="grid w-full grid-cols-2 mb-6">
+          <TabsTrigger value="natural" className="flex items-center gap-2">
+            <Sparkles className="h-4 w-4" />
+            Natural Language
+          </TabsTrigger>
+          <TabsTrigger value="manual" className="flex items-center gap-2">
+            <SlidersHorizontal className="h-4 w-4" />
+            Manual Configuration
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="natural" className="space-y-6">
+          <NaturalLanguageCard
+            userNaturalLanguageInput={userNaturalLanguageInput}
+            setUserNaturalLanguageInput={setUserNaturalLanguageInput}
+            handleUserInputLLM={handleUserInputLLM}
+            isLLMLoading={isLLMLoading}
+            LLMBacktestResponse={LLMBacktestResponse}
+            onSubmit={handleBacktestSubmit}
+          />
+        </TabsContent>
+        <TabsContent value="manual" className="space-y-6">
+          <h2 className={"mb-2 font-semibold mt-4"}>Select a strategy</h2>
+          <StrategySelector
+            selectedStrategy={selectedStrategy}
+            setSelectedStrategy={handleStrategyChange}
+            strategyNames={STRATEGY_NAMES}
+          />
+          <StrategyForm
+            onSubmit={handleBacktestSubmit}
+            isLoading={isBacktestLoading}
+            assets={assets}
+            setFilteredAssets={setFilteredAssets}
+            filteredAssets={filteredAssets}
+          />
+        </TabsContent>
+      </Tabs>
+      <BacktestResults results={backtestResults} ref={resultsRef} />
     </div>
   );
 };
