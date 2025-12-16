@@ -8,7 +8,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  DialogTrigger
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -39,6 +39,7 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
     asset.latest_price,
   );
   const [executionDate, setExecutionDate] = React.useState<Date>();
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const today = new Date();
   const numberOfSharesValid = numberOfShares > 0;
   const executionPriceValid = executionPrice > 0;
@@ -49,8 +50,9 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
     numberOfSharesValid &&
     executionPriceValid &&
     executionDateValid &&
-    executionDate !== today;
-  const [isLoading, setIsLoading] = React.useState<boolean>(true);
+    executionDate !== today &&
+    !isLoading;
+
   const { refreshMetrics } = usePortfolioMetrics();
 
   React.useEffect(() => {
