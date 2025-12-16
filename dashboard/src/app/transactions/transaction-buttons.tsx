@@ -8,7 +8,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import { createTransaction } from "@/api/transaction";
 import { ApiError } from "@/lib/api-client";
 import { DatePicker } from "@/app/date-picker";
+import { getPriceOnDate } from "@/api/asset";
 
 type TransactionButtonsProps = {
   transactionType: "buy" | "sell";
@@ -49,6 +50,7 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
     executionPriceValid &&
     executionDateValid &&
     executionDate !== today;
+  const [isLoading, setIsLoading] = React.useState<boolean>(true);
   const { refreshMetrics } = usePortfolioMetrics();
 
   React.useEffect(() => {
@@ -92,14 +94,6 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
             <strong>{formatCurrency}</strong>
           </span>{" "}
         </div>
-        {executionDate &&
-          executionDate >= new Date(today.setHours(0, 0, 0, 0)) && (
-            <div>
-              <span className={invalidClass}>
-                Date cannot be today or in the future
-              </span>
-            </div>
-          )}
       </DialogDescription>
     );
   }
@@ -127,6 +121,43 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
       await refreshMetrics();
     }
   };
+
+  const handleDateChange = async (executionDate: Date | undefined) => {
+    setIsLoading(true);
+    if (executionDate === undefined) {
+      return;
+    }
+
+    const todayMidnight = new Date();
+    todayMidnight.setHours(0, 0, 0, 0);
+
+    if (executionDate >= todayMidnight) {
+      toast.info("Date cannot be today or in the future!");
+      return;
+    }
+
+    setExecutionDate(executionDate);
+
+    try {
+      const price = await getPriceOnDate(executionDate, asset.id);
+      if (price === undefined) {
+        return;
+      }
+      setExecutionPrice(price);
+    } catch (error) {
+      const apiError = error as ApiError;
+      console.error("Failed to fetch price on selected date:", apiError);
+
+      if (apiError.status >= 500) {
+        toast.error("Server error loading transactions");
+      } else {
+        toast.error("Failed to load transactions");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <Dialog open={modalOpen} onOpenChange={setModalOpen} modal={false}>
       <DialogTrigger asChild>
@@ -196,7 +227,7 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
             </Label>
             <DatePicker
               date={executionDate}
-              setDate={setExecutionDate}
+              setDate={(date) => handleDateChange(date)}
               label={"Execution date"}
               className="col-span-3"
             />

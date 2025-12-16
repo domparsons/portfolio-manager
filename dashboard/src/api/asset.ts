@@ -2,6 +2,7 @@ import React from "react";
 import { toast } from "sonner";
 import { apiClient, ApiError } from "@/lib/api-client";
 import { Asset, Portfolio } from "@/types/custom-types";
+import { format } from "date-fns";
 
 export function useTransactionType() {
   return React.useState<"buy" | "sell">("buy");
@@ -113,5 +114,18 @@ export const saveAlertsChange = async (
     console.error("Failed to update alert settings:", error);
     toast.error("Failed to update alert settings");
     throw error;
+  }
+};
+
+export const getPriceOnDate = async (date: Date, asset_id: number | null) => {
+  const stringDate = format(date, "yyyy-MM-dd");
+  try {
+    return await apiClient.get<number>(
+      `/asset/price_on_date?asset_id=${asset_id}&date=${stringDate}`,
+    );
+  } catch (error) {
+    const apiError = error as ApiError;
+    console.error("Error fetching asset price on date:", apiError);
+    toast("There was an error fetching asset price on date.");
   }
 };

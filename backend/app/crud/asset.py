@@ -1,4 +1,6 @@
-from app.models import Asset
+from datetime import date
+
+from app.models import Asset, Timeseries
 from sqlalchemy.orm import Session
 
 
@@ -20,3 +22,14 @@ def get_asset_by_ticker(db: Session, ticker: str) -> dict | None:
         return asset.__dict__
     else:
         return None
+
+
+def get_price_on_date(asset_id: int, date: date, db: Session) -> float | None:
+    # Get price for date, or if not a trading day, get previous close
+    return (
+        db.query(Timeseries.close)
+        .filter(Timeseries.asset_id == asset_id, Timeseries.timestamp <= date)
+        .order_by(Timeseries.timestamp.desc())
+        .limit(1)
+        .scalar()
+    )
