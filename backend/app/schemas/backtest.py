@@ -1,8 +1,9 @@
 from datetime import date
 from decimal import Decimal
+from typing import Any
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, field_serializer
+from pydantic import BaseModel, ConfigDict, Json, field_serializer
 
 
 class BacktestRequest(BaseModel):
@@ -11,7 +12,24 @@ class BacktestRequest(BaseModel):
     start_date: date
     end_date: date
     initial_cash: Decimal
-    parameters: dict
+    parameters: dict[str, Any]
+
+    model_config = ConfigDict(from_attributes=True)
+
+    @field_serializer("initial_cash", when_used="json")
+    def serialize_decimal(self, value: Decimal) -> float:
+        return float(value)
+
+
+class LLMBacktestParams(BaseModel):
+    strategy: str
+    asset_ids: list[int]
+    start_date: date
+    end_date: date
+    initial_cash: Decimal
+    parameters: Json
+    comment: str
+    reasoning: str
 
     model_config = ConfigDict(from_attributes=True)
 

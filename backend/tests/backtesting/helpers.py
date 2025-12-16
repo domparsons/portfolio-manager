@@ -43,66 +43,6 @@ def create_mock_context(
     )
 
 
-def create_price_lookup(
-    asset_id: int,
-    start_date: date,
-    num_days: int,
-    price: float | list[float],
-) -> dict[tuple[int, date], float]:
-    """
-    Generate synthetic price data for testing.
-
-    Args:
-        asset_id: The asset ID
-        start_date: Starting date
-        num_days: Number of consecutive days
-        price: Either a single price (flat) or list of prices per day
-
-    Returns:
-        Price lookup dict: {(asset_id, date): price}
-    """
-    from datetime import timedelta
-
-    price_lookup = {}
-
-    for day_offset in range(num_days):
-        current_date = start_date + timedelta(days=day_offset)
-
-        if isinstance(price, list):
-            current_price = price[day_offset]
-        else:
-            current_price = price
-
-        price_lookup[(asset_id, current_date)] = current_price
-
-    return price_lookup
-
-
-def create_multi_asset_price_lookup(
-    asset_prices: dict[int, float],
-    start_date: date,
-    num_days: int,
-) -> dict[tuple[int, date], float]:
-    """
-    Generate price data for multiple assets with flat prices.
-
-    Args:
-        asset_prices: Dict mapping asset_id to flat price
-        start_date: Starting date
-        num_days: Number of consecutive days
-
-    Returns:
-        Price lookup dict for all assets
-    """
-    price_lookup = {}
-
-    for asset_id, price in asset_prices.items():
-        asset_lookup = create_price_lookup(asset_id, start_date, num_days, price)
-        price_lookup.update(asset_lookup)
-
-    return price_lookup
-
-
 def create_trading_days(year: int, month: int, days: list[int]) -> list[date]:
     """
     Create a list of trading days for a given month.
