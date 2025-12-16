@@ -1,8 +1,9 @@
 import re
 import time
 
-from fastapi import APIRouter, FastAPI, Request
+from fastapi import APIRouter, Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2AuthorizationCodeBearer
 
 from app.api.endpoints import (
     admin,
@@ -15,9 +16,23 @@ from app.api.endpoints import (
     user,
     watchlist,
 )
+from app.config.settings import settings
 from app.logger import logger
 
-app = FastAPI(title="Portfolio Manager")
+oauth2_scheme = OAuth2AuthorizationCodeBearer(
+    authorizationUrl=f"https://{settings.AUTH0_DOMAIN}/authorize",
+    tokenUrl=f"https://{settings.AUTH0_DOMAIN}/oauth/token",
+)
+
+app = FastAPI(
+    title="Portfolio Manager",
+    swagger_ui_init_oauth={
+        "clientId": settings.AUTH0_CLIENT_ID,
+        "appName": "Portfolio Manager",
+        "scopes": "openid profile email",
+        "usePkceWithAuthorizationCodeGrant": True,
+    },
+)
 
 
 @app.middleware("http")

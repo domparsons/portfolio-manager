@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app import crud, models, schemas
+from app.core.auth.dependencies import get_current_user
 from app.crud.asset import get_asset_by_id
 from app.database import get_db
 from app.logger import logger
@@ -15,7 +16,6 @@ router = APIRouter(prefix="/transaction", tags=["transaction"])
 
 @router.post("/", response_model=schemas.transaction.Portfolio)
 def create_transaction(
-    user_id: str,
     portfolio_name: str,
     asset_id: int,
     type: models.transaction.TransactionType,
@@ -23,8 +23,10 @@ def create_transaction(
     price: float,
     purchase_date: datetime,
     user_timezone: str,
+    current_user: str = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    user_id = current_user
     asset = get_asset_by_id(asset_id, db)
     if asset is None:
         logger.error(f"Asset not found for asset id {asset_id}")
@@ -82,28 +84,27 @@ def create_transaction(
     return portfolio
 
 
-@router.get("/{user_id}", response_model=list[schemas.transaction.TransactionOut])
+@router.get("/", response_model=list[schemas.transaction.TransactionOut])
 def get_transactions(
-    user_id: str,
+    current_user: str = Depends(get_current_user),
     limit: int = None,
     db: Session = Depends(get_db),
 ):
+    user_id = current_user
     transactions = crud.transaction.get_transactions_by_user(
         db, user_id=user_id, limit=limit
     )
     return transactions
 
 
-@router.get(
-    "/by_asset/{user_id}/{asset_id}",
-    response_model=list[schemas.transaction.TransactionOut],
-)
+@router.get("/by_asset/{asset_id}", response_model=list[schemas.transaction.TransactionOut])
 def get_transactions_by_asset(
-    user_id: str,
     asset_id: int,
+    current_user: str = Depends(get_current_user),
     limit: int = None,
     db: Session = Depends(get_db),
 ):
+    user_id = current_user
     transactions = crud.transaction.get_transactions_by_user_and_asset(
         db, user_id=user_id, asset_id=asset_id, limit=limit
     )
@@ -112,10 +113,11 @@ def get_transactions_by_asset(
 
 @router.delete("/")
 def delete_transaction(
-    user_id: str,
     transaction_id: int,
+    current_user: str = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    user_id = current_user
     transaction = crud.transaction.get_transaction_by_id(
         db, transaction_id=transaction_id
     )

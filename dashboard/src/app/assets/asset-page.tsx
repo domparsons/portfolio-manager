@@ -61,7 +61,7 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
 
   const refreshTransactionHistory = React.useCallback(() => {
     if (user_id) {
-      getTransactionsByAsset(user_id, pageAsset.id, setTransactionHistory);
+      getTransactionsByAsset(pageAsset.id, setTransactionHistory);
     }
   }, [user_id, pageAsset.id]);
 
@@ -114,10 +114,10 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
 
     try {
       if (isCurrentlyInWatchlist) {
-        await removeFromWatchlist(user_id, pageAsset?.id);
+        await removeFromWatchlist(pageAsset?.id);
         toast.success(`${pageAsset.ticker} removed from watchlist`);
       } else {
-        await addToWatchlist(user_id, pageAsset?.id);
+        await addToWatchlist(pageAsset?.id);
         toast.success(`${pageAsset.ticker} added to watchlist`);
       }
     } catch (error) {

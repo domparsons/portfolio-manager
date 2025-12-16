@@ -1,7 +1,7 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { apiClient, ApiError } from "@/lib/api-client";
 import { toast } from "sonner";
-import { PortfolioMetrics, PortfolioContextType } from "@/types/custom-types";
+import { PortfolioContextType, PortfolioMetrics } from "@/types/custom-types";
 import { useAuth0 } from "@auth0/auth0-react";
 
 const PortfolioContext = createContext<PortfolioContextType | undefined>(
@@ -28,7 +28,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       setLoading(true);
       const data = await apiClient.get<PortfolioMetrics>(
-        `/portfolio/portfolio_metrics/${user_id}`,
+        `/portfolio/portfolio_metrics`,
       );
       setPortfolioMetrics(data);
       setError(null);

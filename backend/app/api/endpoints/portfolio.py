@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app import crud, models, schemas
+from app.core.auth.dependencies import get_current_user
 from app.database import get_db
 from app.logger import logger
 from app.services.portfolio_engine import (
@@ -13,10 +14,12 @@ from app.services.portfolio_engine import (
 router = APIRouter(prefix="/portfolio", tags=["portfolio"])
 
 
-@router.get("/transactions/{user_id}", response_model=list[schemas.Portfolio])
+@router.get("/transactions", response_model=list[schemas.Portfolio])
 def get_portfolio_transactions(
-    user_id: str, db: Session = Depends(get_db)
+    current_user: str = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ) -> list[schemas.Portfolio]:
+    user_id = current_user
     transactions = (
         db.query(models.Transaction)
         .filter(models.Transaction.user_id == user_id)
@@ -61,10 +64,12 @@ def get_portfolio_transactions(
     return portfolio_list
 
 
-@router.get("/holdings/{user_id}", response_model=list[schemas.PortfolioHoldings])
+@router.get("/holdings", response_model=list[schemas.PortfolioHoldings])
 def get_portfolio_holdings(
-    user_id: str, db: Session = Depends(get_db)
+    current_user: str = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ) -> list[schemas.PortfolioHoldings]:
+    user_id = current_user
     transactions = (
         db.query(models.Transaction).filter(models.Transaction.user_id == user_id).all()
     )
@@ -83,15 +88,15 @@ def get_portfolio_holdings(
     return list(holdings.values())
 
 
-@router.get(
-    "/portfolio_over_time/{user_id}", response_model=list[schemas.PortfolioValueHistory]
-)
+@router.get("/portfolio_over_time", response_model=list[schemas.PortfolioValueHistory])
 def get_portfolio_over_time(
-    user_id: str, db: Session = Depends(get_db)
+    current_user: str = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ) -> list[schemas.PortfolioValueHistory]:
     """
     Calculate daily portfolio values for a user based on their transaction history.
     """
+    user_id = current_user
     try:
         _, history = get_portfolio_data_for_user(user_id, db)
         logger.info(f"Fetched portfolio timeseries data for user {user_id[-8:]}")
@@ -101,13 +106,15 @@ def get_portfolio_over_time(
         raise HTTPException(status_code=404, detail=str(e))
 
 
-@router.get("/portfolio_metrics/{user_id}", response_model=schemas.PortfolioMetrics)
+@router.get("/portfolio_metrics", response_model=schemas.PortfolioMetrics)
 def get_portfolio_metrics(
-    user_id: str, db: Session = Depends(get_db)
+    current_user: str = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ) -> schemas.PortfolioMetrics:
     """
     Calculate performance metrics for a user's portfolio.
     """
+    user_id = current_user
     try:
         transactions, history = get_portfolio_data_for_user(user_id, db)
         metrics = calculate_metrics(transactions, history)

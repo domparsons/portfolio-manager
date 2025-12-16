@@ -7,13 +7,10 @@ export const getPortfolioHistory = async (
   setPortfolioHistory: React.Dispatch<
     React.SetStateAction<TimeseriesChartData[]>
   >,
-  user_id: string | null,
 ) => {
-  if (!user_id) return;
-
   try {
     const data = await apiClient.get<TimeseriesChartData[]>(
-      `/portfolio/portfolio_over_time/${user_id}`,
+      "/portfolio/portfolio_over_time",
       {
         params: { limit: 10 },
       },
@@ -36,13 +33,10 @@ export const getPortfolioHistory = async (
 
 export const getPortfolioMetrics = async (
   setTotalReturn: React.Dispatch<React.SetStateAction<number>>,
-  user_id: string | null,
 ) => {
-  if (!user_id) return;
-
   try {
     const data = await apiClient.get<PortfolioMetrics>(
-      `/portfolio/portfolio_metrics/${user_id}`,
+      "/portfolio/portfolio_metrics",
     );
     setTotalReturn(data.total_return_abs);
   } catch (error) {
@@ -52,9 +46,9 @@ export const getPortfolioMetrics = async (
   }
 };
 
-export const getPortfolioHoldings = async (userId: string) => {
+export const getPortfolioHoldings = async () => {
   try {
-    return await apiClient.get(`/portfolio/holdings/${userId}`);
+    return await apiClient.get("/portfolio/holdings");
   } catch (error) {
     const apiError = error as ApiError;
     console.error("Error fetching portfolio holdings:", apiError);

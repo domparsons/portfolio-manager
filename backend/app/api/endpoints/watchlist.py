@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app import crud, models, schemas
+from app.core.auth.dependencies import get_current_user
 from app.crud import get_latest_timeseries_for_asset, watchlist
 from app.database import get_db
 from app.logger import logger
@@ -17,10 +18,11 @@ router = APIRouter(prefix="/watchlist", tags=["watchlist"])
 
 @router.post("/add_to_watchlist", response_model=schemas.WatchlistItem)
 def add_to_watchlist(
-    user_id: str,
     asset_id: int,
+    current_user: str = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    user_id = current_user
     user = crud.user.get_user_by_id(db, user_id=user_id)
     if user is None:
         logger.error(f"User {user_id[-8:]} not found")
@@ -33,15 +35,13 @@ def add_to_watchlist(
     )
 
 
-@router.delete(
-    "/remove_from_watchlist",
-    response_model=schemas.WatchlistItem,
-)
+@router.delete("/remove_from_watchlist", response_model=schemas.WatchlistItem)
 def remove_from_watchlist(
-    user_id: str,
     asset_id: int,
+    current_user: str = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    user_id = current_user
     user = crud.user.get_user_by_id(db, user_id=user_id)
     if user is None:
         logger.error(f"User {user_id[-8:]} not found")
@@ -68,11 +68,12 @@ def remove_from_watchlist(
     return watchlist_item
 
 
-@router.get("/{user_id}", response_model=list[schemas.AssetListSchema])
+@router.get("/", response_model=list[schemas.AssetListSchema])
 def get_watchlist(
-    user_id: str,
+    current_user: str = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    user_id = current_user
     user = crud.user.get_user_by_id(db, user_id=user_id)
     if user is None:
         logger.error(f"User {user_id[-8:]} not found")
@@ -99,8 +100,12 @@ def get_watchlist(
     return asset_list
 
 
-@router.get("/alerts/{user_id}", response_model=list[schemas.WatchlistAssetAlert])
-def get_watchlist_alerts(user_id: str, db: Session = Depends(get_db)):
+@router.get("/alerts", response_model=list[schemas.WatchlistAssetAlert])
+def get_watchlist_alerts(
+    current_user: str = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    user_id = current_user
     yesterday = date.today() - timedelta(days=1)
 
     yesterday_trading_day = PriceService(db).is_trading_day(yesterday)

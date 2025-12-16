@@ -99,7 +99,6 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
 
     try {
       await createTransaction(
-        user_id,
         asset,
         transactionType,
         numberOfShares,

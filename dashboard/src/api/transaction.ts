@@ -5,16 +5,12 @@ import { Asset, Transaction } from "@/types/custom-types";
 
 export const deleteTransaction = async (
   transactionId: number | undefined | null,
-  user_id: string | null,
   refreshHistory: () => void,
   refreshMetrics: (() => Promise<void>) | (() => void),
 ) => {
-  if (!user_id) return;
-
   try {
     await apiClient.delete("/transaction/", {
       params: {
-        user_id,
         transaction_id: transactionId,
       },
     });
@@ -34,13 +30,10 @@ export const deleteTransaction = async (
 };
 
 export const getTransactionHistory = async (
-  user_id: string | null,
   setTransactionHistory: React.Dispatch<React.SetStateAction<Transaction[]>>,
 ) => {
-  if (!user_id) return;
-
   try {
-    const data = await apiClient.get<Transaction[]>(`/transaction/${user_id}`, {
+    const data = await apiClient.get<Transaction[]>("/transaction/", {
       params: { limit: 10 },
     });
     setTransactionHistory(data);
@@ -52,15 +45,12 @@ export const getTransactionHistory = async (
 };
 
 export const getTransactionsByAsset = async (
-  user_id: string | null,
   asset_id: number | null,
   setTransactionHistory: React.Dispatch<React.SetStateAction<Transaction[]>>,
 ) => {
-  if (!user_id) return;
-
   try {
     const data = await apiClient.get<Transaction[]>(
-      `/transaction/by_asset/${user_id}/${asset_id}`,
+      `/transaction/by_asset/${asset_id}`,
       {
         params: { limit: 10 },
       },
@@ -74,14 +64,10 @@ export const getTransactionsByAsset = async (
 };
 
 export const useTransactionHistory = async (
-  user_id: string,
   setTransactionHistory: (transactions: Transaction[]) => void,
 ) => {
   try {
-    const data = await apiClient.get<Transaction[]>(
-      `/transaction/${user_id}`,
-      {},
-    );
+    const data = await apiClient.get<Transaction[]>("/transaction/", {});
     setTransactionHistory(data);
   } catch (error) {
     const apiError = error as ApiError;
@@ -91,7 +77,6 @@ export const useTransactionHistory = async (
 };
 
 export const createTransaction = async (
-  user_id: string | null,
   asset: Asset,
   transactionType: "buy" | "sell",
   numberOfShares: number,
@@ -100,7 +85,6 @@ export const createTransaction = async (
 ) => {
   await apiClient.post("/transaction/", null, {
     params: {
-      user_id,
       portfolio_name: "Placeholder",
       asset_id: asset.id,
       type: transactionType,

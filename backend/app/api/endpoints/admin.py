@@ -1,14 +1,20 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
 
-from app.database import get_db
+from app.core.auth.dependencies import require_admin
+from app.logger import logger
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
 
 @router.post("/update-assets")
-def trigger_asset_update(new_tickers: list[str], db: Session = Depends(get_db)):
+def trigger_asset_update(
+    new_tickers: list[str],
+    current_user: str = Depends(require_admin),
+):
     """Manually trigger asset list update"""
+    logger.info(
+        f"Admin endpoint triggered: asset up triggered with {new_tickers} by {current_user}"
+    )
     try:
         from app.core.data_ingestion.update_assets import main
 
@@ -22,8 +28,13 @@ def trigger_asset_update(new_tickers: list[str], db: Session = Depends(get_db)):
 
 
 @router.post("/update-timeseries")
-def trigger_timeseries_update(new_tickers: list[str], db: Session = Depends(get_db)):
+def trigger_timeseries_update(
+    current_user: str = Depends(require_admin),
+):
     """Manually trigger timeseries data update"""
+    logger.info(
+        f"Admin endpoint triggered: timeseries updated triggered by {current_user}"
+    )
     try:
         from app.core.data_ingestion.update_timeseries import main
 
