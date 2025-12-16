@@ -164,6 +164,7 @@ class ApiClient {
       getAccessTokenSilently({
         authorizationParams: {
           audience: import.meta.env.VITE_API_AUDIENCE,
+          scope: "openid profile email",
         },
       })
         .then((token: string) => {
