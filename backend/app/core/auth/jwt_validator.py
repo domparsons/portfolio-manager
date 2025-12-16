@@ -87,9 +87,7 @@ class JWTValidator:
                 audience=self.config.api_audience,
                 issuer=f"https://{self.config.domain}/",
             )
-            logger.info("TOKEN SUB: %s", payload["sub"])
-            logger.info("TOKEN AUD: %s", payload["aud"])
-            logger.info("TOKEN AZP: %s", payload.get("azp"))
+
             return payload
 
         except jwt.ExpiredSignatureError:
