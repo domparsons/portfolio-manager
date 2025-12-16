@@ -1,11 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import {
-  BacktestParams,
-  BacktestStrategy,
-  LLMBacktestParams,
-  STRATEGY_NAMES,
-} from "@/types/backtest-types";
+import { BacktestParams, BacktestStrategy, LLMBacktestParams, STRATEGY_NAMES } from "@/types/backtest-types";
 import {
   Dialog,
   DialogClose,
@@ -14,23 +9,14 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  DialogTrigger
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, DollarSign, Info, TrendingUp } from "lucide-react";
+import { Calendar, DollarSign, TrendingUp } from "lucide-react";
 import { formatTimestampShort } from "@/utils/formatters";
-import {
-  ParameterRow,
-  StrategyParameters,
-} from "@/app/backtesting/natural-language-param-display";
+import { ParameterRow, StrategyParameters } from "@/app/backtesting/natural-language-param-display";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
@@ -85,7 +71,7 @@ const NaturalLanguageModal = ({
         <DialogHeader>
           <DialogTitle>Create backtest using natural language</DialogTitle>
           <DialogDescription>
-            Describe your investment strategy and our AI will configure the
+            Describe your investment strategy and an LLM will configure the
             backtest parameters
           </DialogDescription>
         </DialogHeader>
@@ -170,18 +156,25 @@ const NaturalLanguageModal = ({
                   </div>
                 )}
 
-                {LLMBacktestResponse.comment && (
-                  <CardDescription className="flex items-start gap-2">
-                    <Info className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                    <span>{LLMBacktestResponse.comment}</span>
-                  </CardDescription>
-                )}
+                <div className="bg-purple-200 border-l-4 border-purple-500 rounded-lg p-4 text-sm">
+                  {LLMBacktestResponse.reasoning && (
+                    <div className="space-y-2">
+                      <div className="font-semibold text-purple-600">
+                        LLM Comment
+                      </div>
+                      <p className="whitespace-pre-wrap text-sm">
+                        {LLMBacktestResponse.comment}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
                 <div className="bg-orange-200 border-l-4 border-orange-500 rounded-lg p-4 font-mono text-sm">
                   {process.env.NODE_ENV === "development" &&
                     LLMBacktestResponse.reasoning && (
                       <div className="space-y-2">
                         <div className="font-semibold text-orange-600">
-                          DEV: AI Reasoning
+                          DEV: LLM Reasoning
                         </div>
                         <pre className="whitespace-pre-wrap text-xs">
                           {LLMBacktestResponse.reasoning}

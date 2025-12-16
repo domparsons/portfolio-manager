@@ -12,7 +12,7 @@ export const ParameterRow = ({
   <div className="flex items-center justify-between">
     <div className="flex items-center gap-2">
       <Icon className="h-4 w-4" />
-      <span className="text-sm text-muted-foreground">{label}</span>
+      <span className="text-sm">{label}</span>
     </div>
     <span className="text-sm font-semibold">{value}</span>
   </div>
