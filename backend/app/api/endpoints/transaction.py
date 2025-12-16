@@ -43,10 +43,11 @@ def create_transaction(
 
     utc_date = convert_to_utc(purchase_date, user_timezone)
 
-    if utc_date > datetime.now(timezone.utc):
+    if utc_date.date() >= datetime.now(timezone.utc).date():
         logger.warning(f"Purchase date {utc_date} cannot be in the future")
         raise HTTPException(
-            status_code=400, detail=f"Purchase date {utc_date} cannot be in the future"
+            status_code=400,
+            detail=f"Purchase date {utc_date} cannot be in the future or today",
         )
 
     transaction = models.Transaction(
@@ -97,7 +98,9 @@ def get_transactions(
     return transactions
 
 
-@router.get("/by_asset/{asset_id}", response_model=list[schemas.transaction.TransactionOut])
+@router.get(
+    "/by_asset/{asset_id}", response_model=list[schemas.transaction.TransactionOut]
+)
 def get_transactions_by_asset(
     asset_id: int,
     current_user: str = Depends(get_current_user),

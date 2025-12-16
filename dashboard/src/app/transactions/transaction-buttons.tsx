@@ -8,7 +8,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  DialogTrigger
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,7 +16,6 @@ import React from "react";
 import { Asset } from "@/types/custom-types";
 import { usePortfolioMetrics } from "@/context/portfolio-metrics";
 import { toast } from "sonner";
-import { useAuth0 } from "@auth0/auth0-react";
 import { createTransaction } from "@/api/transaction";
 import { ApiError } from "@/lib/api-client";
 import { DatePicker } from "@/app/date-picker";
@@ -39,18 +38,23 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
     asset.latest_price,
   );
   const [executionDate, setExecutionDate] = React.useState<Date>();
-
+  const today = new Date();
   const numberOfSharesValid = numberOfShares > 0;
   const executionPriceValid = executionPrice > 0;
   const executionDateValid =
-    executionDate !== undefined && executionDate <= new Date();
+    executionDate !== undefined &&
+    executionDate < new Date(today.setHours(0, 0, 0, 0));
   const areInputsValid =
-    numberOfSharesValid && executionPriceValid && executionDateValid;
+    numberOfSharesValid &&
+    executionPriceValid &&
+    executionDateValid &&
+    executionDate !== today;
   const { refreshMetrics } = usePortfolioMetrics();
 
   React.useEffect(() => {
-    const today = new Date();
-    setExecutionDate(today);
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+    setExecutionDate(yesterday);
   }, []);
 
   function renderTransactionDescription() {
@@ -72,25 +76,33 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
 
     return (
       <DialogDescription className="text-muted-foreground text-sm mt-1">
-        {transactionType.charAt(0).toUpperCase() + transactionType.slice(1)}
-        ing{" "}
-        <span className={numberOfSharesValid ? "" : invalidClass}>
-          <strong>{numberOfShares}</strong>{" "}
-          {numberOfShares === 1 ? "share" : "shares"}
-        </span>{" "}
-        of <strong>{asset.asset_name}</strong> on{" "}
-        <span className={executionDateValid ? "" : invalidClass}>
-          <strong>{formattedDate || "Invalid date"}</strong>
-        </span>{" "}
-        for{" "}
-        <span className={executionPriceValid ? "" : invalidClass}>
-          <strong>{formatCurrency}</strong>
-        </span>
+        <div>
+          {transactionType.charAt(0).toUpperCase() + transactionType.slice(1)}
+          ing{" "}
+          <span className={numberOfSharesValid ? "" : invalidClass}>
+            <strong>{numberOfShares}</strong>{" "}
+            {numberOfShares === 1 ? "share" : "shares"}
+          </span>{" "}
+          of <strong>{asset.asset_name}</strong> on{" "}
+          <span className={executionDateValid ? "" : invalidClass}>
+            <strong>{formattedDate || "Invalid date"}</strong>
+          </span>{" "}
+          for{" "}
+          <span className={executionPriceValid ? "" : invalidClass}>
+            <strong>{formatCurrency}</strong>
+          </span>{" "}
+        </div>
+        {executionDate &&
+          executionDate >= new Date(today.setHours(0, 0, 0, 0)) && (
+            <div>
+              <span className={invalidClass}>
+                Date cannot be today or in the future
+              </span>
+            </div>
+          )}
       </DialogDescription>
     );
   }
-  const { user } = useAuth0();
-  const user_id = user?.sub ?? null;
 
   const [modalOpen, setModalOpen] = React.useState(false);
   const handleSubmit = async (e: React.FormEvent) => {
@@ -106,7 +118,7 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
         executionDate,
       );
       toast("Transaction created successfully!");
-      onTransactionSuccess?.(); // Refresh transaction history
+      onTransactionSuccess?.();
     } catch (error) {
       const apiError = error as ApiError;
       console.error("Failed to create transaction:", apiError);
@@ -185,7 +197,7 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
             <DatePicker
               date={executionDate}
               setDate={setExecutionDate}
-              label={"something"}
+              label={"Execution date"}
               className="col-span-3"
             />
           </div>
