@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 
 from app import crud, schemas
 from app.config.settings import settings
+from app.core.auth.dependencies import get_current_user
 from app.database import get_db
 from app.logger import logger
 
@@ -48,11 +49,12 @@ def get_management_token():
     return response.json()["access_token"]
 
 
-@router.post("/create_or_get/{user_id}", response_model=schemas.User)
+@router.post("/create_or_get", response_model=schemas.User)
 def create_or_get_user(
-    user_id: str,
+    current_user: str = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    user_id = current_user
     logger.info(f"Checking user {user_id[-8:]} exists")
     mgmt_token = get_management_token()
     user_response = requests.get(
