@@ -1,12 +1,15 @@
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from decimal import Decimal
 from pathlib import Path
 
+from app import crud
 from app.config.settings import settings
 from app.logger import logger
+from app.schemas.asset import AssetDataAvailability
 from app.schemas.backtest import LLMBacktestParams
 from fastapi import HTTPException
 from openai import OpenAI, OpenAIError
+from sqlalchemy.orm import Session
 
 MODULE_DIR = Path(__file__).parent
 
@@ -22,7 +25,9 @@ class LLMValidationError(Exception):
     pass
 
 
-def strategise_natural_language(user_input: str) -> LLMBacktestParams | None:
+def strategise_natural_language(
+    user_input: str, db: Session
+) -> LLMBacktestParams | None:
     """
     Parse natural language input into structured backtest parameters.
 
@@ -40,7 +45,9 @@ def strategise_natural_language(user_input: str) -> LLMBacktestParams | None:
 
     for attempt in range(MAX_RETRIES):
         try:
-            result = _call_llm(user_input)
+            asset_data = crud.get_assets_with_data_availability(db)
+            instructions = _load_instructions(asset_data)
+            result = _call_llm(user_input, instructions)
             validated = _validate_and_fix(result)
 
             logger.info(
@@ -66,11 +73,9 @@ def strategise_natural_language(user_input: str) -> LLMBacktestParams | None:
     return None
 
 
-def _call_llm(user_input: str) -> LLMBacktestParams:
+def _call_llm(user_input: str, instructions: str) -> LLMBacktestParams:
     """Make the actual LLM API call"""
     client = OpenAI(api_key=settings.OPEN_AI_API_KEY)
-
-    instructions = _load_instructions()
 
     try:
         response = client.responses.parse(
@@ -90,7 +95,7 @@ def _call_llm(user_input: str) -> LLMBacktestParams:
         raise OpenAIError(f"Failed to parse LLM response: {str(e)}")
 
 
-def _load_instructions() -> str:
+def _load_instructions(asset_data: list[AssetDataAvailability]) -> str:
     """Load and format instructions with current date"""
     with open(MODULE_DIR / "backtest_parameterisation_instructions.txt", "r") as f:
         instructions = f.read()
@@ -98,7 +103,23 @@ def _load_instructions() -> str:
     today = date.today()
     instructions = instructions.replace("{today_date}", today.isoformat())
 
-    return instructions
+    asset_table_header = (
+        "asset_id | asset_name | ticker | first_available_date | last_available_date"
+    )
+    asset_table_separator = "-" * 80
+
+    asset_rows = [
+        f"{asset.asset_id} | {asset.asset_name} | {asset.ticker} | "
+        f"{asset.first_available_date.date() if isinstance(asset.first_available_date, datetime) else asset.first_available_date} | "
+        f"{asset.last_available_date.date() if isinstance(asset.last_available_date, datetime) else asset.last_available_date}"
+        for asset in asset_data
+    ]
+
+    asset_table = "\n".join([asset_table_header, asset_table_separator, *asset_rows])
+
+    asset_section = f"""**Available Assets and Data Ranges**:\n{asset_table}"""
+
+    return instructions + asset_section
 
 
 def _validate_and_fix(params: LLMBacktestParams) -> LLMBacktestParams:

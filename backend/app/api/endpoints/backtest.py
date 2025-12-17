@@ -1,9 +1,10 @@
 import uuid
 
 from app.database import get_db
+from app.logger import logger
 from app.schemas import BacktestRequest, BacktestResponse
 from app.services.backtest_service import BacktestService
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm.session import Session
 
 router = APIRouter(prefix="/backtest", tags=["backtest"])
@@ -16,7 +17,12 @@ def run_backtest(
 ):
     backtest_service = BacktestService(db)
 
-    backtest_service.validate_request(request)
+    try:
+        backtest_service.validate_request(request, db)
+    except HTTPException as e:
+        logger.warning(f"Backtest validation failed: {e.detail}")
+        raise
+
     backtest_result = backtest_service.run_backtest(request)
 
     parameters = request.model_dump(exclude={"strategy"})
