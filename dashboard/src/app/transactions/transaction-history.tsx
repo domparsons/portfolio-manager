@@ -4,9 +4,9 @@ import { TransactionHistoryTable } from "@/app/transactions/transaction-history-
 import { Transaction } from "@/types/custom-types";
 import { EmptyComponent } from "@/app/empty-component";
 import { useAuth0 } from "@auth0/auth0-react";
-import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { ApiError } from "@/lib/api-client";
+import { Spinner } from "@/components/ui/spinner";
 
 const TransactionHistory = () => {
   const [transactionHistory, setTransactionHistory] = React.useState<
@@ -58,7 +58,7 @@ const TransactionHistory = () => {
         <h1 className="text-2xl font-semibold mb-4">Transaction History</h1>
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="flex flex-col items-center gap-4">
-            <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+            <Spinner className={"size-5"} />
             <p className="text-gray-500">Loading transactions...</p>
           </div>
         </div>

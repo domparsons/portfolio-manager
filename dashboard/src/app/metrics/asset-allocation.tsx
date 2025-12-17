@@ -16,7 +16,7 @@ import {
 import React from "react";
 import { Cell, Pie, PieChart } from "recharts";
 import { PortfolioHoldings } from "@/types/custom-types";
-import { Loader2 } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 
 const AssetAllocation = ({
   chartData,
@@ -60,7 +60,7 @@ const AssetAllocation = ({
         {loading ? (
           <div className="flex items-center justify-center py-8">
             <div className="flex flex-col items-center gap-2">
-              <Loader2 className="h-6 w-6 animate-spin text-gray-500" />
+              <Spinner className={"size-5"} />
               <p className="text-sm text-gray-500">Loading allocation...</p>
             </div>
           </div>

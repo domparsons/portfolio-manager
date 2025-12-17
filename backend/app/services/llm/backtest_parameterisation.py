@@ -97,7 +97,9 @@ def _call_llm(user_input: str, instructions: str) -> LLMBacktestParams:
 
 def _load_instructions(asset_data: list[AssetDataAvailability]) -> str:
     """Load and format instructions with current date"""
-    with open(MODULE_DIR / "backtest_parameterisation_instructions.txt", "r") as f:
+    with open(
+        MODULE_DIR / "prompts/backtest_parameterisation_instructions.txt", "r"
+    ) as f:
         instructions = f.read()
 
     today = date.today()

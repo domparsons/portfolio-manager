@@ -7,7 +7,7 @@ import { EmptyComponent } from "@/app/empty-component";
 import { useAuth0 } from "@auth0/auth0-react";
 import { ApiError } from "@/lib/api-client";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 
 const Watchlist = () => {
   const [watchlistAssets, setWatchlistAssets] = useState<Asset[]>([]);
@@ -65,7 +65,7 @@ const Watchlist = () => {
       {isWatchlistLoading && (
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="flex flex-col items-center gap-4">
-            <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+            <Spinner className={"size-5"} />
             <p className="text-gray-500">Loading watchlist...</p>
           </div>
         </div>

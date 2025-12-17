@@ -6,9 +6,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { PortfolioCardProps, TimeseriesChartData } from "@/types/custom-types";
+import { TimeseriesChartData } from "@/types/custom-types";
 import { TimeseriesChart } from "@/app/metrics/timeseries-chart";
-import { Loader2 } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 
 const PortfolioCard = ({
   portfolioHistory,
@@ -43,7 +43,7 @@ const PortfolioCard = ({
         {loading ? (
           <div className="flex items-center justify-center py-8">
             <div className="flex flex-col items-center gap-2">
-              <Loader2 className="h-6 w-6 animate-spin text-gray-500" />
+              <Spinner className={"size-5"} />
               <p className="text-sm text-gray-500">Loading portfolio...</p>
             </div>
           </div>

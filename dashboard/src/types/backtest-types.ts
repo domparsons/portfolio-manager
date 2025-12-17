@@ -40,6 +40,7 @@ export interface BacktestResult {
 export interface BacktestParams {
   strategy: BacktestStrategy;
   asset_ids: number[];
+  tickers: string[];
   start_date: string;
   end_date: string;
   initial_cash: number | undefined;
