@@ -2,14 +2,13 @@ from pathlib import Path
 
 from app.config.settings import settings
 from app.logger import logger
-from app.schemas.backtest import BacktestAnalysis, LLMBacktestParams
+from app.schemas.backtest import BacktestAnalysis
 from fastapi import HTTPException
 from openai import OpenAI, OpenAIError
 
 MODULE_DIR = Path(__file__).parent
 
 VALID_STRATEGIES = {"buy_and_hold", "dca", "va"}
-VALID_ASSET_IDS = set(range(1, 23))
 MAX_HISTORICAL_YEARS = 10
 MAX_RETRIES = 2
 
@@ -21,7 +20,7 @@ class LLMValidationError(Exception):
 
 
 def analyse_backtest(user_result: BacktestAnalysis, benchmark_result: BacktestAnalysis):
-    if not user_result and benchmark_result:
+    if not user_result or not benchmark_result:
         raise HTTPException(status_code=400, detail="Please provide valid backtests")
 
     for attempt in range(MAX_RETRIES):
@@ -75,12 +74,22 @@ def _format_backtest_result(backtest: BacktestAnalysis) -> str:
     trough_value = (
         min(s.value for s in result.history) if result.history else result.final_value
     )
+    params = backtest.parameters.get("parameters", {})
+
+    # Handle None case
+    if params is None:
+        params = {}
+
+    if params:
+        param_str = ", ".join(f"{k}={v}" for k, v in params.items())
+    else:
+        param_str = "None"
 
     formatted = f"""
 USER BACKTEST SUMMARY
 
 Strategy: {backtest.strategy.upper()}
-Parameters: {", ".join(f"{k}={v}" for k, v in backtest.parameters.items())}
+Parameters: {", ".join(f"{k}={v}" for k, v in (backtest.parameters.get("parameters") or {}).items()) or "None"}
 Time Period: {result.start_date.strftime("%B %d, %Y")} to {result.end_date.strftime("%B %d, %Y")}
 Duration: {num_days} trading days
 Tickers: {(", ".join(backtest.tickers))}
@@ -107,7 +116,7 @@ Lowest Portfolio Value: ${float(trough_value):,.2f}
     return formatted
 
 
-def _call_llm(backtest_input: str, instructions: str) -> LLMBacktestParams:
+def _call_llm(backtest_input: str, instructions: str) -> str:
     client = OpenAI(api_key=settings.OPEN_AI_API_KEY)
 
     try:

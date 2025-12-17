@@ -14,7 +14,6 @@ from sqlalchemy.orm import Session
 MODULE_DIR = Path(__file__).parent
 
 VALID_STRATEGIES = {"buy_and_hold", "dca", "va"}
-VALID_ASSET_IDS = set(range(1, 23))
 MAX_HISTORICAL_YEARS = 10
 MAX_RETRIES = 2
 
@@ -139,12 +138,6 @@ def _validate_and_fix(params: LLMBacktestParams) -> LLMBacktestParams:
 
     if not params.asset_ids:
         raise LLMValidationError("No assets specified")
-
-    invalid_assets = [id for id in params.asset_ids if id not in VALID_ASSET_IDS]
-    if invalid_assets:
-        raise LLMValidationError(
-            f"Invalid asset IDs: {invalid_assets}. Must be between 1 and 22."
-        )
 
     today = date.today()
     yesterday = today - timedelta(days=1)

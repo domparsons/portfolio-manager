@@ -1,3 +1,5 @@
+from typing import Optional
+
 from app import crud
 from app.database import get_db
 from app.logger import logger
@@ -23,11 +25,11 @@ def parse_strategy(
     return backtest_parameterisation.strategise_natural_language(user_input, db)
 
 
-@router.post("/analyse_backtest")
+@router.post("/analyse_backtest", response_model=Optional[str])
 def analyse_backtest(
     backtest: BacktestResponse,
     db: Session = Depends(get_db),
-):
+) -> str | None:
     backtest_result = backtest.data
 
     user_parameters = backtest.model_dump(exclude={"strategy"})
