@@ -34,3 +34,13 @@ class AssetInWatchlist(BaseModel):
     alert_percentage: Optional[float]
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class AssetDataAvailability(BaseModel):
+    asset_id: int
+    asset_name: str
+    ticker: str
+    first_available_date: datetime
+    last_available_date: datetime
+
+    model_config = ConfigDict(from_attributes=True)
