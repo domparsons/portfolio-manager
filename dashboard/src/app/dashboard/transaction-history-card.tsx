@@ -5,9 +5,9 @@ import React from "react";
 import { Transaction } from "@/types/custom-types";
 import { getTransactionHistory } from "@/api/transaction";
 import { useAuth0 } from "@auth0/auth0-react";
-import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { ApiError } from "@/lib/api-client";
+import { Spinner } from "@/components/ui/spinner";
 
 const TransactionHistoryCard = () => {
   const [transactionHistory, setTransactionHistory] = React.useState<
@@ -56,7 +56,7 @@ const TransactionHistoryCard = () => {
         {isLoading ? (
           <div className="flex items-center justify-center py-8">
             <div className="flex flex-col items-center gap-2">
-              <Loader2 className="h-6 w-6 animate-spin text-gray-500" />
+              <Spinner className={"size-5"} />
               <p className="text-sm text-gray-500">Loading transactions...</p>
             </div>
           </div>

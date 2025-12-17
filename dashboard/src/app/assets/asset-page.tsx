@@ -3,7 +3,7 @@ import TransactionButtons from "@/app/transactions/transaction-buttons";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Minus, Plus } from "lucide-react";
+import { Minus, Plus } from "lucide-react";
 import React from "react";
 import { AssetSheetPopoverProps, Transaction } from "@/types/custom-types";
 import { saveAlertsChange, useTransactionType } from "@/api/asset";
@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label";
 import { ApiError } from "@/lib/api-client";
 import { addToWatchlist, removeFromWatchlist } from "@/api/watchlist";
 import { toast } from "sonner";
+import { Spinner } from "@/components/ui/spinner";
 
 const AssetDetail: React.FC<{
   label: string;
@@ -164,7 +165,7 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
         >
           {isWatchlistLoading ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Spinner className={"size-5"} />
               {watchlistAction === "remove" ? "Removing..." : "Adding..."}
             </>
           ) : (

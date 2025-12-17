@@ -5,13 +5,19 @@ import { usePortfolioMetrics } from "@/context/portfolio-metrics";
 import { formatCurrencyValue, formatPercentageValue } from "@/utils/formatters";
 import { usePortfolioHistory } from "@/context/portfolio-history";
 import { useWatchlistAlerts } from "@/api/watchlist";
-import { Loader2 } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 
 const Dashboard = () => {
   const { portfolioMetrics, loading, error } = usePortfolioMetrics();
 
-  const { portfolioHistory, minDomain, maxDomain, startDate, endDate, loading: historyLoading } =
-    usePortfolioHistory();
+  const {
+    portfolioHistory,
+    minDomain,
+    maxDomain,
+    startDate,
+    endDate,
+    loading: historyLoading,
+  } = usePortfolioHistory();
 
   useWatchlistAlerts();
 
@@ -49,7 +55,7 @@ const Dashboard = () => {
       {loading && (
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="flex flex-col items-center gap-4">
-            <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+            <Spinner className={"size-5"} />
             <p className="text-gray-500">Loading portfolio...</p>
           </div>
         </div>

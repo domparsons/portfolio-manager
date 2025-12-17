@@ -1,4 +1,8 @@
-import { checkAssetInWatchlist, getAssetByTicker, getTimeseriesDataForAsset } from "@/api/asset";
+import {
+  checkAssetInWatchlist,
+  getAssetByTicker,
+  getTimeseriesDataForAsset,
+} from "@/api/asset";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { AssetPage } from "./asset-page";
@@ -8,7 +12,7 @@ import { toast } from "sonner";
 import { ApiError } from "@/lib/api-client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 
 const AssetPageWrapper = () => {
   const { ticker } = useParams();
@@ -90,7 +94,7 @@ const AssetPageWrapper = () => {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+          <Spinner className={"size-5"} />
           <p className="text-gray-500">Loading asset data...</p>
         </div>
       </div>

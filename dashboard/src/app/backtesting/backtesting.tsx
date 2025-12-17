@@ -5,7 +5,7 @@ import { StrategySelector } from "@/app/backtesting/strategy-selector";
 import { BacktestResults } from "@/app/backtesting/backtest-results";
 import { runBacktest } from "@/api/backtest";
 import { getAssetList } from "@/api/asset";
-import { parameteriseNaturalLanguageStrategy } from "@/api/llm";
+import { ParameteriseNaturalLanguageStrategy } from "@/api/llm";
 
 import {
   BacktestParams,
@@ -13,7 +13,7 @@ import {
   BacktestStrategy,
   LLMBacktestParams,
   STRATEGY_FORMS,
-  STRATEGY_NAMES
+  STRATEGY_NAMES,
 } from "@/types/backtest-types";
 import { Asset } from "@/types/custom-types";
 import { ApiError } from "@/lib/api-client";
@@ -51,7 +51,7 @@ const Backtesting = () => {
   const handleUserInputLLM = async (userInput: string) => {
     setIsLLMLoading(true);
     try {
-      const results = await parameteriseNaturalLanguageStrategy(userInput);
+      const results = await ParameteriseNaturalLanguageStrategy(userInput);
       setLLMBacktestResponse(results);
     } catch (error) {
       console.log(error);

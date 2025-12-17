@@ -1,4 +1,4 @@
-import { Loader2, TrendingDown, TrendingUp } from "lucide-react";
+import { TrendingDown, TrendingUp } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/card";
 import { formatCurrencyValue } from "@/utils/formatters";
 import React from "react";
+import { Spinner } from "@/components/ui/spinner";
 
 const ResultValues = ({
   finalValue,
@@ -44,7 +45,7 @@ const ResultValues = ({
         {loading ? (
           <div className="flex items-center justify-center py-8">
             <div className="flex flex-col items-center gap-2">
-              <Loader2 className="h-6 w-6 animate-spin text-gray-500" />
+              <Spinner className={"size-5"} />
               <p className="text-sm text-gray-500">Loading portfolio...</p>
             </div>
           </div>

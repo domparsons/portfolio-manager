@@ -57,6 +57,7 @@ const NaturalLanguageCard = ({
     const params: BacktestParams = {
       strategy: LLMBacktestResponse.strategy,
       asset_ids: LLMBacktestResponse.asset_ids,
+      tickers: LLMBacktestResponse.tickers,
       start_date: format(LLMBacktestResponse.start_date, "yyyy-MM-dd"),
       end_date: format(LLMBacktestResponse.end_date, "yyyy-MM-dd"),
       initial_cash: LLMBacktestResponse.initial_cash,
@@ -68,7 +69,6 @@ const NaturalLanguageCard = ({
 
   return (
     <div className="space-y-6">
-      {/* Input Card */}
       <Card>
         <CardHeader>
           <CardTitle>Describe Your Strategy</CardTitle>

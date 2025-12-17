@@ -1,4 +1,4 @@
-import { Activity, TrendingDown, BarChart3, Calendar, Loader2 } from "lucide-react";
+import { Activity, BarChart3, Calendar, TrendingDown } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -7,6 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import React from "react";
+import { Spinner } from "@/components/ui/spinner";
 
 const RiskMetrics = ({
   sharpe,
@@ -93,7 +94,7 @@ const RiskMetrics = ({
         {loading ? (
           <div className="flex items-center justify-center py-8">
             <div className="flex flex-col items-center gap-2">
-              <Loader2 className="h-6 w-6 animate-spin text-gray-500" />
+              <Spinner className={"size-5"} />
               <p className="text-sm text-gray-500">Loading metrics...</p>
             </div>
           </div>
@@ -112,7 +113,9 @@ const RiskMetrics = ({
                       {metric.label}
                     </span>
                   </div>
-                  <span className={`text-sm font-semibold ${metric.rating.color}`}>
+                  <span
+                    className={`text-sm font-semibold ${metric.rating.color}`}
+                  >
                     {metric.value}
                   </span>
                 </div>

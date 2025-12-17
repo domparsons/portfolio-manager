@@ -9,6 +9,7 @@ from pydantic import BaseModel, ConfigDict, Json, field_serializer
 class BacktestRequest(BaseModel):
     strategy: str
     asset_ids: list[int]
+    tickers: list[str]
     start_date: date
     end_date: date
     initial_cash: Decimal
@@ -102,3 +103,10 @@ class BacktestResponse(BaseModel):
 class MaxDrawdownResponse(BaseModel):
     max_drawdown: Decimal
     max_drawdown_duration: int
+
+
+class BacktestAnalysis(BaseModel):
+    strategy: str
+    parameters: dict
+    tickers: list[str]
+    data: BacktestResult

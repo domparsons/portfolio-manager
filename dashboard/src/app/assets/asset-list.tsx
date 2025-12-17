@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { useAuth0 } from "@auth0/auth0-react";
 import { EmptyComponent } from "@/app/empty-component";
 import { getAssetList } from "@/api/asset";
-import { Loader2 } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 
 const AssetList = () => {
   const [assets, setAssets] = useState<Asset[]>([]);
@@ -71,7 +71,7 @@ const AssetList = () => {
       {isAssetListLoading && (
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="flex flex-col items-center gap-4">
-            <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+            <Spinner className={"size-5"} />
             <p className="text-gray-500">Loading assets...</p>
           </div>
         </div>
