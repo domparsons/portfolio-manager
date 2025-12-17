@@ -1,9 +1,5 @@
-import json
 from datetime import date, timedelta
 from enum import Enum
-
-from fastapi import HTTPException
-from sqlalchemy.orm.session import Session
 
 from app import crud, schemas
 from app.backtesting.engine import BacktestEngine
@@ -14,6 +10,8 @@ from app.backtesting.strategies.dca import DCAStrategy
 from app.backtesting.strategies.va import VAStrategy
 from app.core import PriceService
 from app.logger import logger
+from fastapi import HTTPException
+from sqlalchemy.orm.session import Session
 
 
 class StrategyType(str, Enum):
@@ -51,7 +49,7 @@ class BacktestService:
 
         return backtest_result
 
-    def validate_request(self, request: schemas.BacktestRequest):
+    def validate_request(self, request: schemas.BacktestRequest, db: Session):
         invalid_assets = self._validate_assets_exist(request.asset_ids)
         if invalid_assets:
             logger.warning(f"Asset(s) not found: {invalid_assets}")
@@ -95,6 +93,58 @@ class BacktestService:
             raise HTTPException(
                 status_code=400, detail="Date range must be at least 7 days"
             )
+
+        self._validate_data_availability(
+            request.asset_ids, request.start_date, request.end_date, db
+        )
+
+    @staticmethod
+    def _validate_data_availability(
+        asset_ids: list[int], start_date: date, end_date: date, db: Session
+    ):
+        for asset_id in asset_ids:
+            result = crud.get_data_availability_for_asset(asset_id, db)
+            if not result or result.total_days == 0:
+                raise HTTPException(
+                    status_code=400, detail=f"No data available for asset {asset_id}"
+                )
+
+            first_available = (
+                result.first_date.date()
+                if isinstance(result.first_date, date)
+                else result.first_date
+            )
+            last_available = (
+                result.last_date.date()
+                if isinstance(result.last_date, date)
+                else result.last_date
+            )
+
+            if start_date < first_available:
+                asset = crud.get_asset_by_id(asset_id, db)
+                asset_name = (
+                    f"{asset.get('ticker', 'unknown')} ({asset.get('asset_name', 'unknown')})"
+                    if asset
+                    else f"asset {asset_id}"
+                )
+
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"No data available for {asset_name} before {first_available}. Data available from {first_available} onwards.",
+                )
+
+            if end_date > last_available:
+                asset = crud.get_asset_by_id(asset_id, db)
+                asset_name = (
+                    f"{asset.get('ticker', 'unknown')} ({asset.get('asset_name', 'unknown')})"
+                    if asset
+                    else f"asset {asset_id}"
+                )
+
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"No data available for {asset_name} after {last_available}. Data available until {last_available}.",
+                )
 
     def _validate_assets_exist(self, requested_asset_ids) -> list[int]:
         all_assets = crud.get_all_assets(db=self.db)

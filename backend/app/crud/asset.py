@@ -62,3 +62,15 @@ def get_assets_with_data_availability(db: Session) -> list[AssetDataAvailability
         )
         for row in results
     ]
+
+
+def get_data_availability_for_asset(asset_id: int, db: Session):
+    return (
+        db.query(
+            func.min(Timeseries.timestamp).label("first_date"),
+            func.max(Timeseries.timestamp).label("last_date"),
+            func.count(Timeseries.timestamp).label("total_days"),
+        )
+        .filter(Timeseries.asset_id == asset_id)
+        .first()
+    )
