@@ -6,11 +6,7 @@ import {
 } from "@/components/ui/chart";
 import * as React from "react";
 import { Line, LineChart, XAxis, YAxis } from "recharts";
-interface Portfolio {
-  id: number;
-  close: number;
-  timestamp: string;
-}
+import { Portfolio } from "@/types/custom-types";
 
 const AssetChart = ({ data }: { data: Portfolio[] | null }) => {
   const chartData: Portfolio[] = (data ?? []).map((item) => ({

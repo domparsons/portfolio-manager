@@ -11,14 +11,11 @@ import { usePortfolioHistory } from "@/context/portfolio-history";
 import { PortfolioReturns } from "@/app/portfolio/portfolio-returns";
 
 const Portfolio = () => {
-  const { user } = useAuth0();
-  const user_id = user?.sub ?? null;
-
   const [portfolioHoldings, setPortfolioHoldings] = React.useState<
     PortfolioHoldings[]
   >([]);
   const [holdingsLoading, setHoldingsLoading] = React.useState<boolean>(true);
-
+  const { portfolioMetrics, loading } = usePortfolioMetrics();
   const {
     portfolioHistory,
     minDomain,
@@ -28,7 +25,8 @@ const Portfolio = () => {
     loading: historyLoading,
   } = usePortfolioHistory();
 
-  const { portfolioMetrics, loading, error } = usePortfolioMetrics();
+  const { user } = useAuth0();
+  const user_id = user?.sub ?? null;
 
   React.useEffect(() => {
     if (user_id) {

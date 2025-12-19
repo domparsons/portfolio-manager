@@ -9,6 +9,8 @@ export function usePortfolioHistory() {
   >([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const chartDomain = calculateChartDomain(portfolioHistory);
+  const dateRange = getDateRange(portfolioHistory);
 
   const { user } = useAuth0();
   const user_id = user?.sub ?? null;
@@ -23,9 +25,6 @@ export function usePortfolioHistory() {
       .catch((err) => setError(err))
       .finally(() => setLoading(false));
   }, [user_id]);
-
-  const chartDomain = calculateChartDomain(portfolioHistory);
-  const dateRange = getDateRange(portfolioHistory);
 
   return {
     portfolioHistory,

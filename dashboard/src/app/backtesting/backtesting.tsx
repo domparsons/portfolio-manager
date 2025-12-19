@@ -13,7 +13,7 @@ import {
   BacktestStrategy,
   LLMBacktestParams,
   STRATEGY_FORMS,
-  STRATEGY_NAMES,
+  STRATEGY_NAMES
 } from "@/types/backtest-types";
 import { Asset } from "@/types/custom-types";
 import { ApiError } from "@/lib/api-client";
@@ -35,13 +35,11 @@ const Backtesting = () => {
   const [isLLMLoading, setIsLLMLoading] = useState(false);
   const [assets, setAssets] = useState<Asset[]>([]);
   const [filteredAssets, setFilteredAssets] = useState<Asset[]>([]);
+  const resultsRef = useRef<HTMLDivElement>(null);
+  const StrategyForm = STRATEGY_FORMS[selectedStrategy];
 
   const { user } = useAuth0();
   const user_id = user?.sub ?? null;
-
-  const StrategyForm = STRATEGY_FORMS[selectedStrategy];
-
-  const resultsRef = useRef<HTMLDivElement>(null);
 
   const handleStrategyChange = (strategy: BacktestStrategy) => {
     setSelectedStrategy(strategy);

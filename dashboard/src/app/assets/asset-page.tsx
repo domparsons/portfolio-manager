@@ -40,8 +40,6 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
   setPageAssetInWatchlist,
 }) => {
   const [transactionType, setTransactionType] = useTransactionType();
-  const { user } = useAuth0();
-  const user_id = user?.sub ?? null;
   const [transactionHistory, setTransactionHistory] = React.useState<
     Transaction[]
   >([]);
@@ -49,33 +47,21 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
     React.useState<boolean>(false);
   const [displayAssetAlertPercentage, setDisplayAssetAlertPercentage] =
     React.useState<number>(0);
+  const [watchlistAction, setWatchlistAction] = React.useState<
+    "add" | "remove" | null
+  >(null);
+  const [isSaving, setIsSaving] = React.useState<boolean>(false);
+  const [isWatchlistLoading, setIsWatchlistLoading] =
+    React.useState<boolean>(false);
 
-  React.useEffect(() => {
-    if (pageAssetAlertPercentage) {
-      setEnablePriceAlerts(true);
-      setDisplayAssetAlertPercentage(pageAssetAlertPercentage);
-    } else {
-      setEnablePriceAlerts(false);
-      setDisplayAssetAlertPercentage(0);
-    }
-  }, [pageAssetAlertPercentage]);
+  const { user } = useAuth0();
+  const user_id = user?.sub ?? null;
 
   const refreshTransactionHistory = React.useCallback(() => {
     if (user_id) {
       getTransactionsByAsset(pageAsset.id, setTransactionHistory);
     }
   }, [user_id, pageAsset.id]);
-
-  React.useEffect(() => {
-    refreshTransactionHistory();
-  }, [refreshTransactionHistory]);
-
-  const [isSaving, setIsSaving] = React.useState<boolean>(false);
-  const [isWatchlistLoading, setIsWatchlistLoading] =
-    React.useState<boolean>(false);
-  const [watchlistAction, setWatchlistAction] = React.useState<
-    "add" | "remove" | null
-  >(null);
 
   const handleUpdateAlert = async () => {
     setIsSaving(true);
@@ -143,6 +129,20 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
       setWatchlistAction(null);
     }
   };
+
+  React.useEffect(() => {
+    refreshTransactionHistory();
+  }, [refreshTransactionHistory]);
+
+  React.useEffect(() => {
+    if (pageAssetAlertPercentage) {
+      setEnablePriceAlerts(true);
+      setDisplayAssetAlertPercentage(pageAssetAlertPercentage);
+    } else {
+      setEnablePriceAlerts(false);
+      setDisplayAssetAlertPercentage(0);
+    }
+  }, [pageAssetAlertPercentage]);
 
   return (
     <>

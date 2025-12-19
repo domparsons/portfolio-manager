@@ -1,5 +1,5 @@
 import { apiClient, ApiError } from "@/lib/api-client";
-import { TimeseriesChartData, PortfolioMetrics } from "@/types/custom-types";
+import { TimeseriesChartData } from "@/types/custom-types";
 import { toast } from "sonner";
 import React from "react";
 
@@ -28,21 +28,6 @@ export const getPortfolioHistory = async (
     } else {
       toast.error("Failed to load portfolio history");
     }
-  }
-};
-
-export const getPortfolioMetrics = async (
-  setTotalReturn: React.Dispatch<React.SetStateAction<number>>,
-) => {
-  try {
-    const data = await apiClient.get<PortfolioMetrics>(
-      "/portfolio/portfolio_metrics",
-    );
-    setTotalReturn(data.total_return_abs);
-  } catch (error) {
-    const apiError = error as ApiError;
-    console.error("Error fetching portfolio metrics:", apiError);
-    toast("There was an error fetching portfolio metrics.");
   }
 };
 

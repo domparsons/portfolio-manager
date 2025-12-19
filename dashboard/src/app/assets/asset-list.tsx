@@ -46,7 +46,6 @@ const AssetList = () => {
         setError("Failed to load assets");
         toast.error("Failed to load assets");
       }
-
       console.error("Assets load failed:", apiError);
     } finally {
       setIsAssetListLoading(false);

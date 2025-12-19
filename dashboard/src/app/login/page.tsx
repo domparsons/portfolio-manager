@@ -14,14 +14,6 @@ export default function LandingPage() {
 
   const { logout } = useAuth0();
 
-  const handleLogout = () => {
-    logout({
-      logoutParams: {
-        returnTo: window.location.origin,
-      },
-    });
-  };
-
   return (
     <ThemeProvider>
       <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-gray-900 to-gray-800 p-6">

@@ -66,8 +66,6 @@ export interface AssetSheetPopoverProps {
   >;
 }
 
-export interface PortfolioCardProps {}
-
 export interface TransactionTableProps {
   transactions: Transaction[];
   onDelete: () => void;

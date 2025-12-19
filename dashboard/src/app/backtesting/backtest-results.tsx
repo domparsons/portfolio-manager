@@ -28,7 +28,6 @@ const BacktestResults = forwardRef<
 
   const [isLLMLoadingAnalysis, setIsLLMLoadingAnalysis] = useState(false);
   const [LLMAnalysis, setLLMAnalysis] = useState<string>("");
-
   const minValue = Math.min(...results.data.history.map((item) => item.value));
   const maxValue = Math.max(...results.data.history.map((item) => item.value));
 
