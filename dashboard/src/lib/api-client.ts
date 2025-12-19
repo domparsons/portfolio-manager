@@ -14,21 +14,14 @@ import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } f
  * - Automatic JSON handling
  */
 
-// API Response Types
 export interface ApiError {
   message: string;
   status: number;
   detail?: any;
 }
 
-export interface ApiResponse<T = any> {
-  data: T;
-  status: number;
-  statusText: string;
-}
-
 class ApiClient {
-  private client: AxiosInstance;
+  private readonly client: AxiosInstance;
 
   constructor() {
     const baseURL = import.meta.env.VITE_API_URL || "http://localhost:8000";
@@ -53,7 +46,6 @@ class ApiClient {
    * Setup request and response interceptors
    */
   private setupInterceptors(): void {
-    // Request interceptor - add auth token if available
     this.client.interceptors.request.use(
       (config) => {
         if (import.meta.env.DEV) {

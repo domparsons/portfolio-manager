@@ -27,7 +27,6 @@ const ResultValues = ({
 }) => {
   const isPositive = (absoluteReturn ?? 0) > 0;
   const isNegative = (absoluteReturn ?? 0) < 0;
-
   const Icon = isPositive ? TrendingUp : TrendingDown;
   const colorClass = isPositive
     ? "text-green-500"

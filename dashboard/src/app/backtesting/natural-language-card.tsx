@@ -98,7 +98,6 @@ const NaturalLanguageCard = ({
         </CardContent>
       </Card>
 
-      {/* Loading State */}
       {isLLMLoading && (
         <Card>
           <CardContent className="pt-6">
@@ -110,7 +109,6 @@ const NaturalLanguageCard = ({
         </Card>
       )}
 
-      {/* Extracted Parameters */}
       {LLMBacktestResponse && !isLLMLoading && (
         <Card>
           <CardHeader>

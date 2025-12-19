@@ -5,7 +5,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -18,30 +17,27 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useAuth0 } from "@auth0/auth0-react";
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-} from "lucide-react";
-import { Moon, Sun } from "lucide-react";
+import { ChevronsUpDown, LogOut, Moon, Sun } from "lucide-react";
 import { toast } from "sonner";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
-
+  const { logout } = useAuth0();
+  const { user } = useAuth0();
   const { setTheme, theme } = useTheme();
+  const username = user?.name || "Developer";
+  const initials = username
+    .split(" ")
+    .map((name) => name.slice(0, 2))
+    .join("")
+    .toUpperCase();
 
   const toggleTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
   };
 
-  const { logout } = useAuth0();
-
   const handleLogout = () => {
-    // if (!(import.meta.env.MODE === "development")) {
     logout({ logoutParams: { returnTo: window.location.origin } })
       .then((r) => {
         toast("Logged out successfully.");
@@ -51,21 +47,7 @@ export function NavUser() {
         toast("Failed to log out.");
         console.error("Logout error:", error);
       });
-    // } else {
-    //   toast("Cannot log out of development mode.");
-    // }
   };
-  const { user } = useAuth0();
-
-  const username = user?.name || "Developer";
-
-  const email = user?.email || "dev@icloud.com";
-
-  const initials = username
-    .split(" ")
-    .map((name) => name.slice(0, 2))
-    .join("")
-    .toUpperCase();
 
   return (
     <SidebarMenu>
@@ -84,7 +66,6 @@ export function NavUser() {
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">{username}</span>
-                {/*<span className="truncate text-xs">{email}</span>*/}
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>

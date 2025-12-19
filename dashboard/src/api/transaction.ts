@@ -63,19 +63,6 @@ export const getTransactionsByAsset = async (
   }
 };
 
-export const useTransactionHistory = async (
-  setTransactionHistory: (transactions: Transaction[]) => void,
-) => {
-  try {
-    const data = await apiClient.get<Transaction[]>("/transaction/", {});
-    setTransactionHistory(data);
-  } catch (error) {
-    const apiError = error as ApiError;
-    console.error("Error fetching transaction history:", apiError);
-    toast("There was an error fetching transaction history.");
-  }
-};
-
 export const createTransaction = async (
   asset: Asset,
   transactionType: "buy" | "sell",

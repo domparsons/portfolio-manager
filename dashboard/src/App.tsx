@@ -3,7 +3,6 @@ import AssetPageWrapper from "@/app/assets/asset-page-wrapper";
 import { Backtesting } from "@/app/backtesting/backtesting";
 import { Dashboard } from "@/app/dashboard/dashboard";
 import LoginPage from "@/app/login/page";
-import { MonteCarloSimulation } from "@/app/monte-carlo-simulation/monte-carlo-simulation";
 import { Portfolio } from "@/app/portfolio/portfolio";
 import { Watchlist } from "@/app/watchlist/watchlist";
 import { useAuthInit } from "@/auth";
@@ -72,10 +71,6 @@ const App = () => {
                     element={<TransactionHistory />}
                   />
                   <Route path="/backtesting" element={<Backtesting />} />
-                  <Route
-                    path="/monte-carlo-simulation"
-                    element={<MonteCarloSimulation />}
-                  />
                   <Route path="/watchlist" element={<Watchlist />} />
                 </Routes>
               </PortfolioProvider>

@@ -8,7 +8,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -40,6 +40,7 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
   );
   const [executionDate, setExecutionDate] = React.useState<Date>();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [modalOpen, setModalOpen] = React.useState(false);
   const today = new Date();
   const numberOfSharesValid = numberOfShares > 0;
   const executionPriceValid = executionPrice > 0;
@@ -52,55 +53,8 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
     executionDateValid &&
     executionDate !== today &&
     !isLoading;
-
   const { refreshMetrics } = usePortfolioMetrics();
 
-  React.useEffect(() => {
-    const yesterday = new Date(today);
-    yesterday.setDate(today.getDate() - 1);
-    setExecutionDate(yesterday);
-  }, []);
-
-  function renderTransactionDescription() {
-    const formattedDate = executionDate?.toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-
-    const totalValue = executionPrice * numberOfShares;
-
-    const formatCurrency = new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: asset.currency,
-    }).format(totalValue);
-
-    const invalidClass = "text-red-500 font-semibold";
-
-    return (
-      <DialogDescription className="text-muted-foreground text-sm mt-1">
-        <div>
-          {transactionType.charAt(0).toUpperCase() + transactionType.slice(1)}
-          ing{" "}
-          <span className={numberOfSharesValid ? "" : invalidClass}>
-            <strong>{numberOfShares}</strong>{" "}
-            {numberOfShares === 1 ? "share" : "shares"}
-          </span>{" "}
-          of <strong>{asset.asset_name}</strong> on{" "}
-          <span className={executionDateValid ? "" : invalidClass}>
-            <strong>{formattedDate || "Invalid date"}</strong>
-          </span>{" "}
-          for{" "}
-          <span className={executionPriceValid ? "" : invalidClass}>
-            <strong>{formatCurrency}</strong>
-          </span>{" "}
-        </div>
-      </DialogDescription>
-    );
-  }
-
-  const [modalOpen, setModalOpen] = React.useState(false);
   const handleSubmit = async (e: React.FormEvent) => {
     setModalOpen(false);
     e.preventDefault();
@@ -159,6 +113,51 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
       setIsLoading(false);
     }
   };
+
+  function renderTransactionDescription() {
+    const formattedDate = executionDate?.toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+    const totalValue = executionPrice * numberOfShares;
+
+    const formatCurrency = new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: asset.currency,
+    }).format(totalValue);
+
+    const invalidClass = "text-red-500 font-semibold";
+
+    return (
+      <DialogDescription className="text-muted-foreground text-sm mt-1">
+        <div>
+          {transactionType.charAt(0).toUpperCase() + transactionType.slice(1)}
+          ing{" "}
+          <span className={numberOfSharesValid ? "" : invalidClass}>
+            <strong>{numberOfShares}</strong>{" "}
+            {numberOfShares === 1 ? "share" : "shares"}
+          </span>{" "}
+          of <strong>{asset.asset_name}</strong> on{" "}
+          <span className={executionDateValid ? "" : invalidClass}>
+            <strong>{formattedDate || "Invalid date"}</strong>
+          </span>{" "}
+          for{" "}
+          <span className={executionPriceValid ? "" : invalidClass}>
+            <strong>{formatCurrency}</strong>
+          </span>{" "}
+        </div>
+      </DialogDescription>
+    );
+  }
+
+  React.useEffect(() => {
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+    setExecutionDate(yesterday);
+  }, []);
 
   return (
     <Dialog open={modalOpen} onOpenChange={setModalOpen} modal={false}>
