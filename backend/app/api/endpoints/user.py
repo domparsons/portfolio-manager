@@ -1,15 +1,15 @@
 import os
 
 import requests
-from dotenv import load_dotenv
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-
 from app import crud, schemas
 from app.config.settings import settings
 from app.core.auth.dependencies import get_current_user
 from app.database import get_db
 from app.logger import logger
+from app.schemas import User
+from dotenv import load_dotenv
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
 
 load_dotenv()
 
@@ -67,7 +67,6 @@ def create_or_get_user(
         raise HTTPException(status_code=404, detail="User not found in Auth0")
 
     user_data = user_response.json()
-    email = user_data.get("email")
 
     if not user_data.get("email"):
         logger.error(f"User {user_id[-8:]} is not active")
@@ -89,17 +88,26 @@ def create_or_get_user(
     new_user = crud.create_user(
         db,
         user_id=user_id,
-        email=email,
     )
     logger.info(f"New user created with id {user_id[-8:]}")
     return new_user
 
 
-@router.get("/get_by_email/{email}", response_model=schemas.User)
-def get_user_by_email(email: str, db: Session = Depends(get_db)):
-    user = crud.user.get_user_by_email(db, email=email)
-    if user is None:
-        logger.error("User not found")
-        raise HTTPException(status_code=404, detail="User not found")
-    logger.info(f"Found user {user.id[-8:]} with email {email}")
+@router.get("/name", response_model=str | None)
+def name(
+    current_user: str = Depends(get_current_user), db: Session = Depends(get_db)
+) -> str | None:
+    user_id = current_user
+    user = crud.get_user_by_id(db, user_id)
+    return user.name
+
+
+@router.put("/name", response_model=User)
+def update_username(
+    username: str,
+    current_user: str = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> str | None:
+    user_id = current_user
+    user = crud.update_name(user_id, username, db)
     return user
