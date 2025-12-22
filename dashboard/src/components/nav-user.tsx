@@ -19,7 +19,6 @@ import { ApiError } from "@/lib/api-client";
 import { getUsername, updateUsername } from "@/api/user";
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
 export function NavUser() {
@@ -175,17 +174,13 @@ export function NavUser() {
             <DialogHeader>
               <DialogTitle>Edit Username</DialogTitle>
             </DialogHeader>
-            <div className="grid gap-4">
-              <div className="grid gap-3">
-                <Label htmlFor="username">Username</Label>
-                <Input
-                  id="username"
-                  name="username"
-                  value={newUsername}
-                  onChange={(e) => setNewUsername(e.target.value)}
-                />
-              </div>
-            </div>
+            <Input
+              id="username"
+              name="username"
+              value={newUsername}
+              onChange={(e) => setNewUsername(e.target.value)}
+              className={"mt-4 mb-4"}
+            />
             <DialogFooter>
               <DialogClose asChild>
                 <Button variant="outline">Cancel</Button>
