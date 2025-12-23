@@ -14,7 +14,7 @@ from app.utils.convert_to_utc import convert_to_utc
 router = APIRouter(prefix="/transaction", tags=["transaction"])
 
 
-@router.post("/", response_model=schemas.transaction.Portfolio)
+@router.post("/create", response_model=schemas.transaction.Portfolio)
 def create_transaction(
     portfolio_name: str,
     asset_id: int,
