@@ -5,9 +5,11 @@ from pathlib import Path
 
 import pandas as pd
 import yfinance as yf
+from sqlalchemy.orm import Session
+
+from app import crud
 from app.database import SessionLocal
 from app.models import Asset, Timeseries
-from sqlalchemy.orm import Session
 
 project_root = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(project_root))
@@ -41,7 +43,8 @@ def get_timeseries_data(ticker, last_timestamp=None):
     return asset
 
 
-def update_all_assets(db: Session, assets: list[Asset]):
+def update_all_assets(db: Session):
+    assets = db.query(Asset).all()
     for asset in assets:
         latest_timeseries = (
             db.query(Timeseries)
@@ -86,6 +89,10 @@ def update_all_assets(db: Session, assets: list[Asset]):
             logger.info(f"Inserted {len(new_entries)} entries for {asset.ticker}")
         else:
             logger.info(f"No new entries for {asset.ticker}")
+    try:
+        crud.mark_prices_as_refreshed(db)
+    except Exception as e:
+        logger.error(f"Failed to update last refresh date: {e}")
 
     logger.info("Timeseries data update completed!")
 
@@ -96,8 +103,7 @@ def main():
     db = None
     try:
         db = SessionLocal()
-        assets = db.query(Asset).all()
-        update_all_assets(db, assets)
+        update_all_assets(db)
         logger.info("Update completed successfully!")
         return 0
     except Exception as e:

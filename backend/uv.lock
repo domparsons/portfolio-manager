@@ -1125,11 +1125,6 @@ dependencies = [
     { name = "yfinance" },
 ]
 
-[package.dev-dependencies]
-dev = [
-    { name = "ruff" },
-]
-
 [package.metadata]
 requires-dist = [
     { name = "alembic", specifier = ">=1.14.0" },
@@ -1152,9 +1147,6 @@ requires-dist = [
     { name = "uvicorn", specifier = ">=0.34.0" },
     { name = "yfinance", specifier = "==0.2.58" },
 ]
-
-[package.metadata.requires-dev]
-dev = [{ name = "ruff", specifier = ">=0.9.6" }]
 
 [[package]]
 name = "psycopg2-binary"

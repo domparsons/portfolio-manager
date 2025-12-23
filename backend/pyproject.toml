@@ -31,10 +31,5 @@ quote-style = "double"
 indent-style = "space"
 line-ending = "lf"
 
-[dependency-groups]
-dev = [
-    "ruff>=0.9.6",
-]
-
 [tool.pytest.ini_options]
 pythonpath = ["."]
