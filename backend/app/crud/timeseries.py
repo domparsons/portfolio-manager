@@ -1,10 +1,11 @@
+import uuid
 from datetime import datetime, timedelta
 
 import polars as pl
 from sqlalchemy import func
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, aliased
 
-from app.logger import logger
 from app.models.priceupdate import PriceUpdate
 from app.models.timeseries import Timeseries
 
@@ -97,6 +98,21 @@ def check_prices_stale(db: Session) -> bool:
         return False
 
     data = db.query(PriceUpdate).first()
+    if data is None:
+        try:
+            db.add(
+                PriceUpdate(
+                    id=uuid.uuid4(),
+                    last_updated=datetime.now() - timedelta(days=1),
+                    description="Latest price refresh from Yahoo Finance for all assets",
+                )
+            )
+            db.commit()
+        except IntegrityError:  # Another process created it
+            db.rollback()
+
+        return True  # if row doesn't exist, assume prices are stale
+
     latest_refresh = data.last_updated
     return latest_refresh.date() != datetime.now().date()
 

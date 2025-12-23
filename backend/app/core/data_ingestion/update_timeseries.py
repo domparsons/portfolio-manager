@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 import pandas as pd
+import pytz
 import yfinance as yf
 from sqlalchemy.orm import Session
 
@@ -29,8 +30,20 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def get_timeseries_data(ticker, last_timestamp=None):
+def handle_stock_split(ticker: str, db: Session):
+    asset = db.query(Asset).filter(Asset.ticker == ticker).first()
+    db.query(Timeseries).filter(Timeseries.asset_id == asset.id).delete()
+
+
+def get_timeseries_data(ticker, db, last_timestamp=None):
     asset = yf.download(ticker, auto_adjust=False)
+    split_info = yf.Ticker(ticker).splits
+    if not split_info.empty and last_timestamp is not None:
+        latest_split = max(split_info.reset_index()["Date"].to_list())
+
+        if last_timestamp.replace(tzinfo=pytz.UTC) <= latest_split.to_pydatetime():
+            handle_stock_split(ticker, db)
+            last_timestamp = None
 
     start_date = (datetime.now() - timedelta(days=365 * 10)).strftime("%Y-%m-%d")
     if last_timestamp:
@@ -54,12 +67,14 @@ def update_all_assets(db: Session):
         )
 
         last_timestamp = latest_timeseries.timestamp if latest_timeseries else None
-        timeseries_data = get_timeseries_data(asset.ticker, last_timestamp)
+        timeseries_data = get_timeseries_data(asset.ticker, db, last_timestamp)
 
         new_entries = []
 
         for index, row in timeseries_data.iterrows():
             timestamp = row.date.to_pydatetime()
+            if timestamp.date() == datetime.now().date():
+                continue
 
             exists = (
                 db.query(Timeseries)
