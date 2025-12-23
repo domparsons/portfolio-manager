@@ -1,7 +1,12 @@
+from datetime import datetime, timedelta
+
 import polars as pl
-from app.models.timeseries import Timeseries
 from sqlalchemy import func
 from sqlalchemy.orm import Session, aliased
+
+from app.logger import logger
+from app.models.priceupdate import PriceUpdate
+from app.models.timeseries import Timeseries
 
 
 def get_latest_price_and_changes(db: Session) -> pl.DataFrame:
@@ -71,8 +76,6 @@ def get_latest_price_and_changes(db: Session) -> pl.DataFrame:
 
 
 def get_latest_timeseries_for_asset(asset_id: int, db: Session) -> pl.DataFrame:
-    from datetime import datetime, timedelta
-
     one_month_ago = datetime.now() - timedelta(days=365 * 8)
     timeseries = (
         db.query(Timeseries)
@@ -85,3 +88,20 @@ def get_latest_timeseries_for_asset(asset_id: int, db: Session) -> pl.DataFrame:
     timeseries_df = timeseries_df.drop("_sa_instance_state")
 
     return timeseries_df
+
+
+def check_prices_stale(db: Session) -> bool:
+    today = datetime.now().date()
+    # if Mon or Sun, yesterday was not a trading day -> no data to fetch
+    if today.weekday() == 0 or today.weekday() == 6:
+        return False
+
+    data = db.query(PriceUpdate).first()
+    latest_refresh = data.last_updated
+    return latest_refresh.date() != datetime.now().date()
+
+
+def mark_prices_as_refreshed(db: Session):
+    price_update = db.query(PriceUpdate).first()
+    price_update.last_updated = datetime.now()
+    db.commit()

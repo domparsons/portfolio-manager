@@ -17,8 +17,8 @@ from app.services.price_service import PriceService
 
 
 class BacktestEngine:
-    def __init__(self, db: Session):
-        self.price_service = PriceService(db)
+    def __init__(self, db: Session, autorun_prices=True):
+        self.price_service = PriceService(db, autorun_prices)
 
     def run(
         self,
