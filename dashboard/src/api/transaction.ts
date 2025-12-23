@@ -70,7 +70,7 @@ export const createTransaction = async (
   executionPrice: number,
   executionDate: Date | undefined,
 ) => {
-  await apiClient.post("/transaction", null, {
+  await apiClient.post("/transaction/create", null, {
     params: {
       portfolio_name: "Placeholder",
       asset_id: asset.id,
