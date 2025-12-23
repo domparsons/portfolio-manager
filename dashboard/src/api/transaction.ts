@@ -70,13 +70,15 @@ export const createTransaction = async (
   executionPrice: number,
   executionDate: Date | undefined,
 ) => {
-  await apiClient.post("/transaction", {
-    portfolio_name: "Placeholder",
-    asset_id: asset.id,
-    type: transactionType,
-    quantity: numberOfShares,
-    price: executionPrice,
-    purchase_date: executionDate?.toISOString(),
-    user_timezone: "Europe/London",
+  await apiClient.post("/transaction", null, {
+    params: {
+      portfolio_name: "Placeholder",
+      asset_id: asset.id,
+      type: transactionType,
+      quantity: numberOfShares,
+      price: executionPrice,
+      purchase_date: executionDate?.toISOString(),
+      user_timezone: "Europe/London",
+    },
   });
 };
