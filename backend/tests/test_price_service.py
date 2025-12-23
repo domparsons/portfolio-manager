@@ -1,9 +1,10 @@
 """Tests for PriceService"""
 
 from datetime import date, datetime
-from unittest.mock import Mock, MagicMock
+from unittest.mock import MagicMock, Mock
 
 import pytest
+
 from app.services.price_service import PriceService
 
 
@@ -16,7 +17,7 @@ def mock_db():
 @pytest.fixture
 def mock_price_service(mock_db):
     """Create a PriceService with mocked DB"""
-    return PriceService(mock_db)
+    return PriceService(mock_db, autorun=False)
 
 
 @pytest.fixture
@@ -84,9 +85,7 @@ class TestIsFirstTradingDayOfMonth:
 
     def test_empty_trading_days_returns_false(self):
         """Empty trading days list should return False"""
-        assert not PriceService.is_first_trading_day_of_month(
-            date(2024, 1, 1), []
-        )
+        assert not PriceService.is_first_trading_day_of_month(date(2024, 1, 1), [])
 
     def test_date_not_in_trading_days_returns_false(self):
         """Date not in trading_days list should return False"""
@@ -122,7 +121,7 @@ class TestGetTradingDays:
             (datetime(2024, 1, 4, 0, 0, 0),),
         ]
 
-        service = PriceService(mock_db)
+        service = PriceService(mock_db, autorun=False)
         result = service.get_trading_days(date(2024, 1, 1), date(2024, 1, 5))
 
         assert result == [date(2024, 1, 2), date(2024, 1, 3), date(2024, 1, 4)]
@@ -141,7 +140,7 @@ class TestGetTradingDays:
             (datetime(2024, 1, 3, 12, 0, 0),),
         ]
 
-        service = PriceService(mock_db)
+        service = PriceService(mock_db, autorun=False)
         result = service.get_trading_days(date(2024, 1, 1), date(2024, 1, 5))
 
         # Should convert to date objects
@@ -165,10 +164,8 @@ class TestGetPriceLookup:
         ]
         mock_query.all.return_value = mock_data
 
-        service = PriceService(mock_db)
-        result = service.get_price_lookup(
-            [1, 2], date(2024, 1, 1), date(2024, 1, 2)
-        )
+        service = PriceService(mock_db, autorun=False)
+        result = service.get_price_lookup([1, 2], date(2024, 1, 1), date(2024, 1, 2))
 
         expected = {
             (1, date(2024, 1, 1)): 100.50,
@@ -187,12 +184,12 @@ class TestGetPriceLookup:
             Mock(
                 asset_id=1,
                 timestamp=datetime(2024, 1, 1, 16, 0, 0),  # datetime
-                adj_close=100.0
+                adj_close=100.0,
             ),
         ]
         mock_query.all.return_value = mock_data
 
-        service = PriceService(mock_db)
+        service = PriceService(mock_db, autorun=False)
         result = service.get_price_lookup([1], date(2024, 1, 1), date(2024, 1, 1))
 
         assert (1, date(2024, 1, 1)) in result
@@ -208,7 +205,7 @@ class TestGetPrice:
         mock_query.filter.return_value = mock_query
         mock_query.first.return_value = (100.50,)
 
-        service = PriceService(mock_db)
+        service = PriceService(mock_db, autorun=False)
         result = service.get_price(1, date(2024, 1, 1))
 
         assert result == 100.50
@@ -220,7 +217,7 @@ class TestGetPrice:
         mock_query.filter.return_value = mock_query
         mock_query.first.return_value = (100.50,)
 
-        service = PriceService(mock_db)
+        service = PriceService(mock_db, autorun=False)
 
         # First call
         result1 = service.get_price(1, date(2024, 1, 1))
@@ -239,7 +236,7 @@ class TestGetPrice:
         mock_query.filter.return_value = mock_query
         mock_query.first.return_value = None
 
-        service = PriceService(mock_db)
+        service = PriceService(mock_db, autorun=False)
         result = service.get_price(1, date(2024, 1, 1))
 
         assert result is None
@@ -256,7 +253,7 @@ class TestGetLatestPrice:
         mock_query.order_by.return_value = mock_query
         mock_query.first.return_value = (105.75,)
 
-        service = PriceService(mock_db)
+        service = PriceService(mock_db, autorun=False)
         result = service.get_latest_price(1)
 
         assert result == 105.75
@@ -269,7 +266,7 @@ class TestGetLatestPrice:
         mock_query.order_by.return_value = mock_query
         mock_query.first.return_value = None
 
-        service = PriceService(mock_db)
+        service = PriceService(mock_db, autorun=False)
         result = service.get_latest_price(999)
 
         assert result is None

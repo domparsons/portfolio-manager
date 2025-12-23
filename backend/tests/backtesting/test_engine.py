@@ -531,7 +531,7 @@ class TestBacktestEngineIntegration:
         mock_db.query.side_effect = mock_query_side_effect
 
         # Run backtest
-        engine = BacktestEngine(mock_db)
+        engine = BacktestEngine(mock_db, autorun_prices=False)
         strategy = SimpleBuyStrategy()
 
         result = engine.run(

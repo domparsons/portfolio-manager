@@ -3,7 +3,6 @@ from datetime import date
 from sqlalchemy.orm import Session
 
 from app import crud, models
-from app.core.data_ingestion.update_timeseries import update_all_assets
 from app.logger import logger
 
 
@@ -13,12 +12,17 @@ class PriceService:
     Handles trading days, price lookups, and caching.
     """
 
-    def __init__(self, db: Session):
+    def __init__(self, db: Session, autorun=True):
         self.db = db
         self._price_cache: dict[tuple[int, date], float] = {}
-        self.update_prices()
+        if autorun:
+            self.update_prices()
 
     def update_prices(self):
+        from app.core.data_ingestion.update_timeseries import (
+            update_all_assets,  # lazy import prevents circular import
+        )
+
         if crud.check_prices_stale(self.db):
             logger.info("Prices state. Refreshing now")
             update_all_assets(self.db)
