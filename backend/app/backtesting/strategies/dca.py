@@ -62,7 +62,7 @@ class DCAStrategy(BacktestStrategy):
 
     def get_parameters(self) -> dict:
         return {
-            "strategy": "dca",
+            "strategy": "dollar_cost_averaging",
             "asset_id": self.asset_id,
             "initial_investment": self.initial_investment,
             "amount_per_period": self.amount_per_period,

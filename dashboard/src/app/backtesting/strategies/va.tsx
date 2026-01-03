@@ -53,7 +53,7 @@ const VAForm: React.FC<StrategyFormProps> = ({
     }
 
     const params: BacktestParams = {
-      strategy: "va",
+      strategy: "value_averaging",
       asset_ids: [selectedAsset.id],
       tickers: [selectedAsset.ticker],
       start_date: format(startDate, "yyyy-MM-dd"),

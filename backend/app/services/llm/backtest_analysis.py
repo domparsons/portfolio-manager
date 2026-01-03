@@ -8,7 +8,7 @@ from openai import OpenAI, OpenAIError
 
 MODULE_DIR = Path(__file__).parent
 
-VALID_STRATEGIES = {"buy_and_hold", "dca", "va"}
+VALID_STRATEGIES = {"buy_and_hold", "dollar_cost_averaging", "value_averaging"}
 MAX_HISTORICAL_YEARS = 10
 MAX_RETRIES = 2
 

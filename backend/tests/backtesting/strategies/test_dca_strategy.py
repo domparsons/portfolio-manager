@@ -23,7 +23,7 @@ class TestDCAStrategyInitialization:
         params = strategy.get_parameters()
 
         assert params == {
-            "strategy": "dca",
+            "strategy": "dollar_cost_averaging",
             "asset_id": 1,
             "initial_investment": 1000.0,
             "amount_per_period": 100.0,

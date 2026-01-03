@@ -25,7 +25,7 @@ export const StrategyParameters = ({
   strategy: string;
   params: Record<string, any>;
 }) => {
-  if (strategy === "dca") {
+  if (strategy === "dollar_cost_averaging") {
     return (
       <div className="space-y-4">
         <ParameterRow
@@ -44,7 +44,7 @@ export const StrategyParameters = ({
     );
   }
 
-  if (strategy === "va") {
+  if (strategy === "value_averaging") {
     return (
       <ParameterRow
         icon={SlidersHorizontal}

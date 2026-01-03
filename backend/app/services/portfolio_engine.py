@@ -267,7 +267,7 @@ def calculate_holdings(
 
         if asset.total_cost > 0:
             asset.unrealised_gain_loss_pct = (
-                (asset.unrealised_gain_loss / asset.total_cost) * Decimal("100")
+                (asset.unrealised_gain_loss / asset.total_cost)
             )
 
     return holdings
