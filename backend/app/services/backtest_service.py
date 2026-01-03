@@ -16,8 +16,8 @@ from sqlalchemy.orm.session import Session
 
 class StrategyType(str, Enum):
     BUY_AND_HOLD = "buy_and_hold"
-    DCA = "dca"
-    VA = "va"
+    DCA = "dollar_cost_averaging"
+    VA = "value_averaging"
 
 
 STRATEGY_REGISTRY: dict[StrategyType | str, type[BacktestStrategy]] = {

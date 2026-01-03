@@ -13,7 +13,7 @@ from sqlalchemy.orm import Session
 
 MODULE_DIR = Path(__file__).parent
 
-VALID_STRATEGIES = {"buy_and_hold", "dca", "va"}
+VALID_STRATEGIES = {"buy_and_hold", "dollar_cost_averaging", "value_averaging"}
 MAX_HISTORICAL_YEARS = 10
 MAX_RETRIES = 2
 
@@ -190,7 +190,7 @@ def _validate_and_fix(params: LLMBacktestParams) -> LLMBacktestParams:
 def _validate_strategy_parameters(params: LLMBacktestParams) -> None:
     """Validate strategy-specific parameters"""
 
-    if params.strategy == "dca":
+    if params.strategy == "dollar_cost_averaging":
         if not isinstance(params.parameters, dict):
             raise LLMValidationError("DCA strategy missing parameters")
 
@@ -211,7 +211,7 @@ def _validate_strategy_parameters(params: LLMBacktestParams) -> None:
         if not isinstance(amount, (int, float, Decimal)) or amount <= 0:
             raise LLMValidationError("DCA amount_per_period must be positive")
 
-    elif params.strategy == "va":
+    elif params.strategy == "value_averaging":
         if not isinstance(params.parameters, dict):
             raise LLMValidationError("VA strategy missing parameters")
 

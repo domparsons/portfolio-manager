@@ -46,7 +46,7 @@ class VAStrategy(BacktestStrategy):
 
     def get_parameters(self) -> dict:
         return {
-            "strategy": "va",
+            "strategy": "value_averaging",
             "asset_id": self.asset_id,
             "initial_investment": self.initial_investment,
             "target_increment_amount": self.target_increment_amount,

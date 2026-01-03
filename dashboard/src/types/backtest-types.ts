@@ -4,7 +4,7 @@ import { BuyAndHoldForm } from "@/app/backtesting/strategies/buy-and-hold";
 import { DCAForm } from "@/app/backtesting/strategies/dca";
 import { VAForm } from "@/app/backtesting/strategies/va";
 
-export type BacktestStrategy = "dca" | "buy_and_hold" | "va";
+export type BacktestStrategy = "buy_and_hold" | "dollar_cost_averaging" | "value_averaging";
 
 export interface BacktestResult {
   backtest_id: string;
@@ -85,9 +85,9 @@ export type DCAFrequencies =
 export const DCA_FREQUENCY_OPTIONS = Object.values(DCA_FREQUENCIES);
 
 export const STRATEGY_NAMES: Record<BacktestStrategy, string> = {
-  dca: "Dollar Cost Averaging",
   buy_and_hold: "Buy and Hold",
-  va: "Value Averaging",
+  dollar_cost_averaging: "Dollar Cost Averaging",
+  value_averaging: "Value Averaging",
 };
 
 export const STRATEGY_FORMS: Record<
@@ -95,6 +95,6 @@ export const STRATEGY_FORMS: Record<
   React.FC<StrategyFormProps>
 > = {
   buy_and_hold: BuyAndHoldForm,
-  dca: DCAForm,
-  va: VAForm,
+  dollar_cost_averaging: DCAForm,
+  value_averaging: VAForm,
 };

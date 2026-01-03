@@ -18,7 +18,7 @@ Buy and Hold:
 
 Dollar Cost Averaging:
 {
-    "strategy": "dca",
+    "strategy": "dollar_cost_averaging",
     "asset_ids": [1],
     "tickers": ["AAPL"],
     "start_date": datetime.date(2025, 8, 1),
@@ -32,7 +32,7 @@ Dollar Cost Averaging:
 
 Value Averaging:
 {
-    "strategy": "va",
+    "strategy": "value_averaging",
     "asset_ids": [5],
     "tickers": ["TSLA"],
     "start_date": datetime.date(2025, 9, 3),
@@ -56,7 +56,7 @@ Value Averaging:
     - Always ensure end_date is at least 1 day before today
 
 2. **Supported Strategies**:
-    - Only these strategies are valid: "buy_and_hold", "dca", "va"
+    - Only these strategies are valid: "buy_and_hold", "dollar_cost_averaging", "value_averaging"
     - If user requests unsupported strategy, choose the closest match and explain in comment/reasoning
     - If unclear, default to "buy_and_hold"
 
@@ -86,3 +86,9 @@ Value Averaging:
     - If an asset not in the database is requested, consider another similar asset with justification.
     - Likewise, if there is no data available for the requested dates, find the closest available dates and justify this in the comments.
 
+
+8. **Alternative Names**:
+    - Names provided by the user could be similar, but not limited to, the following. Make an educated judgment.
+    - Buy And Hold, Lump Sum, LS, BAH, B&H
+    - Dollar Cost Averaging, DCA, Cost Averaging, CA
+    - Value Averaging, VA

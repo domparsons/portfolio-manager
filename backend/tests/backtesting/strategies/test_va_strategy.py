@@ -29,7 +29,7 @@ class TestVAStrategyInitialization:
         params = strategy.get_parameters()
 
         assert params == {
-            "strategy": "va",
+            "strategy": "value_averaging",
             "asset_id": 1,
             "initial_investment": 1000,
             "target_increment_amount": 500,

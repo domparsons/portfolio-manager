@@ -63,7 +63,7 @@ const DCAForm: React.FC<StrategyFormProps> = ({
     }
 
     const params: BacktestParams = {
-      strategy: "dca",
+      strategy: "dollar_cost_averaging",
       asset_ids: [selectedAsset.id],
       tickers: [selectedAsset.ticker],
       start_date: format(startDate, "yyyy-MM-dd"),
