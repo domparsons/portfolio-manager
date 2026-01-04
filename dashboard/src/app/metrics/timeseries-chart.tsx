@@ -19,7 +19,7 @@ const TimeseriesChart = ({
   const chartConfig = {
     value: {
       label: "Value",
-      color: "hsl(var(--chart-1))",
+      color: "#8b5cf6",
     },
   } satisfies ChartConfig;
 
@@ -42,8 +42,10 @@ const TimeseriesChart = ({
         accessibilityLayer
         data={transformedData}
         margin={{
-          left: 12,
-          right: 12,
+          left: 20,
+          right: 20,
+          top: 5,
+          bottom: 5,
         }}
       >
         <CartesianGrid vertical={false} />
@@ -53,7 +55,10 @@ const TimeseriesChart = ({
           axisLine={false}
           tickMargin={8}
           domain={[minDomain, maxDomain]}
-          tickFormatter={(value) => value.toFixed(0)}
+          tickCount={6}
+          tickFormatter={(value) =>
+            `$${value.toLocaleString("en-US", { maximumFractionDigits: 0 })}`
+          }
         />
         <XAxis
           dataKey="timestamp"
@@ -62,10 +67,12 @@ const TimeseriesChart = ({
           tickLine={false}
           axisLine={false}
           tickMargin={8}
+          minTickGap={40}
+          tickCount={12}
           tickFormatter={(timestamp) => {
             return new Date(timestamp).toLocaleDateString("en-US", {
               month: "short",
-              day: "numeric",
+              year: "2-digit",
             });
           }}
         />

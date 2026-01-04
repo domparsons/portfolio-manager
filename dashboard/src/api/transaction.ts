@@ -34,7 +34,7 @@ export const getTransactionHistory = async (
 ) => {
   try {
     const data = await apiClient.get<Transaction[]>("/transaction/", {
-      params: { limit: 10 },
+      params: { limit: 5 },
     });
     setTransactionHistory(data);
   } catch (error) {
