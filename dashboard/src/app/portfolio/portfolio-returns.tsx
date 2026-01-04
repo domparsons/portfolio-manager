@@ -20,7 +20,7 @@ const PortfolioReturns = ({
   loading?: boolean;
 }) => {
   return (
-    <Card className={`${className} h-96 flex flex-col`}>
+    <Card className={`${className}`}>
       <CardHeader>
         <CardTitle>Portfolio Holdings</CardTitle>
         <CardDescription>Current positions and performance</CardDescription>

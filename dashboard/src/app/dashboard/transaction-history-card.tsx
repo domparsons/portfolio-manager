@@ -1,6 +1,12 @@
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatTimestampShort } from "@/utils/formatters";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { formatTimestampShort, formatCurrencyValue } from "@/utils/formatters";
 import React from "react";
 import { Transaction } from "@/types/custom-types";
 import { getTransactionHistory } from "@/api/transaction";
@@ -9,7 +15,7 @@ import { toast } from "sonner";
 import { ApiError } from "@/lib/api-client";
 import { Spinner } from "@/components/ui/spinner";
 
-const TransactionHistoryCard = () => {
+const TransactionHistoryCard = ({ className }: { className?: string }) => {
   const [transactionHistory, setTransactionHistory] = React.useState<
     Transaction[]
   >([]);
@@ -48,11 +54,12 @@ const TransactionHistoryCard = () => {
   }, [user_id]);
 
   return (
-    <Card>
+    <Card className={className}>
       <CardHeader>
-        <CardTitle>Recent Transaction History (USD)</CardTitle>
+        <CardTitle>Recent Transaction History</CardTitle>
+        <CardDescription>Recent buy and sell transactions</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4 overflow-auto flex-1">
         {isLoading ? (
           <div className="flex items-center justify-center py-8">
             <div className="flex flex-col items-center gap-2">
@@ -69,25 +76,43 @@ const TransactionHistoryCard = () => {
             No transactions yet
           </div>
         ) : (
-          <div className="flex flex-col gap-2">
-            {transactionHistory.map((transaction, index) => (
-              <div key={index} className="flex justify-between">
-                <span className={"font-bold"}>{transaction.ticker}</span>
-                <div className={"flex gap-4"}>
-                  <span className={"font-light"}>
-                    {formatTimestampShort(transaction.timestamp)}
-                  </span>
-                  $
-                  {parseFloat(
-                    (transaction.quantity * transaction.price).toFixed(2),
-                  )}
-                  <Badge variant={transaction.type}>
-                    {transaction.type === "buy" ? "Buy" : "Sell"}
-                  </Badge>
+          <>
+            {transactionHistory.map((transaction) => (
+              <div
+                key={transaction.id}
+                className="flex items-center justify-between border-b pb-3 last:border-b-0"
+              >
+                <div className="flex gap-3">
+                  <div
+                    className={`w-1 rounded ${transaction.type === "buy" ? "bg-green-500" : "bg-red-500"}`}
+                  />
+                  <div className="flex-1">
+                    <p className="font-medium">{transaction.asset_name}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {transaction.type.charAt(0).toUpperCase() +
+                        transaction.type.slice(1)}{" "}
+                      {transaction.quantity}{" "}
+                      {transaction.quantity === 1 ? "share" : "shares"} @{" "}
+                      {formatCurrencyValue(transaction.price)}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="text-right flex items-center gap-3">
+                  <div>
+                    <p className="font-medium">
+                      {formatCurrencyValue(
+                        transaction.quantity * transaction.price,
+                      )}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {formatTimestampShort(transaction.timestamp)}
+                    </p>
+                  </div>
                 </div>
               </div>
             ))}
-          </div>
+          </>
         )}
       </CardContent>
     </Card>

@@ -65,7 +65,7 @@ const App = () => {
                     path="/assets/:ticker"
                     element={<AssetPageWrapper />}
                   />
-                  <Route path="/portfolio" element={<Portfolio />} />
+                  {/*<Route path="/portfolio" element={<Portfolio />} />*/}
                   <Route
                     path="/transaction-history"
                     element={<TransactionHistory />}
