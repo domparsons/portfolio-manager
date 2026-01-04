@@ -3,7 +3,6 @@ import AssetPageWrapper from "@/app/assets/asset-page-wrapper";
 import { Backtesting } from "@/app/backtesting/backtesting";
 import { Dashboard } from "@/app/dashboard/dashboard";
 import LoginPage from "@/app/login/page";
-import { Portfolio } from "@/app/portfolio/portfolio";
 import { Watchlist } from "@/app/watchlist/watchlist";
 import { useAuthInit } from "@/auth";
 import { AppSidebar } from "@/components/app-sidebar";

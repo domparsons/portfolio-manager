@@ -1,6 +1,6 @@
-# Portfolio Manager
+# Porta
 
-Portfolio Manager is a full-featured investment tracking and analysis tool, built as my final-year Computer Science
+Porta is a full-featured investment tracking and analysis tool, built as my final-year Computer Science
 project. It enables users to track, backtest, and optimise their investment portfolios with advanced analytics and
 simulations.
 

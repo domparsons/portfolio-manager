@@ -25,10 +25,10 @@ oauth2_scheme = OAuth2AuthorizationCodeBearer(
 )
 
 app = FastAPI(
-    title="Portfolio Manager",
+    title="Porta",
     swagger_ui_init_oauth={
         "clientId": settings.AUTH0_CLIENT_ID,
-        "appName": "Portfolio Manager",
+        "appName": "Porta",
         "scopes": "openid profile email",
         "usePkceWithAuthorizationCodeGrant": True,
     },
