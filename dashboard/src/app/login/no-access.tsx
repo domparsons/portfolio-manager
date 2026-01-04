@@ -65,7 +65,7 @@ export default function NoAccess() {
               <TrendingUp className="h-6 w-6 text-white" strokeWidth={2.5} />
             </div>
             <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-xl font-bold tracking-tight text-transparent dark:from-blue-400 dark:to-purple-400">
-              Portfolio Manager
+              Porta
             </span>
           </div>
           <a
@@ -126,7 +126,7 @@ export default function NoAccess() {
               className="mb-8 text-lg text-muted-foreground"
             >
               This application is currently in private alpha testing with
-              limited access. Thank you for your interest in Portfolio Manager.
+              limited access. Thank you for your interest in Porta.
             </motion.p>
 
             {/* Info Card */}

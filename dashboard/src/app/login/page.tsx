@@ -3,23 +3,33 @@ import { Button } from "@/components/ui/button";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Analytics } from "@vercel/analytics/react";
 import { motion } from "framer-motion";
-import { TrendingUp, Brain, GraduationCap, BarChart3, ArrowRight, Sparkles } from "lucide-react";
+import {
+  TrendingUp,
+  Brain,
+  GraduationCap,
+  BarChart3,
+  ArrowRight,
+  Sparkles,
+} from "lucide-react";
 
 const features = [
   {
     icon: BarChart3,
     title: "Advanced Backtesting",
-    description: "Test investment strategies across historical data with precision and compare performance metrics side-by-side",
+    description:
+      "Test investment strategies across historical data with precision and compare performance metrics side-by-side",
   },
   {
     icon: Brain,
     title: "LLM-Powered Analysis",
-    description: "Describe strategies in natural language and let AI handle the configuration and optimization",
+    description:
+      "Describe strategies in natural language and let AI handle the configuration and optimization",
   },
   {
     icon: GraduationCap,
     title: "Educational Insights",
-    description: "Build financial intuition through hands-on strategy comparison and real-world data analysis",
+    description:
+      "Build financial intuition through hands-on strategy comparison and real-world data analysis",
   },
 ];
 
@@ -89,7 +99,7 @@ export default function LandingPage() {
               <TrendingUp className="h-6 w-6 text-white" strokeWidth={2.5} />
             </motion.div>
             <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-xl font-bold tracking-tight text-transparent dark:from-blue-400 dark:to-purple-400">
-              Portfolio Manager
+              Porta
             </span>
           </div>
           <a

@@ -24,7 +24,7 @@ export default function LoadingPage() {
               <TrendingUp className="h-7 w-7 text-white" strokeWidth={2.5} />
             </div>
             <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-2xl font-bold tracking-tight text-transparent dark:from-blue-400 dark:to-purple-400">
-              Portfolio Manager
+              Porta
             </span>
           </motion.div>
 
