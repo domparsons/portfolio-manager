@@ -34,33 +34,33 @@ const TransactionHistoryTable: React.FC<TransactionTableProps> = ({
   return (
     <Table>
       <TableHeader>
-        <TableRow>
-          <TableHead>Asset</TableHead>
-          <TableHead>Ticker</TableHead>
-          <TableHead>Date Purchased</TableHead>
-          <TableHead>Quantity</TableHead>
-          <TableHead>Price</TableHead>
-          <TableHead>Action</TableHead>
-          <TableHead></TableHead>
+        <TableRow className="text-sm sm:text-base">
+          <TableHead className="p-1 sm:p-2">Asset</TableHead>
+          <TableHead className="hidden md:table-cell p-1 sm:p-2">Ticker</TableHead>
+          <TableHead className="hidden md:table-cell p-1 sm:p-2">Date Purchased</TableHead>
+          <TableHead className="p-1 sm:p-2">Quantity</TableHead>
+          <TableHead className="p-1 sm:p-2">Price</TableHead>
+          <TableHead className="p-1 sm:p-2">Action</TableHead>
+          <TableHead className="p-1 sm:p-2"></TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {transactions.map((transaction) => (
-          <TableRow key={transaction.id} className={"cursor-pointer"}>
-            <TableCell className="font-medium">
+          <TableRow key={transaction.id} className="cursor-pointer text-sm sm:text-base">
+            <TableCell className="font-medium p-1 sm:p-2">
               {transaction.asset_name}
             </TableCell>
-            <TableCell>{transaction.ticker}</TableCell>
-            <TableCell>{formatTimestampLong(transaction.timestamp)}</TableCell>
-            <TableCell>{transaction.quantity}</TableCell>
-            <TableCell>${transaction.price.toFixed(2)}</TableCell>
-            <TableCell>
+            <TableCell className="hidden md:table-cell p-1 sm:p-2">{transaction.ticker}</TableCell>
+            <TableCell className="hidden md:table-cell p-1 sm:p-2">{formatTimestampLong(transaction.timestamp)}</TableCell>
+            <TableCell className="p-1 sm:p-2">{transaction.quantity}</TableCell>
+            <TableCell className="p-1 sm:p-2">${transaction.price.toFixed(2)}</TableCell>
+            <TableCell className="p-1 sm:p-2">
               {" "}
               <Badge variant={transaction.type}>
                 {transaction.type === "buy" ? "Buy" : "Sell"}
               </Badge>
             </TableCell>
-            <TableCell>
+            <TableCell className="p-1 sm:p-2">
               <AlertDialog>
                 <AlertDialogTrigger>
                   <Trash size={16} />

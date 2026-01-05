@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/chart";
 import { TimeseriesChartData } from "@/types/custom-types";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const TimeseriesChart = ({
   chartData,
@@ -16,6 +17,8 @@ const TimeseriesChart = ({
   minDomain: number;
   maxDomain: number;
 }) => {
+  const isMobile = useIsMobile();
+
   const chartConfig = {
     value: {
       label: "Value",
@@ -25,7 +28,7 @@ const TimeseriesChart = ({
 
   if (chartData.length === 0) {
     return (
-      <div className="flex items-center justify-center h-64 text-sm text-muted-foreground">
+      <div className="flex items-center justify-center h-80 md:h-64 text-sm text-muted-foreground">
         No data available
       </div>
     );
@@ -37,11 +40,16 @@ const TimeseriesChart = ({
   }));
 
   return (
-    <ChartContainer config={chartConfig} className={"h-64 w-full"}>
+    <ChartContainer config={chartConfig} className={"h-80 md:h-64 w-full"}>
       <LineChart
         accessibilityLayer
         data={transformedData}
-        margin={{
+        margin={isMobile ? {
+          left: 10,
+          right: 10,
+          top: 5,
+          bottom: 5,
+        } : {
           left: 20,
           right: 20,
           top: 5,
@@ -55,7 +63,7 @@ const TimeseriesChart = ({
           axisLine={false}
           tickMargin={8}
           domain={[minDomain, maxDomain]}
-          tickCount={6}
+          tickCount={isMobile ? 4 : 6}
           tickFormatter={(value) =>
             `$${value.toLocaleString("en-US", { maximumFractionDigits: 0 })}`
           }
@@ -68,7 +76,7 @@ const TimeseriesChart = ({
           axisLine={false}
           tickMargin={8}
           minTickGap={40}
-          tickCount={12}
+          tickCount={isMobile ? 6 : 12}
           tickFormatter={(timestamp) => {
             return new Date(timestamp).toLocaleDateString("en-US", {
               month: "short",
