@@ -70,14 +70,14 @@ const Dashboard = () => {
             </div>
           </div>
         )}
-        <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-3 mt-4">
+        <div className="grid gap-4 grid-cols-1 lg:grid-cols-3 mt-4">
           <PortfolioCard
             portfolioHistory={portfolioHistory}
             startDate={startDate}
             endDate={endDate}
             minDomain={minDomain}
             maxDomain={maxDomain}
-            className={"col-span-2"}
+            className="lg:col-span-2"
             loading={historyLoading}
           />
           <RiskMetrics
@@ -87,18 +87,18 @@ const Dashboard = () => {
               portfolioMetrics?.max_drawdown_duration ?? null
             }
             volatility={portfolioMetrics?.volatility ?? null}
-            className="md:col-span-2 lg:col-span-1"
+            className="lg:col-span-1"
             loading={loading}
           />
           <PortfolioReturns
             holdings={portfolioHoldings}
-            className="md:col-span-2 lg:col-span-1 h-[464px] flex flex-col"
+            className="lg:col-span-1 h-[464px] flex flex-col"
             loading={holdingsLoading}
           />
-          <TransactionHistoryCard className="md:col-span-2 lg:col-span-1 h-[464px] flex flex-col" />
+          <TransactionHistoryCard className="lg:col-span-1 h-[464px] flex flex-col" />
           <AssetAllocation
             chartData={portfolioHoldings}
-            className="md:col-span-2 lg:col-span-1"
+            className="lg:col-span-1"
             loading={holdingsLoading}
           />
         </div>

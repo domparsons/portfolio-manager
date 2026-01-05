@@ -52,7 +52,7 @@ const BacktestResults = forwardRef<
           {format(new Date(results.data.end_date), "d MMMM yyyy")}
         </p>
       </div>
-      <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 grid-cols-1 lg:grid-cols-3">
         <ResultValues
           finalValue={results.data.final_value}
           absoluteReturn={results.data.total_return_abs}
@@ -70,7 +70,7 @@ const BacktestResults = forwardRef<
           maxDrawdownDuration={results.data.metrics.max_drawdown_duration}
           volatility={results.data.metrics.volatility}
         />
-        <Card className={"col-span-full"}>
+        <Card className="col-span-1 lg:col-span-full">
           <CardHeader>
             <CardTitle>Backtest Performance</CardTitle>
           </CardHeader>
@@ -86,7 +86,7 @@ const BacktestResults = forwardRef<
         <Button
           onClick={analyseBacktest}
           disabled={isLLMLoadingAnalysis}
-          className={"col-span-3"}
+          className="col-span-1 lg:col-span-3"
         >
           {isLLMLoadingAnalysis ? (
             <div className={"flex flex-row space-x-2 items-center"}>
@@ -100,7 +100,7 @@ const BacktestResults = forwardRef<
           )}
         </Button>
         {LLMAnalysis && (
-          <Card className="col-span-3">
+          <Card className="col-span-1 lg:col-span-3">
             <CardHeader>
               <CardTitle>AI Analysis</CardTitle>
               <CardDescription>
