@@ -24,6 +24,7 @@ import { PortfolioProvider } from "@/context/portfolio-metrics";
 import NoAccess from "@/app/login/no-access";
 import LoadingPage from "@/app/login/loading-page";
 import ErrorPage from "@/app/login/error-page";
+import { BacktestHistory } from "@/app/backtesting/backtest-history";
 
 const App = () => {
   const { isAuthenticated, isLoading } = useAuth0();
@@ -64,10 +65,13 @@ const App = () => {
                     path="/assets/:ticker"
                     element={<AssetPageWrapper />}
                   />
-                  {/*<Route path="/portfolio" element={<Portfolio />} />*/}
                   <Route
                     path="/transaction-history"
                     element={<TransactionHistory />}
+                  />
+                  <Route
+                    path="/backtest-history"
+                    element={<BacktestHistory />}
                   />
                   <Route path="/backtesting" element={<Backtesting />} />
                   <Route path="/watchlist" element={<Watchlist />} />

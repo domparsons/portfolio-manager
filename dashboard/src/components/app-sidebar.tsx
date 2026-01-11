@@ -26,8 +26,8 @@ const data = {
   ],
   navMain: [
     {
-      title: "Home",
-      url: "#",
+      title: "Portfolio",
+      url: "/dashboard",
       icon: House,
       isActive: true,
       items: [
@@ -36,37 +36,41 @@ const data = {
           url: "/dashboard",
         },
         {
-          title: "Watchlist",
-          url: "/watchlist",
-        },
-        {
-          title: "Asset List",
-          url: "/assets",
-        },
-        {
           title: "Transaction History",
           url: "/transaction-history",
         },
       ],
     },
     {
-      title: "Analytics",
-      url: "#",
+      title: "Assets",
+      url: "/assets",
+      icon: House,
+      isActive: true,
+      items: [
+        {
+          title: "Asset List",
+          url: "/assets",
+        },
+        {
+          title: "Watchlist",
+          url: "/watchlist",
+        },
+      ],
+    },
+    {
+      title: "Analysis",
+      url: "/backtesting",
       icon: PieChart,
       isActive: true,
       items: [
-        // {
-        //   title: "Portfolio",
-        //   url: "/portfolio",
-        // },
         {
           title: "Backtesting",
           url: "/backtesting",
         },
-        // {
-        //   title: "Monte Carlo Simulation",
-        //   url: "/monte-carlo-simulation",
-        // },
+        {
+          title: "Backtesting History",
+          url: "/backtest-history",
+        },
       ],
     },
   ],
