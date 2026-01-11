@@ -21,6 +21,12 @@ export function formatTimestampLong(timestamp: string): string {
 
 export function formatCurrencyValue(value: number | null): string {
   if (value === null) return "$0.00";
+  if (value < 0) {
+    return `-$${Math.abs(value).toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
+  }
   return `$${value.toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,

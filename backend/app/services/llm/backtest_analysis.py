@@ -65,33 +65,13 @@ def _format_backtest_result(backtest: BacktestAnalysis) -> str:
     """Format backtest for LLM analysis - summary only, no full history"""
     result = backtest.data
 
-    num_days = len(result.history)
-    avg_daily_return = result.total_return_pct / num_days if num_days > 0 else 0
-
-    peak_value = (
-        max(s.value for s in result.history) if result.history else result.final_value
-    )
-    trough_value = (
-        min(s.value for s in result.history) if result.history else result.final_value
-    )
-    params = backtest.parameters.get("parameters", {})
-
-    # Handle None case
-    if params is None:
-        params = {}
-
-    if params:
-        param_str = ", ".join(f"{k}={v}" for k, v in params.items())
-    else:
-        param_str = "None"
-
     formatted = f"""
 USER BACKTEST SUMMARY
 
 Strategy: {backtest.strategy.upper()}
 Parameters: {", ".join(f"{k}={v}" for k, v in (backtest.parameters.get("parameters") or {}).items()) or "None"}
 Time Period: {result.start_date.strftime("%B %d, %Y")} to {result.end_date.strftime("%B %d, %Y")}
-Duration: {num_days} trading days
+Duration: {result.metrics.days_analysed} trading days
 Tickers: {(", ".join(backtest.tickers))}
 
 PERFORMANCE
@@ -99,7 +79,7 @@ Initial Investment: ${float(result.total_invested):,.2f}
 Final Portfolio Value: ${float(result.final_value):,.2f}
 Absolute Gain/Loss: ${float(result.total_return_abs):,.2f}
 Percentage Return: {float(result.total_return_pct * 100):.2f}%
-Average Daily Return: {float(avg_daily_return):.2f}%
+Average Daily Return: {float(result.avg_daily_return):.2f}%
 
 RISK METRICS
 Sharpe Ratio: {float(result.metrics.sharpe):.3f}
@@ -109,8 +89,8 @@ Annualized Volatility: {float(result.metrics.volatility * 100):.2f}%
 
 ACTIVITY
 Number of Investments: {result.metrics.investments_made}
-Peak Portfolio Value: ${float(peak_value):,.2f}
-Lowest Portfolio Value: ${float(trough_value):,.2f}
+Peak Portfolio Value: ${float(result.metrics.peak_value):,.2f}
+Lowest Portfolio Value: ${float(result.metrics.trough_value):,.2f}
 """
 
     return formatted

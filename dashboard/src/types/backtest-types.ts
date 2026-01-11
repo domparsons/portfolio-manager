@@ -4,7 +4,10 @@ import { BuyAndHoldForm } from "@/app/backtesting/strategies/buy-and-hold";
 import { DCAForm } from "@/app/backtesting/strategies/dca";
 import { VAForm } from "@/app/backtesting/strategies/va";
 
-export type BacktestStrategy = "buy_and_hold" | "dollar_cost_averaging" | "value_averaging";
+export type BacktestStrategy =
+  | "buy_and_hold"
+  | "dollar_cost_averaging"
+  | "value_averaging";
 
 export interface BacktestResult {
   backtest_id: string;
@@ -98,3 +101,34 @@ export const STRATEGY_FORMS: Record<
   dollar_cost_averaging: DCAForm,
   value_averaging: VAForm,
 };
+
+// types/backtest.ts
+
+export interface PreviousBacktest {
+  id: number;
+  created_at: string;
+
+  // Request parameters
+  strategy: string;
+  asset_ids: number[];
+  tickers: string[];
+  start_date: string;
+  end_date: string;
+  initial_cash: number;
+  parameters: Record<string, any>;
+
+  // Computed results
+  total_invested: number;
+  final_value: number;
+  total_return_abs: number;
+  total_return_pct: number;
+  avg_daily_return: number;
+  sharpe_ratio: number;
+  max_drawdown: number;
+  max_drawdown_duration: number;
+  volatility: number;
+  investments_made: number;
+  peak_value: number;
+  trough_value: number;
+  trading_days: number;
+}
