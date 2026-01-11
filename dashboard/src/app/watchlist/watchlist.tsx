@@ -8,6 +8,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { ApiError } from "@/lib/api-client";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
+import { CircleX, Eye, SearchX } from "lucide-react";
 
 const Watchlist = () => {
   const [watchlistAssets, setWatchlistAssets] = useState<Asset[]>([]);
@@ -72,13 +73,18 @@ const Watchlist = () => {
       )}
 
       {!isWatchlistLoading && error && (
-        <EmptyComponent title="Failed to Load Watchlist" description={error} />
+        <EmptyComponent
+          title="Failed to Load Watchlist"
+          description={error}
+          icon={CircleX}
+        />
       )}
 
       {!isWatchlistLoading && !error && watchlistAssets.length === 0 && (
         <EmptyComponent
           title="No Assets in Watchlist Yet"
           description="You haven't added any assets to your Watchlist yet. Get started by selecting an Asset and adding it to your Watchlist"
+          icon={Eye}
         />
       )}
 
@@ -93,6 +99,7 @@ const Watchlist = () => {
             <EmptyComponent
               title="No Matching Assets"
               description="No assets match your search criteria"
+              icon={SearchX}
             />
           ) : (
             <AssetTable filteredAssets={filteredWatchlistAssets} />

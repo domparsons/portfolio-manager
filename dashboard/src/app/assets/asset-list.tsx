@@ -9,6 +9,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { EmptyComponent } from "@/app/empty-component";
 import { getAssetList } from "@/api/asset";
 import { Spinner } from "@/components/ui/spinner";
+import { ChartCandlestick, CircleX, SearchX } from "lucide-react";
 
 const AssetList = () => {
   const [assets, setAssets] = useState<Asset[]>([]);
@@ -77,13 +78,18 @@ const AssetList = () => {
       )}
 
       {!isAssetListLoading && error && (
-        <EmptyComponent title={"Failed to Load Assets"} description={error} />
+        <EmptyComponent
+          title={"Failed to Load Assets"}
+          description={error}
+          icon={CircleX}
+        />
       )}
 
       {!isAssetListLoading && !error && assets.length === 0 && (
         <EmptyComponent
           title="No Assets Available"
           description="Could not find any assets."
+          icon={ChartCandlestick}
         />
       )}
 
@@ -98,6 +104,7 @@ const AssetList = () => {
             <EmptyComponent
               title="No Matching Assets"
               description="No assets match your search criteria"
+              icon={SearchX}
             />
           ) : (
             <AssetTable filteredAssets={filteredAssets} />
