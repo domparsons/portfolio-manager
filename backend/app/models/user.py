@@ -12,6 +12,7 @@ class User(Base):
     created_at = Column(DateTime, default=func.now(), nullable=False)
     watchlists = relationship("WatchlistItem", back_populates="owner")
     transactions = relationship("Transaction", back_populates="user")
+    backtest_history = relationship("BacktestHistory", back_populates="owner")
 
     def __repr__(self):
         return f"<User(id={self.id}, name={self.name}, created_at={self.created_at})>"

@@ -66,6 +66,8 @@ class BacktestMetrics(BaseModel):
     volatility: Decimal
     days_analysed: int
     investments_made: int
+    peak_value: Decimal
+    trough_value: Decimal
 
     @field_serializer("sharpe", "max_drawdown", "volatility", when_used="json")
     def serialize_decimal(self, value: Decimal) -> float:
@@ -79,6 +81,7 @@ class BacktestResult(BaseModel):
     final_value: Decimal
     total_return_pct: Decimal
     total_return_abs: Decimal
+    avg_daily_return: Decimal
     metrics: BacktestMetrics
     history: list[DailySnapshot]
 

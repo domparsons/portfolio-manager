@@ -76,6 +76,9 @@ class BacktestEngine:
             total_return_pct = Decimal("0")
             final_value = Decimal("0")
 
+        num_days = len(history)
+        avg_daily_return = total_return_pct / num_days if num_days > 0 else 0
+
         result = schemas.BacktestResult(
             start_date=start_date,
             end_date=end_date,
@@ -83,6 +86,7 @@ class BacktestEngine:
             final_value=final_value,
             total_return_pct=total_return_pct,
             total_return_abs=total_return_abs,
+            avg_daily_return=avg_daily_return,
             metrics=metrics,
             history=history,
         )
@@ -182,11 +186,22 @@ class BacktestEngine:
                 volatility=Decimal("0"),
                 days_analysed=len(history),
                 investments_made=len(all_actions),
+                peak_value=Decimal("0"),
+                trough_value=Decimal("0"),
             )
 
         returns = [day.daily_return_pct for day in history[1:]]
 
         max_drawdown_result = calculate_max_drawdown(history)
+
+        final_value = history[-1].value
+
+        peak_value = (
+            max(s.value for s in history) if history else final_value
+        )
+        trough_value = (
+            min(s.value for s in history) if history else final_value
+        )
 
         return BacktestMetrics(
             sharpe=calculate_sharpe(returns),
@@ -195,4 +210,6 @@ class BacktestEngine:
             volatility=calculate_volatility(returns),
             days_analysed=len(history),
             investments_made=len(all_actions),
+            peak_value=peak_value,
+            trough_value=trough_value,
         )

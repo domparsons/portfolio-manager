@@ -1,5 +1,6 @@
 import uuid
 
+from app.core.auth.dependencies import get_current_user
 from app.database import get_db
 from app.logger import logger
 from app.schemas import BacktestRequest, BacktestResponse
@@ -13,6 +14,7 @@ router = APIRouter(prefix="/backtest", tags=["backtest"])
 @router.post("/", response_model=BacktestResponse)
 def run_backtest(
     request: BacktestRequest,
+    current_user: str = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     backtest_service = BacktestService(db)
@@ -23,7 +25,7 @@ def run_backtest(
         logger.warning(f"Backtest validation failed: {e.detail}")
         raise
 
-    backtest_result = backtest_service.run_backtest(request)
+    backtest_result = backtest_service.run_backtest(request, current_user)
 
     parameters = request.model_dump(exclude={"strategy"})
 

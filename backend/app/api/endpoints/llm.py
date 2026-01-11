@@ -1,6 +1,7 @@
 from typing import Optional
 
 from app import crud
+from app.core.auth.dependencies import get_current_user
 from app.database import get_db
 from app.logger import logger
 from app.schemas.backtest import (
@@ -28,6 +29,7 @@ def parse_strategy(
 @router.post("/analyse_backtest", response_model=Optional[str])
 def analyse_backtest(
     backtest: BacktestResponse,
+    current_user: str = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> str | None:
     backtest_result = backtest.data
@@ -62,7 +64,7 @@ def analyse_backtest(
 
     backtest_service = BacktestService(db)
 
-    backtest_result = backtest_service.run_backtest(benchmark_request)
+    backtest_result = backtest_service.run_backtest(benchmark_request, current_user, save_backtest=False)
 
     benchmark_parameters = benchmark_request.model_dump(exclude={"strategy"})
     benchmark_result = BacktestAnalysis(
