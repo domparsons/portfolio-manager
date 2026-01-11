@@ -11,14 +11,16 @@ import { BanknoteArrowDown } from "lucide-react";
 const EmptyComponent = ({
   title,
   description,
+  icon: Icon = BanknoteArrowDown,
 }: {
   title: string;
   description: string;
+  icon?: React.ElementType;
 }) => {
   return (
     <Empty>
       <EmptyHeader>
-        <EmptyMedia variant="icon">{<BanknoteArrowDown />}</EmptyMedia>
+        <EmptyMedia variant="icon">{<Icon />}</EmptyMedia>
         <EmptyTitle>{title}</EmptyTitle>
         <EmptyDescription>{description}</EmptyDescription>
       </EmptyHeader>

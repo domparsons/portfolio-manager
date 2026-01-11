@@ -7,6 +7,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { toast } from "sonner";
 import { ApiError } from "@/lib/api-client";
 import { Spinner } from "@/components/ui/spinner";
+import { ArrowLeftRight, CircleX } from "lucide-react";
 
 const TransactionHistory = () => {
   const [transactionHistory, setTransactionHistory] = React.useState<
@@ -73,6 +74,7 @@ const TransactionHistory = () => {
         <EmptyComponent
           title="Failed to Load Transactions"
           description={error}
+          icon={CircleX}
         />
       </div>
     );
@@ -91,6 +93,7 @@ const TransactionHistory = () => {
             "You haven't created any transactions yet. Get started by creating\n" +
             "your first transaction in the Assets List."
           }
+          icon={ArrowLeftRight}
         />
       ) : (
         <TransactionHistoryTable

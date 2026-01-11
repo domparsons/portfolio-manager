@@ -10,6 +10,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { format } from "date-fns";
 import { Spinner } from "@/components/ui/spinner";
 import { formatCurrencyValue, formatPercentageValue } from "@/utils/formatters";
+import { EmptyComponent } from "@/app/empty-component";
+import { ChartCandlestick } from "lucide-react";
 
 const BacktestHistory = () => {
   const [backtestHistory, setBacktestHistory] = useState<
@@ -101,16 +103,11 @@ const BacktestHistory = () => {
     return (
       <div className="dashboard">
         <h1 className="text-2xl font-semibold mb-6">Backtest History</h1>
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-16">
-            <p className="text-muted-foreground text-lg mb-2">
-              No backtests yet
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Run your first backtest to see results here
-            </p>
-          </CardContent>
-        </Card>
+        <EmptyComponent
+          title={"No backtests yet"}
+          description={"Run your first backtest to see results here"}
+          icon={ChartCandlestick}
+        />
       </div>
     );
   }
@@ -159,11 +156,9 @@ const BacktestHistory = () => {
           <Card>
             <CardHeader className="pb-2">
               <CardDescription className="text-xs">Avg Return</CardDescription>
-              <CardTitle
-                className={`text-2xl ${stats.avgReturn > 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}
-              >
+              <CardTitle className={`text-2xl`}>
                 {stats.avgReturn > 0 ? "+" : ""}
-                {stats.avgReturn.toFixed(1)}%
+                {formatPercentageValue(stats.avgReturn / 100)}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -176,7 +171,7 @@ const BacktestHistory = () => {
           <Card>
             <CardHeader className="pb-2">
               <CardDescription className="text-xs">Best Return</CardDescription>
-              <CardTitle className="text-2xl text-green-600 dark:text-green-400">
+              <CardTitle className="text-2xl ">
                 +{formatPercentageValue(stats.bestReturn)}
               </CardTitle>
             </CardHeader>
@@ -192,7 +187,7 @@ const BacktestHistory = () => {
               <CardDescription className="text-xs">
                 Worst Return
               </CardDescription>
-              <CardTitle className="text-2xl text-red-600 dark:text-red-400">
+              <CardTitle className="text-2xl">
                 {formatPercentageValue(stats.worstReturn)}
               </CardTitle>
             </CardHeader>
@@ -211,7 +206,7 @@ const BacktestHistory = () => {
             key={backtest.id}
             className="hover:shadow-md transition-all cursor-pointer group"
           >
-            <CardHeader>
+            <CardHeader className={"pb-2"}>
               <div className="flex items-start justify-between">
                 <div className="space-y-1 flex-1">
                   <div className="flex items-center gap-2 flex-wrap justify-between">
@@ -234,25 +229,11 @@ const BacktestHistory = () => {
                     </Badge>
                   </div>
                   <CardDescription>
-                    <div className="text-xs flex flex-row justify-between">
-                      <div>
-                        {format(
-                          new Date(backtest.created_at),
-                          "MMM dd, yyyy 'at' h:mm a",
-                        )}
-                      </div>
-
-                      <div>
-                        {backtest.tickers.map((ticker) => (
-                          <Badge
-                            key={ticker}
-                            variant="outline"
-                            className="text-xs"
-                          >
-                            {ticker}
-                          </Badge>
-                        ))}
-                      </div>
+                    <div className="text-xs">
+                      {format(
+                        new Date(backtest.created_at),
+                        "MMM dd, yyyy 'at' h:mm a",
+                      )}
                     </div>
                   </CardDescription>
                 </div>
@@ -260,15 +241,12 @@ const BacktestHistory = () => {
             </CardHeader>
 
             <CardContent className="space-y-4">
+              {backtest.tickers.map((ticker) => (
+                <Badge key={ticker} variant="outline" className="text-xs">
+                  {ticker}
+                </Badge>
+              ))}
               <div className="flex justify-between p-3 bg-muted/50 rounded-lg">
-                <div>
-                  <p className="text-xs text-muted-foreground mb-1">
-                    Final Value
-                  </p>
-                  <p className="font-bold">
-                    {formatCurrencyValue(backtest.final_value)}
-                  </p>
-                </div>
                 <div>
                   <p className="text-xs text-muted-foreground mb-1">
                     Absolute Gain
@@ -277,6 +255,15 @@ const BacktestHistory = () => {
                     {formatCurrencyValue(backtest.total_return_abs)}
                   </p>
                 </div>
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">
+                    Final Value
+                  </p>
+                  <p className="font-bold">
+                    {formatCurrencyValue(backtest.final_value)}
+                  </p>
+                </div>
+
                 <div>
                   <p className="text-xs text-muted-foreground mb-1">Sharpe</p>
                   <p className="font-bold">
@@ -302,7 +289,9 @@ const BacktestHistory = () => {
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-xs text-muted-foreground">Initial</span>
+                  <span className="text-xs text-muted-foreground">
+                    Initial Investment
+                  </span>
                   <span className="text-sm font-semibold">
                     {formatCurrencyValue(backtest.initial_cash)}
                   </span>
