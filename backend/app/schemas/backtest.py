@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from decimal import Decimal
 from typing import Any
 from uuid import UUID
@@ -113,3 +113,51 @@ class BacktestAnalysis(BaseModel):
     parameters: dict
     tickers: list[str]
     data: BacktestResult
+
+
+class PreviousBacktest(BaseModel):
+    id: int
+    created_at: datetime
+
+    # Request parameters
+    strategy: str
+    asset_ids: list[int]
+    tickers: list[str]
+    start_date: date
+    end_date: date
+    initial_cash: Decimal
+    parameters: dict[str, Any]
+
+    # Computed results
+    total_invested: Decimal
+    final_value: Decimal
+    total_return_abs: Decimal
+    total_return_pct: Decimal
+    avg_daily_return: Decimal
+    sharpe_ratio: Decimal
+    max_drawdown: Decimal
+    max_drawdown_duration: int
+    volatility: Decimal
+    investments_made: int
+    peak_value: Decimal
+    trough_value: Decimal
+    trading_days: int
+
+    model_config = ConfigDict(from_attributes=True)
+
+    @field_serializer(
+        "initial_cash",
+        "total_invested",
+        "final_value",
+        "total_return_abs",
+        "total_return_pct",
+        "avg_daily_return",
+        "sharpe_ratio",
+        "max_drawdown",
+        "volatility",
+        "peak_value",
+        "trough_value",
+        when_used="json",
+    )
+    def serialize_decimal(self, value: Decimal) -> float:
+        return float(value)

@@ -33,7 +33,9 @@ class BacktestService:
         self.price_service = PriceService(db)
         self.engine = BacktestEngine(self.db)
 
-    def run_backtest(self, request: schemas.BacktestRequest, user_id: str, save_backtest: bool = True) -> schemas.BacktestResult:
+    def run_backtest(
+        self, request: schemas.BacktestRequest, user_id: str, save_backtest: bool = True
+    ) -> schemas.BacktestResult:
         strategy = self._create_strategy(request)
 
         logger.info(

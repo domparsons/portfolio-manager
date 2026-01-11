@@ -2,8 +2,10 @@ import uuid
 
 from app.core.auth.dependencies import get_current_user
 from app.database import get_db
+from app import crud
 from app.logger import logger
 from app.schemas import BacktestRequest, BacktestResponse
+from app.schemas.backtest import PreviousBacktest
 from app.services.backtest_service import BacktestService
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm.session import Session
@@ -37,3 +39,13 @@ def run_backtest(
     )
 
     return backtest_response
+
+
+@router.get("/backtest_history", response_model=list[PreviousBacktest])
+def get_backtest_history(
+    current_user: str = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> list[PreviousBacktest]:
+    previous_backtests = crud.get_previous_backtests(current_user, db)
+
+    return previous_backtests
