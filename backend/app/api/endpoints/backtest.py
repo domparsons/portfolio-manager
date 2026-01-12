@@ -1,8 +1,8 @@
 import uuid
 
+from app import crud
 from app.core.auth.dependencies import get_current_user
 from app.database import get_db
-from app import crud
 from app.logger import logger
 from app.schemas import BacktestRequest, BacktestResponse
 from app.schemas.backtest import PreviousBacktest

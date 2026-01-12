@@ -13,6 +13,7 @@ const BuyAndHoldForm: React.FC<StrategyFormProps> = ({
   onSubmit,
   isLoading,
   assets,
+  backtestPortfolio,
 }) => {
   const [selectedAsset, setSelectedAsset] = useState<Asset | undefined>(
     undefined,
@@ -29,7 +30,7 @@ const BuyAndHoldForm: React.FC<StrategyFormProps> = ({
   };
 
   const handleSubmit = () => {
-    if (!selectedAsset) {
+    if (!selectedAsset && !backtestPortfolio) {
       toast.error("Please select an asset");
       return;
     }
@@ -45,8 +46,8 @@ const BuyAndHoldForm: React.FC<StrategyFormProps> = ({
 
     const params: BacktestParams = {
       strategy: "buy_and_hold",
-      asset_ids: [selectedAsset.id],
-      tickers: [selectedAsset.ticker],
+      asset_ids: selectedAsset ? [selectedAsset.id] : [],
+      tickers: selectedAsset ? [selectedAsset.ticker] : [],
       start_date: format(startDate, "yyyy-MM-dd"),
       end_date: format(endDate, "yyyy-MM-dd"),
       initial_cash: initialCash,
@@ -67,11 +68,13 @@ const BuyAndHoldForm: React.FC<StrategyFormProps> = ({
           <CardContent
             className={"flex flex-row flex-wrap [&>*]:mb-4 [&>*]:mr-4"}
           >
-            <SingleAssetSelector
-              assets={assets}
-              selectedAsset={selectedAsset}
-              setSelectedAsset={setSelectedAsset}
-            />
+            {!backtestPortfolio && (
+              <SingleAssetSelector
+                assets={assets}
+                selectedAsset={selectedAsset}
+                setSelectedAsset={setSelectedAsset}
+              />
+            )}
             <DatePicker
               date={startDate}
               setDate={setStartDate}
