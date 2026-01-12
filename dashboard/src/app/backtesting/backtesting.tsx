@@ -15,11 +15,13 @@ import {
   STRATEGY_FORMS,
   STRATEGY_NAMES
 } from "@/types/backtest-types";
-import { Asset } from "@/types/custom-types";
+import { Asset, PortfolioHoldings } from "@/types/custom-types";
 import { ApiError } from "@/lib/api-client";
 import { NaturalLanguageCard } from "@/app/backtesting/natural-language-card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SlidersHorizontal, Sparkles } from "lucide-react";
+import { getPortfolioHoldings } from "@/api/portfolio";
+import { CheckboxWithLabel } from "@/components/checkbox-with-label";
 
 const Backtesting = () => {
   const [selectedStrategy, setSelectedStrategy] =
@@ -30,9 +32,15 @@ const Backtesting = () => {
   const [LLMBacktestResponse, setLLMBacktestResponse] = useState<
     LLMBacktestParams | undefined
   >(undefined);
+  const [portfolioHoldings, setPortfolioHoldings] = React.useState<
+    PortfolioHoldings[]
+  >([]);
   const [userNaturalLanguageInput, setUserNaturalLanguageInput] = useState("");
   const [isBacktestLoading, setIsBacktestLoading] = useState(false);
   const [isLLMLoading, setIsLLMLoading] = useState(false);
+  const [holdingsLoading, setHoldingsLoading] = React.useState<boolean>(true);
+  const [backtestPortfolio, setBacktestPortfolio] =
+    React.useState<boolean>(false);
   const [assets, setAssets] = useState<Asset[]>([]);
   const [filteredAssets, setFilteredAssets] = useState<Asset[]>([]);
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -60,6 +68,31 @@ const Backtesting = () => {
 
   const handleBacktestSubmit = async (params: BacktestParams) => {
     setIsBacktestLoading(true);
+    if (backtestPortfolio) {
+      const totalValue = portfolioHoldings.reduce(
+        (sum, holding) => sum + holding.net_value,
+        0,
+      );
+
+      const allocation = portfolioHoldings.reduce(
+        (acc, holding) => {
+          const assetId = Number(holding.asset_id);
+          acc[assetId] = holding.net_value / totalValue;
+          return acc;
+        },
+        {} as Record<number, number>,
+      );
+
+      params.asset_ids = portfolioHoldings.map((holding) =>
+        Number(holding.asset_id),
+      );
+      params.tickers = portfolioHoldings.map((holding) => holding.asset_name);
+      params.parameters = {
+        ...params.parameters,
+        allocation: allocation,
+      };
+    }
+
     try {
       const results = await runBacktest(params);
       setBacktestResults(results);
@@ -108,6 +141,23 @@ const Backtesting = () => {
     }
   }, [backtestResults]);
 
+  React.useEffect(() => {
+    if (user_id) {
+      setHoldingsLoading(true);
+      getPortfolioHoldings()
+        .then((data) => {
+          if (data) {
+            setPortfolioHoldings(data);
+          }
+        })
+        .finally(() => {
+          setHoldingsLoading(false);
+        });
+    } else {
+      setHoldingsLoading(false);
+    }
+  }, [user_id]);
+
   return (
     <div className="dashboard">
       <h1 className="text-2xl font-semibold">Backtesting</h1>
@@ -139,12 +189,18 @@ const Backtesting = () => {
             setSelectedStrategy={handleStrategyChange}
             strategyNames={STRATEGY_NAMES}
           />
+          <CheckboxWithLabel
+            checked={backtestPortfolio}
+            onCheckedChange={setBacktestPortfolio}
+            label="Backtest my current portfolio"
+          />
           <StrategyForm
             onSubmit={handleBacktestSubmit}
             isLoading={isBacktestLoading}
             assets={assets}
             setFilteredAssets={setFilteredAssets}
             filteredAssets={filteredAssets}
+            backtestPortfolio={backtestPortfolio}
           />
         </TabsContent>
       </Tabs>

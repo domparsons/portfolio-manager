@@ -66,6 +66,7 @@ export interface StrategyFormProps {
   onSubmit: (params: BacktestParams) => Promise<void>;
   isLoading: boolean;
   assets: Asset[];
+  backtestPortfolio: boolean;
   setFilteredAssets: (assets: Asset[]) => void;
   filteredAssets: Asset[];
 }
