@@ -32,15 +32,22 @@ def calculate_sharpe(
 
 
 def calculate_max_drawdown(history: list[HistoryEntry]) -> MaxDrawdownResponse:
-    """Calculate maximum drawdown from history."""
+    """Calculate maximum drawdown from actual portfolio values.
+
+    Uses actual portfolio values rather than compounded returns to show
+    the drawdown a user would actually experience looking at their portfolio.
+    """
+    if not history:
+        return MaxDrawdownResponse(max_drawdown=Decimal("0"), max_drawdown_duration=0)
+
     max_drawdown = Decimal("0")
     max_drawdown_duration = 0
-    value = Decimal("1")
     running_max = Decimal("0")
     running_max_date = None
 
     for day in history:
-        value = value * (Decimal("1") + day.daily_return_pct)
+        value = day.value
+
         if value > running_max:
             running_max = value
             running_max_date = day.date

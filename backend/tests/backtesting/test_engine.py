@@ -335,9 +335,10 @@ class TestCalculateDailyReturns:
 
         result = BacktestEngine._calculate_daily_returns(history)
 
-        # Value change = 1150 - 1000 - 100 = 50
-        # Return = 50 / 1000 = 5%
-        assert float(result[1].daily_return_pct) == pytest.approx(0.05)
+        # Cash flow happens at start of day, so start-of-day value = 1000 + 100 = 1100
+        # Value change = 1150 - 1100 = 50
+        # Return = 50 / 1100 ≈ 4.545%
+        assert float(result[1].daily_return_pct) == pytest.approx(50.0 / 1100.0)
         assert float(result[1].daily_return_abs) == pytest.approx(50.0)
 
     def test_negative_return(self):
