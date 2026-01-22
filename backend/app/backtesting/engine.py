@@ -164,11 +164,13 @@ class BacktestEngine:
             curr_value = history[i].value
             cash_flow = history[i].cash_flow
 
-            value_change = curr_value - prev_value - cash_flow
+            # Cash flows happen at start of day, so start-of-day value includes new money
+            start_of_day_value = prev_value + cash_flow
+            value_change = curr_value - start_of_day_value
             history[i].daily_return_abs = value_change
 
-            if prev_value > 0:
-                history[i].daily_return_pct = value_change / prev_value
+            if start_of_day_value > 0:
+                history[i].daily_return_pct = value_change / start_of_day_value
             else:
                 history[i].daily_return_pct = Decimal("0")
 
