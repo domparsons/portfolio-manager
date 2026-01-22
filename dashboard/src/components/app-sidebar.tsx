@@ -71,6 +71,10 @@ const data = {
           title: "Backtesting History",
           url: "/backtest-history",
         },
+        {
+          title: "Learn",
+          url: "/learn",
+        },
       ],
     },
   ],

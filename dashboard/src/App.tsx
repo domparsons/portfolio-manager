@@ -25,6 +25,7 @@ import NoAccess from "@/app/login/no-access";
 import LoadingPage from "@/app/login/loading-page";
 import ErrorPage from "@/app/login/error-page";
 import { BacktestHistory } from "@/app/backtesting/backtest-history";
+import { Learn } from "@/app/learn/learn";
 
 const App = () => {
   const { isAuthenticated, isLoading } = useAuth0();
@@ -75,6 +76,7 @@ const App = () => {
                   />
                   <Route path="/backtesting" element={<Backtesting />} />
                   <Route path="/watchlist" element={<Watchlist />} />
+                  <Route path="/learn" element={<Learn />} />
                 </Routes>
               </PortfolioProvider>
             </div>
