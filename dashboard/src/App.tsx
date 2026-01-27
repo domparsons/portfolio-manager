@@ -21,6 +21,7 @@ import { SpeedInsights } from "@vercel/speed-insights/react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { TransactionHistory } from "@/app/transactions/transaction-history";
 import { PortfolioProvider } from "@/context/portfolio-metrics";
+import { AuthProvider } from "@/context/auth-context";
 import NoAccess from "@/app/login/no-access";
 import LoadingPage from "@/app/login/loading-page";
 import ErrorPage from "@/app/login/error-page";
@@ -44,49 +45,51 @@ const App = () => {
   if (status === "error") return <ErrorPage />;
 
   return (
-    <Router>
-      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        <SidebarProvider>
-          <AppSidebar />
-          <SidebarInset>
-            <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-              <div className="flex items-center gap-2 px-4">
-                <SidebarTrigger className="-ml-1" />
-                <Separator orientation="vertical" className="mr-2 h-4" />
-                <DynamicBreadcrumb />
+    <AuthProvider>
+      <Router>
+        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+          <SidebarProvider>
+            <AppSidebar />
+            <SidebarInset>
+              <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+                <div className="flex items-center gap-2 px-4">
+                  <SidebarTrigger className="-ml-1" />
+                  <Separator orientation="vertical" className="mr-2 h-4" />
+                  <DynamicBreadcrumb />
+                </div>
+              </header>
+              <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+                <PortfolioProvider>
+                  <Routes>
+                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/assets" element={<AssetList />} />
+                    <Route
+                      path="/assets/:ticker"
+                      element={<AssetPageWrapper />}
+                    />
+                    <Route
+                      path="/transaction-history"
+                      element={<TransactionHistory />}
+                    />
+                    <Route
+                      path="/backtest-history"
+                      element={<BacktestHistory />}
+                    />
+                    <Route path="/backtesting" element={<Backtesting />} />
+                    <Route path="/watchlist" element={<Watchlist />} />
+                    <Route path="/learn" element={<Learn />} />
+                  </Routes>
+                </PortfolioProvider>
               </div>
-            </header>
-            <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-              <PortfolioProvider>
-                <Routes>
-                  <Route path="/" element={<Dashboard />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/assets" element={<AssetList />} />
-                  <Route
-                    path="/assets/:ticker"
-                    element={<AssetPageWrapper />}
-                  />
-                  <Route
-                    path="/transaction-history"
-                    element={<TransactionHistory />}
-                  />
-                  <Route
-                    path="/backtest-history"
-                    element={<BacktestHistory />}
-                  />
-                  <Route path="/backtesting" element={<Backtesting />} />
-                  <Route path="/watchlist" element={<Watchlist />} />
-                  <Route path="/learn" element={<Learn />} />
-                </Routes>
-              </PortfolioProvider>
-            </div>
-          </SidebarInset>
-        </SidebarProvider>
-        <Toaster visibleToasts={10} duration={10000} />
-        <Analytics />
-        <SpeedInsights />
-      </ThemeProvider>
-    </Router>
+            </SidebarInset>
+          </SidebarProvider>
+          <Toaster visibleToasts={10} duration={10000} />
+          <Analytics />
+          <SpeedInsights />
+        </ThemeProvider>
+      </Router>
+    </AuthProvider>
   );
 };
 
