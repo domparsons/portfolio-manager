@@ -2,8 +2,23 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect, useState } from "react";
 import { apiClient } from "@/lib/api-client";
 
+/**
+ * Detect if an error is a refresh token failure that requires re-authentication
+ * Auth0 throws these specific error codes when the session cannot be silently restored
+ */
+const isRefreshTokenError = (error: any): boolean => {
+  const errorCode = error?.error;
+  const recoveryRequiredErrors = [
+    "login_required",
+    "consent_required",
+    "invalid_grant",
+    "interaction_required",
+  ];
+  return recoveryRequiredErrors.includes(errorCode);
+};
+
 export const useAuthInit = () => {
-  const { getAccessTokenSilently, isAuthenticated, user } = useAuth0();
+  const { getAccessTokenSilently, isAuthenticated, user, logout } = useAuth0();
   const [status, setStatus] = useState<
     "loading" | "approved" | "denied" | "error"
   >("loading");
@@ -40,6 +55,15 @@ export const useAuthInit = () => {
       } catch (error: any) {
         console.error(">>> ERROR CAUGHT:", error);
         console.log(">>> Error status:", error?.status);
+        console.log(">>> Error code:", error?.error);
+
+        // Check if this is a refresh token failure - user needs to re-authenticate
+        if (isRefreshTokenError(error)) {
+          console.log(">>> Refresh token expired, triggering logout");
+          logout({ logoutParams: { returnTo: window.location.origin } });
+          return; // Don't set error status, logout will handle redirect
+        }
+
         if (error?.status === 403) {
           console.log(">>> Setting denied");
           setStatus("denied");

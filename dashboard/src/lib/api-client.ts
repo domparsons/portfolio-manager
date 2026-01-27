@@ -1,4 +1,10 @@
-import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, {
+  AxiosError,
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from "axios";
 
 /**
  * API Client Configuration
@@ -20,8 +26,16 @@ export interface ApiError {
   detail?: any;
 }
 
+interface AuthHelpers {
+  getToken: () => Promise<string>;
+  logout: () => void;
+}
+
 class ApiClient {
   private readonly client: AxiosInstance;
+  private authHelpers: AuthHelpers | null = null;
+  private isRefreshing = false;
+  private refreshSubscribers: Array<(token: string) => void> = [];
 
   constructor() {
     const baseURL = import.meta.env.VITE_API_URL || "http://localhost:8000";
@@ -39,7 +53,14 @@ class ApiClient {
     });
 
     this.setupInterceptors();
-    this.attachAuthToken();
+  }
+
+  /**
+   * Register auth helpers from the React auth context
+   * This allows the API client to refresh tokens and trigger logout
+   */
+  registerAuthHelpers(helpers: AuthHelpers): void {
+    this.authHelpers = helpers;
   }
 
   /**
@@ -76,7 +97,51 @@ class ApiClient {
         }
         return response;
       },
-      (error: AxiosError) => {
+      async (error: AxiosError) => {
+        const originalRequest = error.config as InternalAxiosRequestConfig & {
+          _retry?: boolean;
+        };
+
+        // Handle 401 errors with token refresh attempt
+        if (
+          error.response?.status === 401 &&
+          !originalRequest._retry &&
+          this.authHelpers
+        ) {
+          if (this.isRefreshing) {
+            // Queue this request until refresh completes
+            return new Promise((resolve) => {
+              this.refreshSubscribers.push((token: string) => {
+                originalRequest.headers.Authorization = `Bearer ${token}`;
+                resolve(this.client(originalRequest));
+              });
+            });
+          }
+
+          originalRequest._retry = true;
+          this.isRefreshing = true;
+
+          try {
+            const newToken = await this.authHelpers.getToken();
+            this.setAuthToken(newToken);
+
+            // Notify all queued requests
+            this.refreshSubscribers.forEach((callback) => callback(newToken));
+            this.refreshSubscribers = [];
+
+            // Retry original request
+            originalRequest.headers.Authorization = `Bearer ${newToken}`;
+            return this.client(originalRequest);
+          } catch (refreshError) {
+            // Token refresh failed, logout user
+            console.error("[API] Token refresh failed, logging out");
+            this.authHelpers.logout();
+            return Promise.reject(refreshError);
+          } finally {
+            this.isRefreshing = false;
+          }
+        }
+
         return this.handleError(error);
       },
     );
@@ -138,36 +203,6 @@ class ApiClient {
 
     console.error("[API Error]", apiError);
     return Promise.reject(apiError);
-  }
-
-  private attachAuthToken(): void {
-    if (typeof window === "undefined") return;
-
-    try {
-      const { useAuth0 } = require("@auth0/auth0-react");
-
-      const auth = useAuth0();
-      if (!auth) return;
-
-      const { getAccessTokenSilently, isAuthenticated } = auth;
-
-      if (!isAuthenticated) return;
-
-      getAccessTokenSilently({
-        authorizationParams: {
-          audience: import.meta.env.VITE_API_AUDIENCE,
-          scope: "openid profile email",
-        },
-      })
-        .then((token: string) => {
-          this.setAuthToken(token);
-        })
-        .catch((err: any) => {
-          console.error("Failed to get Auth0 token:", err);
-        });
-    } catch (err) {
-      // ignore if not running in SPA
-    }
   }
 
   /**
