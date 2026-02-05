@@ -144,7 +144,6 @@ export function NavUser() {
                     <span className="truncate font-semibold">
                       {displayUsername}
                     </span>
-                    <span className="truncate text-xs">{user?.sub}</span>
                   </div>
                 </div>
               </DropdownMenuLabel>
