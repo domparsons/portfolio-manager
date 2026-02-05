@@ -118,11 +118,6 @@ export function NavUser() {
                     {initials}
                   </AvatarFallback>
                 </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">
-                    {displayUsername}
-                  </span>
-                </div>
                 <ChevronsUpDown className="ml-auto size-4" />
               </SidebarMenuButton>
             </DropdownMenuTrigger>
@@ -141,9 +136,6 @@ export function NavUser() {
                     </AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">
-                      {displayUsername}
-                    </span>
                     <span className="truncate text-xs">{user?.sub}</span>
                   </div>
                 </div>
