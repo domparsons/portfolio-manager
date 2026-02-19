@@ -4,11 +4,11 @@ from sqlalchemy.orm import Session
 
 from app.crud import get_latest_timeseries_for_asset
 from app.database import get_db
-from app.models.monte_carlo import (
+from app.monte_carlo.monte_carlo_engine import MonteCarloEngine
+from app.schemas.monte_carlo import (
     MonteCarloConfig,
     MonteCarloSimulationMethods,
 )
-from app.monte_carlo.monte_carlo_engine import MonteCarloEngine
 
 router = APIRouter(prefix="/monte_carlo", tags=["monte_carlo"])
 
@@ -28,7 +28,7 @@ def run_monte_carlo_analysis(
 
     results = engine.simulate_dca_strategy(config)
 
-    return results
+    return results.to_dict()
 
 
 @router.get("/")

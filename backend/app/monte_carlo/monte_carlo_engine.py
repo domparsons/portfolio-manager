@@ -4,7 +4,7 @@ import numpy as np
 import polars as pl
 from scipy import stats
 
-from app.models.monte_carlo import (
+from app.schemas.monte_carlo import (
     MonteCarloConfig,
     MonteCarloSimulationMethods,
     SimulationResults,
@@ -106,14 +106,11 @@ class MonteCarloEngine:
         print(f"Running {config.num_simulations:,} Monte Carlo simulations...")
         start_time = time.time()
 
-        # Get initial price
         if config.initial_price is None:
             config.initial_price = self.df.select("close").row(0)[0]
 
-        # Generate return scenarios
         return_scenarios = self.generate_returns(config)
 
-        # Initialize arrays for results
         final_values = np.zeros(config.num_simulations)
         portfolio_paths = np.zeros(
             (config.num_simulations, config.investment_months + 1)
@@ -122,11 +119,9 @@ class MonteCarloEngine:
             (config.num_simulations, config.investment_months + 1)
         )
 
-        # Set initial conditions
-        portfolio_paths[:, 0] = 0  # No initial investment
+        portfolio_paths[:, 0] = 0
         shares_accumulated[:, 0] = 0
 
-        # Run simulations
         for sim in range(config.num_simulations):
             current_price = config.initial_price
             total_shares = 0.0
@@ -147,7 +142,6 @@ class MonteCarloEngine:
 
             final_values[sim] = portfolio_paths[sim, -1]
 
-        # Calculate metrics
         total_invested = config.monthly_investment * config.investment_months
 
         percentiles = {
@@ -223,8 +217,6 @@ class MonteCarloEngine:
         )
 
         if len(monthly_prices) < config.investment_months:
-            # Use available data and extrapolate
-            # available_months = len(monthly_prices)
             prices = monthly_prices.select("price").to_numpy().flatten()
         else:
             prices = (
