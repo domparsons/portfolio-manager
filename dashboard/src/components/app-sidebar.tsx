@@ -1,13 +1,7 @@
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
 import { TeamSwitcher } from "@/components/team-switcher";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarRail,
-} from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from "@/components/ui/sidebar";
 import { AudioWaveform, ChartSpline, House, PieChart } from "lucide-react";
 import * as React from "react";
 
@@ -70,6 +64,10 @@ const data = {
         {
           title: "Backtesting History",
           url: "/backtest-history",
+        },
+        {
+          title: "Monte-Carlo Simulation",
+          url: "/monte-carlo-simulation",
         },
         {
           title: "Learn",

@@ -27,6 +27,7 @@ import LoadingPage from "@/app/login/loading-page";
 import ErrorPage from "@/app/login/error-page";
 import { BacktestHistory } from "@/app/backtesting/backtest-history";
 import { Learn } from "@/app/learn/learn";
+import { MonteCarloSimulation } from "@/app/montecarlo/monte-carlo-simulation";
 
 const App = () => {
   const { isAuthenticated, isLoading } = useAuth0();
@@ -75,6 +76,10 @@ const App = () => {
                     <Route
                       path="/backtest-history"
                       element={<BacktestHistory />}
+                    />
+                    <Route
+                      path="/monte-carlo-simulation"
+                      element={<MonteCarloSimulation />}
                     />
                     <Route path="/backtesting" element={<Backtesting />} />
                     <Route path="/watchlist" element={<Watchlist />} />

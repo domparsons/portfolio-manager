@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 
 
-class MonteCarloSimulationMethods(Enum):
+class MonteCarloSimulationMethods(str, Enum):
     NORMAL_DISTRIBUTION = "Normal Distribution"
     BOOTSTRAP = "Bootstrap"
     T_STUDENT = "T-Student"

@@ -2,7 +2,7 @@ import polars as pl
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
-from app.crud import get_latest_timeseries_for_asset
+from app.crud import get_asset_by_ticker, get_latest_timeseries_for_asset
 from app.database import get_db
 from app.monte_carlo.monte_carlo_engine import MonteCarloEngine
 from app.schemas.monte_carlo import (
@@ -14,13 +14,16 @@ router = APIRouter(prefix="/monte_carlo", tags=["monte_carlo"])
 
 
 def run_monte_carlo_analysis(
-    timeseries_df: pl.DataFrame, simulation_method: MonteCarloSimulationMethods
+    timeseries_df: pl.DataFrame,
+    monthly_investment: float,
+    investment_months: int,
+    simulation_method: MonteCarloSimulationMethods,
 ):
     engine = MonteCarloEngine(timeseries_df)
 
     config = MonteCarloConfig(
-        monthly_investment=1000.0,
-        investment_months=60,
+        monthly_investment=monthly_investment,
+        investment_months=investment_months,
         num_simulations=10_000,
         seed=42,
         simulation_method=simulation_method,
@@ -33,11 +36,19 @@ def run_monte_carlo_analysis(
 
 @router.get("/")
 def monte_carlo(
-    db: Session = Depends(get_db),
+    ticker_id: int,
+    monthly_investment: float,
+    investment_months: int,
     monte_carlo_simulation_method: MonteCarloSimulationMethods = Query(
         MonteCarloSimulationMethods.BOOTSTRAP
     ),
+    db: Session = Depends(get_db),
 ):
-    timeseries_df = get_latest_timeseries_for_asset(1, db)
-    results = run_monte_carlo_analysis(timeseries_df, monte_carlo_simulation_method)
+    timeseries_df = get_latest_timeseries_for_asset(ticker_id, db)
+    results = run_monte_carlo_analysis(
+        timeseries_df,
+        monthly_investment,
+        investment_months,
+        monte_carlo_simulation_method,
+    )
     return results
