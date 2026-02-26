@@ -1,8 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
 
-import numpy as np
-
 
 class MonteCarloSimulationMethods(Enum):
     NORMAL_DISTRIBUTION = "Normal Distribution"
@@ -24,19 +22,19 @@ class MonteCarloConfig:
 
 @dataclass
 class SimulationResults:
-    final_values: np.ndarray
-    portfolio_paths: np.ndarray
-    shares_accumulated: np.ndarray
+    chart_data: list[dict]
+    sample_paths: list[list[float]]
+    histogram: list[dict]
     total_invested: float
-    percentiles: dict[int, float]
+    final_percentiles: dict[int, float]
     risk_metrics: dict[str, float]
 
     def to_dict(self):
         return {
-            "final_values": self.final_values.tolist(),
-            "portfolio_paths": self.portfolio_paths.tolist(),
-            "shares_accumulated": self.shares_accumulated.tolist(),
+            "chart_data": self.chart_data,
+            "sample_paths": self.sample_paths,
+            "histogram": self.histogram,
             "total_invested": self.total_invested,
-            "percentiles": self.percentiles,
+            "final_percentiles": self.final_percentiles,
             "risk_metrics": self.risk_metrics,
         }

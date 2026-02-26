@@ -144,7 +144,7 @@ class MonteCarloEngine:
 
         total_invested = config.monthly_investment * config.investment_months
 
-        percentiles = {
+        final_percentiles = {
             5: np.percentile(final_values, 5),
             10: np.percentile(final_values, 10),
             25: np.percentile(final_values, 25),
@@ -172,15 +172,55 @@ class MonteCarloEngine:
             ),  # Conditional VaR
         }
 
+        percentile_levels = [5, 10, 25, 50, 75, 90, 95]
+        percentile_paths = np.percentile(portfolio_paths, percentile_levels, axis=0)
+
+        invested_per_month = (
+            np.arange(config.investment_months + 1) * config.monthly_investment
+        )
+
+        chart_data = [
+            {
+                "month": month,
+                "invested": round(float(invested_per_month[month]), 2),
+                "p5": round(float(percentile_paths[0, month]), 2),
+                "p10": round(float(percentile_paths[1, month]), 2),
+                "p25": round(float(percentile_paths[2, month]), 2),
+                "p50": round(float(percentile_paths[3, month]), 2),
+                "p75": round(float(percentile_paths[4, month]), 2),
+                "p90": round(float(percentile_paths[5, month]), 2),
+                "p95": round(float(percentile_paths[6, month]), 2),
+            }
+            for month in range(config.investment_months + 1)
+        ]
+
+        sample_count = min(20, config.num_simulations)
+        sample_indices = np.random.choice(
+            config.num_simulations, sample_count, replace=False
+        )
+        sample_paths = [
+            [round(float(v), 2) for v in portfolio_paths[i]] for i in sample_indices
+        ]
+
+        hist_counts, bin_edges = np.histogram(final_values, bins=50)
+        histogram = [
+            {
+                "min": round(float(bin_edges[i]), 2),
+                "max": round(float(bin_edges[i + 1]), 2),
+                "count": int(hist_counts[i]),
+            }
+            for i in range(len(hist_counts))
+        ]
+
         elapsed_time = time.time() - start_time
         print(f"Simulation completed in {elapsed_time:.2f} seconds")
 
         return SimulationResults(
-            final_values=final_values,
-            portfolio_paths=portfolio_paths,
-            shares_accumulated=shares_accumulated,
+            chart_data=chart_data,
+            sample_paths=sample_paths,
+            histogram=histogram,
             total_invested=total_invested,
-            percentiles=percentiles,
+            final_percentiles=final_percentiles,
             risk_metrics=risk_metrics,
         )
 
