@@ -13,8 +13,7 @@ class MonteCarloConfig:
     monthly_investment: float = 1000.0
     investment_months: int = 60
     num_simulations: int = 10_000
-    initial_price: float = None
-    seed: int = 42
+    initial_price: float | None = None
     simulation_method: MonteCarloSimulationMethods = (
         MonteCarloSimulationMethods.BOOTSTRAP
     )

@@ -59,6 +59,14 @@ const MonteCarloSimulation = () => {
       toast.error("Please select an asset");
       return;
     }
+    if (monthlyInvestment <= 0) {
+      toast.error("Monthly investment must be greater than 0");
+      return;
+    }
+    if (investmentMonths <= 0) {
+      toast.error("Investment duration must be greater than 0");
+      return;
+    }
 
     const params: MonteCarloParams = {
       ticker: selectedAsset.id,
