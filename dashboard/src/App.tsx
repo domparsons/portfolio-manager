@@ -28,6 +28,7 @@ import ErrorPage from "@/app/login/error-page";
 import { BacktestHistory } from "@/app/backtesting/backtest-history";
 import { Learn } from "@/app/learn/learn";
 import { MonteCarloSimulation } from "@/app/montecarlo/monte-carlo-simulation";
+import { PortfolioRebalancing } from "@/app/rebalancing/portfolio-rebalancing";
 
 const App = () => {
   const { isAuthenticated, isLoading } = useAuth0();
@@ -76,6 +77,10 @@ const App = () => {
                     <Route
                       path="/backtest-history"
                       element={<BacktestHistory />}
+                    />
+                    <Route
+                      path="/portfolio-rebalancing"
+                      element={<PortfolioRebalancing />}
                     />
                     <Route
                       path="/monte-carlo-simulation"

@@ -7,7 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import React from "react";
-import { formatTimestampLong } from "@/utils/formatters";
+import { formatCurrencyValue, formatTimestampLong } from "@/utils/formatters";
 import { Trash } from "lucide-react";
 import {
   AlertDialog,
@@ -36,8 +36,15 @@ const TransactionHistoryTable: React.FC<TransactionTableProps> = ({
       <TableHeader>
         <TableRow className="text-sm sm:text-base">
           <TableHead className="p-1 sm:p-2">Asset</TableHead>
-          <TableHead className="hidden md:table-cell p-1 sm:p-2">Ticker</TableHead>
-          <TableHead className="hidden md:table-cell p-1 sm:p-2">Date Purchased</TableHead>
+          <TableHead className="hidden md:table-cell p-1 sm:p-2">
+            Ticker
+          </TableHead>
+          <TableHead className="hidden md:table-cell p-1 sm:p-2">
+            Date Purchased
+          </TableHead>
+          <TableHead className="hidden md:table-cell p-1 sm:p-2">
+            Amount
+          </TableHead>
           <TableHead className="p-1 sm:p-2">Quantity</TableHead>
           <TableHead className="p-1 sm:p-2">Price</TableHead>
           <TableHead className="p-1 sm:p-2">Action</TableHead>
@@ -46,14 +53,26 @@ const TransactionHistoryTable: React.FC<TransactionTableProps> = ({
       </TableHeader>
       <TableBody>
         {transactions.map((transaction) => (
-          <TableRow key={transaction.id} className="cursor-pointer text-sm sm:text-base">
+          <TableRow
+            key={transaction.id}
+            className="cursor-pointer text-sm sm:text-base"
+          >
             <TableCell className="font-medium p-1 sm:p-2">
               {transaction.asset_name}
             </TableCell>
-            <TableCell className="hidden md:table-cell p-1 sm:p-2">{transaction.ticker}</TableCell>
-            <TableCell className="hidden md:table-cell p-1 sm:p-2">{formatTimestampLong(transaction.timestamp)}</TableCell>
+            <TableCell className="hidden md:table-cell p-1 sm:p-2">
+              {transaction.ticker}
+            </TableCell>
+            <TableCell className="hidden md:table-cell p-1 sm:p-2">
+              {formatTimestampLong(transaction.timestamp)}
+            </TableCell>
+            <TableCell className="p-1 sm:p-2">
+              {formatCurrencyValue(transaction.quantity * transaction.price)}
+            </TableCell>
             <TableCell className="p-1 sm:p-2">{transaction.quantity}</TableCell>
-            <TableCell className="p-1 sm:p-2">${transaction.price.toFixed(2)}</TableCell>
+            <TableCell className="p-1 sm:p-2">
+              {formatCurrencyValue(transaction.price)}
+            </TableCell>
             <TableCell className="p-1 sm:p-2">
               {" "}
               <Badge variant={transaction.type}>

@@ -1,5 +1,8 @@
 from typing import Optional
 
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+
 from app import crud
 from app.core.auth.dependencies import get_current_user
 from app.database import get_db
@@ -11,9 +14,11 @@ from app.schemas.backtest import (
     LLMBacktestParams,
 )
 from app.services.backtest_service import BacktestService
-from app.services.llm import backtest_analysis, backtest_parameterisation
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
+from app.services.llm import (
+    allocation_suggestor,
+    backtest_analysis,
+    backtest_parameterisation,
+)
 
 router = APIRouter(prefix="/llm", tags=["llm"])
 
@@ -64,7 +69,9 @@ def analyse_backtest(
 
     backtest_service = BacktestService(db)
 
-    backtest_result = backtest_service.run_backtest(benchmark_request, current_user, save_backtest=False)
+    backtest_result = backtest_service.run_backtest(
+        benchmark_request, current_user, save_backtest=False
+    )
 
     benchmark_parameters = benchmark_request.model_dump(exclude={"strategy"})
     benchmark_result = BacktestAnalysis(
@@ -77,3 +84,11 @@ def analyse_backtest(
     analysis = backtest_analysis.analyse_backtest(user_result, benchmark_result)
 
     return analysis
+
+
+@router.post("/allocation_suggester", response_model=str)
+def allocation_suggester(
+    user_input: str,
+    allocation: dict,
+) -> str:
+    return allocation_suggestor.suggest_portfolio_allocation(user_input, allocation)
