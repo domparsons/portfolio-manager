@@ -4,6 +4,7 @@ import numpy as np
 import polars as pl
 from scipy import stats
 
+from app.logger import logger
 from app.schemas.monte_carlo import (
     MonteCarloConfig,
     MonteCarloSimulationMethods,
@@ -53,19 +54,18 @@ class MonteCarloEngine:
             "count": len(returns),
         }
 
-        print("Historical Return Statistics:")
-        print(
+        logger.info("Historical Return Statistics:")
+        logger.info(
             f"Mean Monthly Return: {self.returns_stats['mean']:.4f} ({self.returns_stats['mean'] * 12:.2%} annualized)"
         )
-        print(
+        logger.info(
             f"Monthly Volatility: {self.returns_stats['std']:.4f} ({self.returns_stats['std'] * np.sqrt(12):.2%} annualized)"
         )
-        print(f"Skewness: {self.returns_stats['skew']:.4f}")
-        print(f"Kurtosis: {self.returns_stats['kurtosis']:.4f}")
-        print(f"Sample Size: {self.returns_stats['count']} months")
+        logger.info(f"Skewness: {self.returns_stats['skew']:.4f}")
+        logger.info(f"Kurtosis: {self.returns_stats['kurtosis']:.4f}")
+        logger.info(f"Sample Size: {self.returns_stats['count']} months")
 
     def generate_returns(self, config: MonteCarloConfig) -> np.ndarray:
-        np.random.seed(config.seed)
         returns = None
         historical_returns = (
             self.df.group_by([pl.col("year"), pl.col("month")])
@@ -103,11 +103,11 @@ class MonteCarloEngine:
         return returns
 
     def simulate_dca_strategy(self, config: MonteCarloConfig) -> SimulationResults:
-        print(f"Running {config.num_simulations:,} Monte Carlo simulations...")
+        logger.info(f"Running {config.num_simulations:,} Monte Carlo simulations...")
         start_time = time.time()
 
         if config.initial_price is None:
-            config.initial_price = self.df.select("close").row(0)[0]
+            config.initial_price = self.df.select("close").row(-1)[0]
 
         return_scenarios = self.generate_returns(config)
 
@@ -156,13 +156,17 @@ class MonteCarloEngine:
 
         # Risk metrics
         returns = (final_values - total_invested) / total_invested
+        # Sharpe: annualised mean/std of the simulated monthly returns (periodic, not total)
+        _monthly_means = np.mean(return_scenarios, axis=1)
+        _monthly_stds = np.std(return_scenarios, axis=1)
+        sharpe_ratio = float(
+            np.mean(_monthly_means / np.maximum(_monthly_stds, 1e-10) * np.sqrt(12))
+        )
         risk_metrics = {
             "probability_of_loss": np.mean(final_values < total_invested),
             "mean_return": np.mean(returns),
             "std_return": np.std(returns),
-            "sharpe_ratio": np.mean(returns)
-            / np.std(returns)
-            * np.sqrt(12 / config.investment_months),
+            "sharpe_ratio": sharpe_ratio,
             "max_drawdown": self._calculate_max_drawdown(
                 portfolio_paths, config.monthly_investment
             ),
@@ -213,7 +217,7 @@ class MonteCarloEngine:
         ]
 
         elapsed_time = time.time() - start_time
-        print(f"Simulation completed in {elapsed_time:.2f} seconds")
+        logger.info(f"Simulation completed in {elapsed_time:.2f} seconds")
 
         return SimulationResults(
             chart_data=chart_data,
@@ -231,9 +235,6 @@ class MonteCarloEngine:
         max_drawdowns = []
 
         for sim in range(portfolio_paths.shape[0]):
-            # Calculate invested amount at each point
-            invested_amounts = np.arange(portfolio_paths.shape[1]) * monthly_investment
-
             # Calculate running maximum of portfolio value
             portfolio_values = portfolio_paths[sim, :]
             running_max = np.maximum.accumulate(portfolio_values)
@@ -244,32 +245,3 @@ class MonteCarloEngine:
             max_drawdowns.append(max_drawdown)
 
         return np.mean(max_drawdowns)
-
-    def _calculate_historical_dca(self, config: MonteCarloConfig) -> float:
-        # Get monthly prices for the most recent period
-        monthly_prices = (
-            self.df.group_by([pl.col("year"), pl.col("month")])
-            .agg(pl.col("close").last().alias("price"))
-            .sort([pl.col("year"), pl.col("month")])
-            .tail(
-                min(config.investment_months, len(self.df) // 20)
-            )  # Approximate monthly data
-        )
-
-        if len(monthly_prices) < config.investment_months:
-            prices = monthly_prices.select("price").to_numpy().flatten()
-        else:
-            prices = (
-                monthly_prices.select("price")
-                .tail(config.investment_months)
-                .to_numpy()
-                .flatten()
-            )
-
-        total_shares = 0.0
-        for i, price in enumerate(prices):
-            shares_bought = config.monthly_investment / price
-            total_shares += shares_bought
-
-        final_price = prices[-1]
-        return total_shares * final_price

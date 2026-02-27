@@ -25,7 +25,6 @@ def run_monte_carlo_analysis(
         monthly_investment=monthly_investment,
         investment_months=investment_months,
         num_simulations=10_000,
-        seed=42,
         simulation_method=simulation_method,
     )
 
@@ -39,7 +38,7 @@ def monte_carlo(
     ticker_id: int,
     monthly_investment: float,
     investment_months: int,
-    monte_carlo_simulation_method: MonteCarloSimulationMethods = Query(
+    simulation_method: MonteCarloSimulationMethods = Query(
         MonteCarloSimulationMethods.BOOTSTRAP
     ),
     db: Session = Depends(get_db),
@@ -49,6 +48,6 @@ def monte_carlo(
         timeseries_df,
         monthly_investment,
         investment_months,
-        monte_carlo_simulation_method,
+        simulation_method,
     )
     return results
