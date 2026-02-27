@@ -40,6 +40,20 @@ class LLMBacktestParams(BaseModel):
         return float(value)
 
 
+class Allocation(BaseModel):
+    ticker: str
+    current_weight: float
+    suggested_weight: float
+    change: float
+    rationale: str
+
+
+class LLMPortfolioRebalance(BaseModel):
+    allocations: list[Allocation]
+    summary: str
+    caveats: str
+
+
 class DailySnapshot(BaseModel):
     date: date
     value: Decimal

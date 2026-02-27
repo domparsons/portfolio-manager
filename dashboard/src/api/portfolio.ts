@@ -41,3 +41,19 @@ export const getPortfolioHoldings = async () => {
     return null;
   }
 };
+
+export const runRebalanceSuggestion = async (
+  userGoals: string,
+  suggestions: Record<string, number>,
+) => {
+  try {
+    return await apiClient.post<string>("/llm/allocation_suggester", suggestions, {
+      params: { user_input: userGoals },
+    });
+  } catch (error) {
+    const apiError = error as ApiError;
+    console.error("Error running allocation suggester", apiError);
+    toast("There was an error running the allocation suggester.");
+    return null;
+  }
+};
