@@ -1,5 +1,5 @@
 import polars as pl
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.crud import get_asset_by_ticker, get_latest_timeseries_for_asset
@@ -43,6 +43,15 @@ def monte_carlo(
     ),
     db: Session = Depends(get_db),
 ):
+    if monthly_investment <= 0:
+        raise HTTPException(
+            status_code=422, detail="monthly_investment must be greater than 0"
+        )
+    if investment_months <= 0:
+        raise HTTPException(
+            status_code=422, detail="investment_months must be greater than 0"
+        )
+
     timeseries_df = get_latest_timeseries_for_asset(ticker_id, db)
     results = run_monte_carlo_analysis(
         timeseries_df,

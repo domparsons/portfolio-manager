@@ -16,6 +16,7 @@ class MonteCarloEngine:
     def __init__(self, timeseries_df: pl.DataFrame):
         self.df = timeseries_df
         self.returns_stats = None
+        self.historical_returns: np.ndarray | None = None
         self.setup_data()
 
     def setup_data(self):
@@ -42,16 +43,16 @@ class MonteCarloEngine:
             .drop_nulls()
         )
 
-        returns = monthly_data.select("monthly_return").to_numpy().flatten()
+        self.historical_returns = monthly_data.select("monthly_return").to_numpy().flatten()
 
         self.returns_stats = {
-            "mean": np.mean(returns),
-            "std": np.std(returns),
-            "skew": stats.skew(returns),
-            "kurtosis": stats.kurtosis(returns),
-            "min": np.min(returns),
-            "max": np.max(returns),
-            "count": len(returns),
+            "mean": np.mean(self.historical_returns),
+            "std": np.std(self.historical_returns),
+            "skew": stats.skew(self.historical_returns),
+            "kurtosis": stats.kurtosis(self.historical_returns),
+            "min": np.min(self.historical_returns),
+            "max": np.max(self.historical_returns),
+            "count": len(self.historical_returns),
         }
 
         logger.info("Historical Return Statistics:")
@@ -67,16 +68,6 @@ class MonteCarloEngine:
 
     def generate_returns(self, config: MonteCarloConfig) -> np.ndarray:
         returns = None
-        historical_returns = (
-            self.df.group_by([pl.col("year"), pl.col("month")])
-            .agg(pl.col("close").last())
-            .sort([pl.col("year"), pl.col("month")])
-            .with_columns(pl.col("close").pct_change().alias("monthly_return"))
-            .drop_nulls()
-            .select("monthly_return")
-            .to_numpy()
-            .flatten()
-        )
 
         if config.simulation_method == MonteCarloSimulationMethods.NORMAL_DISTRIBUTION:
             returns = np.random.normal(
@@ -86,13 +77,13 @@ class MonteCarloEngine:
             )
         elif config.simulation_method == MonteCarloSimulationMethods.BOOTSTRAP:
             bootstrap_indices = np.random.choice(
-                len(historical_returns),
+                len(self.historical_returns),
                 (config.num_simulations, config.investment_months),
                 replace=True,
             )
-            returns = historical_returns[bootstrap_indices]
+            returns = self.historical_returns[bootstrap_indices]
         elif config.simulation_method == MonteCarloSimulationMethods.T_STUDENT:
-            df_param, loc_param, scale_param = stats.t.fit(historical_returns)
+            df_param, loc_param, scale_param = stats.t.fit(self.historical_returns)
             returns = stats.t.rvs(
                 df=df_param,
                 loc=loc_param,
@@ -111,7 +102,6 @@ class MonteCarloEngine:
 
         return_scenarios = self.generate_returns(config)
 
-        final_values = np.zeros(config.num_simulations)
         portfolio_paths = np.zeros(
             (config.num_simulations, config.investment_months + 1)
         )
@@ -119,28 +109,16 @@ class MonteCarloEngine:
             (config.num_simulations, config.investment_months + 1)
         )
 
-        portfolio_paths[:, 0] = 0
-        shares_accumulated[:, 0] = 0
-
-        for sim in range(config.num_simulations):
-            current_price = config.initial_price
-            total_shares = 0.0
-
-            for month in range(config.investment_months):
-                # Apply return to get new price
-                monthly_return = return_scenarios[sim, month]
-                current_price *= 1 + monthly_return
-
-                # Make monthly investment
-                shares_bought = config.monthly_investment / current_price
-                total_shares += shares_bought
-
-                # Record portfolio value and shares
-                portfolio_value = total_shares * current_price
-                portfolio_paths[sim, month + 1] = portfolio_value
-                shares_accumulated[sim, month + 1] = total_shares
-
-            final_values[sim] = portfolio_paths[sim, -1]
+        # Vectorised DCA: compute all paths without Python loops
+        price_paths = config.initial_price * np.cumprod(
+            1 + return_scenarios, axis=1
+        )  # (n_sims, n_months)
+        cumulative_shares = np.cumsum(
+            config.monthly_investment / price_paths, axis=1
+        )  # (n_sims, n_months)
+        portfolio_paths[:, 1:] = cumulative_shares * price_paths
+        shares_accumulated[:, 1:] = cumulative_shares
+        final_values = portfolio_paths[:, -1]
 
         total_invested = config.monthly_investment * config.investment_months
 
