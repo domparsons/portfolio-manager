@@ -227,7 +227,6 @@ def calculate_holdings(
 ) -> dict:
     holdings = {}
 
-    # Pre-fetch all asset names in a single query to avoid N+1 DB hits in the loop.
     unique_asset_ids = list({t.asset_id for t in transactions})
     asset_name_map: dict[int, str] = {
         asset.id: asset.asset_name
