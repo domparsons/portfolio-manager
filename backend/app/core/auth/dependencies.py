@@ -8,6 +8,8 @@ from app.core.auth.jwt_validator import JWTValidator
 
 security = HTTPBearer()
 
+_jwt_validator = JWTValidator(auth0_config)
+
 
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
@@ -19,8 +21,7 @@ async def get_current_user(
     """
     try:
         token = credentials.credentials
-        validator = JWTValidator(auth0_config)
-        payload = validator.validate_token(token)
+        payload = _jwt_validator.validate_token(token)
 
         user_id = payload.get("sub")
         if not user_id:

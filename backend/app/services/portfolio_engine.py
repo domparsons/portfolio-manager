@@ -99,11 +99,15 @@ def calculate_portfolio_history(
             txn = transactions[transaction_index]
 
             if txn.type == "buy":
-                holdings[txn.asset_id] = holdings.get(txn.asset_id, Decimal("0")) + txn.quantity
+                holdings[txn.asset_id] = (
+                    holdings.get(txn.asset_id, Decimal("0")) + txn.quantity
+                )
                 net_cash_flow += txn.quantity * txn.price
 
             elif txn.type == "sell":
-                holdings[txn.asset_id] = holdings.get(txn.asset_id, Decimal("0")) - txn.quantity
+                holdings[txn.asset_id] = (
+                    holdings.get(txn.asset_id, Decimal("0")) - txn.quantity
+                )
                 net_cash_flow -= txn.quantity * txn.price
 
             transaction_index += 1
@@ -138,7 +142,9 @@ def calculate_portfolio_history(
             results[i].daily_return_pct = (
                 (curr_value - prev_value - cash_flow) / prev_value
             ).quantize(Decimal("0.000001"))
-            results[i].daily_return_val = (curr_value - prev_value - cash_flow).quantize(Decimal("0.01"))
+            results[i].daily_return_val = (
+                curr_value - prev_value - cash_flow
+            ).quantize(Decimal("0.01"))
         else:
             results[i].daily_return_pct = Decimal("0")
             results[i].daily_return_val = Decimal("0")
@@ -160,9 +166,13 @@ def get_current_holdings(transactions: list) -> dict[int, Decimal]:
 
     for txn in transactions:
         if txn.type == "buy":
-            holdings[txn.asset_id] = holdings.get(txn.asset_id, Decimal("0")) + txn.quantity
+            holdings[txn.asset_id] = (
+                holdings.get(txn.asset_id, Decimal("0")) + txn.quantity
+            )
         elif txn.type == "sell":
-            holdings[txn.asset_id] = holdings.get(txn.asset_id, Decimal("0")) - txn.quantity
+            holdings[txn.asset_id] = (
+                holdings.get(txn.asset_id, Decimal("0")) - txn.quantity
+            )
 
     return {
         asset_id: quantity for asset_id, quantity in holdings.items() if quantity > 0
@@ -217,9 +227,18 @@ def calculate_holdings(
 ) -> dict:
     holdings = {}
 
+    # Pre-fetch all asset names in a single query to avoid N+1 DB hits in the loop.
+    unique_asset_ids = list({t.asset_id for t in transactions})
+    asset_name_map: dict[int, str] = {
+        asset.id: asset.asset_name
+        for asset in db.query(models.Asset)
+        .filter(models.Asset.id.in_(unique_asset_ids))
+        .all()
+    }
+
     for transaction in transactions:
         asset_id = str(transaction.asset_id)
-        asset_name = db.query(models.Asset).get(transaction.asset_id).asset_name
+        asset_name = asset_name_map.get(transaction.asset_id, "Unknown")
         if asset_id not in holdings:
             holdings[asset_id] = schemas.PortfolioHoldings(
                 asset_id=asset_id,
@@ -267,7 +286,7 @@ def calculate_holdings(
 
         if asset.total_cost > 0:
             asset.unrealised_gain_loss_pct = (
-                (asset.unrealised_gain_loss / asset.total_cost)
+                asset.unrealised_gain_loss / asset.total_cost
             )
 
     return holdings

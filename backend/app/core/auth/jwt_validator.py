@@ -1,4 +1,6 @@
 import base64
+import threading
+import time
 
 import jwt
 import requests
@@ -9,23 +11,47 @@ from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicNumbers
 from app.core.auth.config import Auth0Config
 from app.logger import logger
 
+_jwks_cache: dict | None = None
+_jwks_cache_lock = threading.Lock()
+_jwks_cache_fetched_at: float = 0.0
+_JWKS_CACHE_TTL_SECONDS = 60 * 60 * 12  # 12 hours
+
 
 class JWTValidator:
     def __init__(self, config: Auth0Config):
         self.config = config
-        self._jwks = None
 
     def get_jwks(self):
-        """Fetch Auth0's public keys (JWKS)"""
-        if self._jwks:
-            return self._jwks
+        """Fetch Auth0's public keys (JWKS), using a module-level cache."""
+        global _jwks_cache, _jwks_cache_fetched_at
 
-        jwks_url = f"https://{self.config.domain}/.well-known/jwks.json"
-        response = requests.get(jwks_url)
-        response.raise_for_status()
+        now = time.monotonic()
 
-        self._jwks = response.json()
-        return self._jwks
+        # Fast path: cache is warm and not expired — no lock needed for reads.
+        if (
+            _jwks_cache is not None
+            and (now - _jwks_cache_fetched_at) < _JWKS_CACHE_TTL_SECONDS
+        ):
+            return _jwks_cache
+
+        with _jwks_cache_lock:
+            # Re-check inside the lock in case another thread just populated it.
+            now = time.monotonic()
+            if (
+                _jwks_cache is not None
+                and (now - _jwks_cache_fetched_at) < _JWKS_CACHE_TTL_SECONDS
+            ):
+                return _jwks_cache
+
+            jwks_url = f"https://{self.config.domain}/.well-known/jwks.json"
+            logger.info("Fetching JWKS from Auth0 (cache miss or expired)")
+            response = requests.get(jwks_url, timeout=10)
+            response.raise_for_status()
+
+            _jwks_cache = response.json()
+            _jwks_cache_fetched_at = time.monotonic()
+
+        return _jwks_cache
 
     def get_signing_key(self, token: str):
         """Extract the public key for this specific token"""
