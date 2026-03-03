@@ -89,7 +89,7 @@ const MonteCarloSimulation = () => {
   return (
     <div className="monte-carlo-simulation">
       <h1 className="text-2xl font-semibold">Monte-Carlo Simulation</h1>
-      <div className="mt-8 space-x-4 flex items-end">
+      <div className="mt-8 flex flex-wrap gap-4 items-end">
         <div className="space-y-1">
           <Label>Asset</Label>
           <SingleAssetSelector
@@ -114,7 +114,7 @@ const MonteCarloSimulation = () => {
             type="number"
             value={monthlyInvestment}
             onChange={(e) => setMonthlyInvestment(Number(e.target.value))}
-            className={"w-100"}
+            className={"w-48"}
           />
         </div>
 
@@ -125,7 +125,7 @@ const MonteCarloSimulation = () => {
             type="number"
             value={investmentMonths}
             onChange={(e) => setInvestmentMonths(Number(e.target.value))}
-            className={"w-100"}
+            className={"w-48"}
           />
         </div>
         <Button onClick={handleSubmit} disabled={isLoading}>
