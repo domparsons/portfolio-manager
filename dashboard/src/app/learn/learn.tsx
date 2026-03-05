@@ -29,46 +29,38 @@ const Learn = () => {
         </p>
       </div>
 
-      {/* What is This App */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <Wallet className="h-5 w-5" />
-            <CardTitle>What is Portfolio Manager?</CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-muted-foreground">
-            Portfolio Manager is designed for casual long-term investors who
-            want to understand how their investment strategies would have
-            performed historically. Unlike traditional tools that separate
-            portfolio tracking from backtesting, we bring both together in one
-            place.
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <Wallet className="h-5 w-5" />
+          <CardTitle>What is Porta?</CardTitle>
+        </div>
+        <p className="text-muted-foreground">
+          Porta is designed for casual long-term investors who want to
+          understand how their investment strategies would have performed
+          historically. Unlike traditional tools that separate portfolio
+          tracking from backtesting, we bring both together in one place.
+        </p>
+        <div className="space-y-2">
+          <h4 className="font-semibold flex items-center gap-2">
+            <LineChart className="h-4 w-4 text-primary" />
+            Track Your Portfolio
+          </h4>
+          <p className="text-sm text-muted-foreground">
+            Monitor your current holdings, performance, and portfolio
+            composition in real-time
           </p>
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <h4 className="font-semibold flex items-center gap-2">
-                <LineChart className="h-4 w-4 text-primary" />
-                Track Your Portfolio
-              </h4>
-              <p className="text-sm text-muted-foreground">
-                Monitor your current holdings, performance, and portfolio
-                composition in real-time
-              </p>
-            </div>
-            <div className="space-y-2">
-              <h4 className="font-semibold flex items-center gap-2">
-                <History className="h-4 w-4 text-primary" />
-                Test Strategies
-              </h4>
-              <p className="text-sm text-muted-foreground">
-                Run historical backtests on your actual portfolio holdings to
-                see how different strategies would have performed
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+        </div>
+        <div className="space-y-2">
+          <h4 className="font-semibold flex items-center gap-2">
+            <History className="h-4 w-4 text-primary" />
+            Test Strategies
+          </h4>
+          <p className="text-sm text-muted-foreground">
+            Run historical backtests on your actual portfolio holdings to see
+            how different strategies would have performed
+          </p>
+        </div>
+      </div>
 
       {/* Understanding Risk Metrics */}
       <div className="space-y-4">
@@ -78,7 +70,7 @@ const Learn = () => {
           investment returns. Here's what each metric tells you:
         </p>
 
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-1">
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
@@ -97,9 +89,7 @@ const Learn = () => {
                 <p className="text-xs font-semibold">What it means:</p>
                 <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
                   <li>
-                    <span className="text-green-500 font-medium">
-                      &gt; 2.0
-                    </span>
+                    <span className="text-green-500 font-medium">&gt; 2.0</span>
                     : Excellent - high returns relative to risk
                   </li>
                   <li>
@@ -144,10 +134,8 @@ const Learn = () => {
                     : Moderate - typical market corrections
                   </li>
                   <li>
-                    <span className="text-red-500 font-medium">
-                      &gt; -20%
-                    </span>
-                    : High - significant losses
+                    <span className="text-red-500 font-medium">&gt; -20%</span>:
+                    High - significant losses
                   </li>
                 </ul>
               </div>
@@ -171,16 +159,12 @@ const Learn = () => {
                 <p className="text-xs font-semibold">What it means:</p>
                 <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
                   <li>
-                    <span className="text-green-500 font-medium">
-                      &lt; 15%
-                    </span>
+                    <span className="text-green-500 font-medium">&lt; 15%</span>
                     : Low - stable returns
                   </li>
                   <li>
-                    <span className="text-yellow-500 font-medium">
-                      15-25%
-                    </span>
-                    : Moderate - normal fluctuations
+                    <span className="text-yellow-500 font-medium">15-25%</span>:
+                    Moderate - normal fluctuations
                   </li>
                   <li>
                     <span className="text-red-500 font-medium">&gt; 25%</span>:
@@ -254,7 +238,7 @@ const Learn = () => {
 
             <div className="space-y-4">
               <div className="space-y-2">
-                <h4 className="font-semibold">Popular Strategies to Test:</h4>
+                <h4 className="font-semibold">Strategies to Test:</h4>
                 <div className="space-y-3">
                   <div className="border-l-2 border-blue-500 pl-4">
                     <h5 className="font-medium">Dollar-Cost Averaging (DCA)</h5>
@@ -319,8 +303,7 @@ const Learn = () => {
         </Card>
       </div>
 
-      {/* Getting Started */}
-      <Card className="border-primary">
+      <Card>
         <CardHeader>
           <CardTitle>Getting Started</CardTitle>
           <CardDescription>
@@ -342,9 +325,7 @@ const Learn = () => {
               - Understand your current portfolio's risk profile
             </li>
             <li>
-              <span className="font-medium text-foreground">
-                Run backtests
-              </span>{" "}
+              <span className="font-medium text-foreground">Run backtests</span>{" "}
               - Test different investment strategies on historical data
             </li>
             <li>
