@@ -77,7 +77,7 @@ class BacktestEngine:
             final_value = Decimal("0")
 
         num_days = len(history)
-        avg_daily_return = total_return_pct / num_days if num_days > 0 else 0
+        avg_daily_return = total_return_pct / num_days if num_days > 0 else Decimal("0")
 
         result = schemas.BacktestResult(
             start_date=start_date,
@@ -198,12 +198,8 @@ class BacktestEngine:
 
         final_value = history[-1].value
 
-        peak_value = (
-            max(s.value for s in history) if history else final_value
-        )
-        trough_value = (
-            min(s.value for s in history) if history else final_value
-        )
+        peak_value = max(s.value for s in history) if history else final_value
+        trough_value = min(s.value for s in history) if history else final_value
 
         return BacktestMetrics(
             sharpe=calculate_sharpe(returns),

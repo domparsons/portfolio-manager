@@ -2,7 +2,6 @@
 
 from datetime import date
 from decimal import Decimal
-from unittest.mock import Mock
 
 from app.backtesting.actions import BuyAction
 from app.backtesting.strategies.va import VAStrategy

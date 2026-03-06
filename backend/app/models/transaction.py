@@ -31,7 +31,9 @@ class Transaction(Base):
     asset_id = Column(Integer, ForeignKey("assets.id"), nullable=False)
 
     type = Column(Enum(TransactionType), nullable=False)
-    quantity = Column(Numeric(15, 8), nullable=False)  # 8 decimals for fractional shares
+    quantity = Column(
+        Numeric(15, 8), nullable=False
+    )  # 8 decimals for fractional shares
     price = Column(Numeric(15, 2), nullable=False)  # 2 decimals for currency
     timestamp = Column(DateTime, nullable=False, default=datetime.now(timezone.utc))
 

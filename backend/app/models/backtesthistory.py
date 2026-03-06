@@ -1,7 +1,17 @@
 from datetime import datetime, timezone
 
 from app.database import Base
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, DECIMAL, JSON, ARRAY, Date
+from sqlalchemy import (
+    Column,
+    ForeignKey,
+    Integer,
+    String,
+    DateTime,
+    DECIMAL,
+    JSON,
+    ARRAY,
+    Date,
+)
 from sqlalchemy.orm import relationship
 
 
@@ -10,7 +20,9 @@ class BacktestHistory(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(String, ForeignKey("users.id"), nullable=False)
-    created_at = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(
+        DateTime, nullable=False, default=lambda: datetime.now(timezone.utc)
+    )
 
     # Request parameters
     strategy = Column(String, nullable=False)
@@ -37,5 +49,3 @@ class BacktestHistory(Base):
     trading_days = Column(Integer, nullable=False)
 
     owner = relationship("User", back_populates="backtest_history")
-
-
