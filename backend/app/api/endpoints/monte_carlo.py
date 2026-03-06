@@ -2,7 +2,7 @@ import polars as pl
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
-from app.crud import get_asset_by_ticker, get_latest_timeseries_for_asset
+from app.crud import get_latest_timeseries_for_asset
 from app.database import get_db
 from app.monte_carlo.monte_carlo_engine import MonteCarloEngine
 from app.schemas.monte_carlo import (

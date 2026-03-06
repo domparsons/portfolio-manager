@@ -1,7 +1,7 @@
 """Tests for PriceService"""
 
 from datetime import date, datetime
-from unittest.mock import MagicMock, Mock
+from unittest.mock import Mock
 
 import pytest
 

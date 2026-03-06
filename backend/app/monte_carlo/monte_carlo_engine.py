@@ -43,7 +43,9 @@ class MonteCarloEngine:
             .drop_nulls()
         )
 
-        self.historical_returns = monthly_data.select("monthly_return").to_numpy().flatten()
+        self.historical_returns = (
+            monthly_data.select("monthly_return").to_numpy().flatten()
+        )
 
         self.returns_stats = {
             "mean": np.mean(self.historical_returns),

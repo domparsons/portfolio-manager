@@ -13,7 +13,7 @@ class VAStrategy(BacktestStrategy):
         asset_id: int,
         initial_investment: Decimal,
         target_increment_amount: Decimal,
-        trading_days=list[date] | None,
+        trading_days=list[date],
         price_service=PriceService,
     ):
         self.asset_id = asset_id

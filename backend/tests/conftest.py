@@ -9,7 +9,10 @@ def simple_drawdown_case():
     """Portfolio with one clear drawdown: +20%, -15%, +10%"""
     return [
         PortfolioValueHistory(
-            date=date(2024, 1, 1), value=Decimal("1000"), daily_return_pct=Decimal("0.0"), daily_return_val=Decimal("0")
+            date=date(2024, 1, 1),
+            value=Decimal("1000"),
+            daily_return_pct=Decimal("0.0"),
+            daily_return_val=Decimal("0"),
         ),
         PortfolioValueHistory(
             date=date(2024, 1, 2),
@@ -38,10 +41,16 @@ def no_drawdown_case():
     """Portfolio with only gains"""
     return [
         PortfolioValueHistory(
-            date=date(2024, 1, 1), value=Decimal("1000"), daily_return_pct=Decimal("0.0"), daily_return_val=Decimal("0")
+            date=date(2024, 1, 1),
+            value=Decimal("1000"),
+            daily_return_pct=Decimal("0.0"),
+            daily_return_val=Decimal("0"),
         ),
         PortfolioValueHistory(
-            date=date(2024, 1, 2), value=Decimal("1050"), daily_return_pct=Decimal("5.0"), daily_return_val=Decimal("50")
+            date=date(2024, 1, 2),
+            value=Decimal("1050"),
+            daily_return_pct=Decimal("5.0"),
+            daily_return_val=Decimal("50"),
         ),
         PortfolioValueHistory(
             date=date(2024, 1, 3),
