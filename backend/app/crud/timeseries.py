@@ -119,5 +119,7 @@ def check_prices_stale(db: Session) -> bool:
 
 def mark_prices_as_refreshed(db: Session):
     price_update = db.query(PriceUpdate).first()
+    if price_update is None:
+        return
     price_update.last_updated = datetime.now()
     db.commit()

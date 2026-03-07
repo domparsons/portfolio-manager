@@ -506,17 +506,18 @@ class TestBacktestEngineIntegration:
 
         # Price data: Asset 1 goes from $100 to $110 to $120
 
+        call_count = 0
+
         def mock_query_side_effect(*args, **kwargs):
+            nonlocal call_count
             mock_q = Mock()
             mock_q.filter.return_value = mock_q
             mock_q.distinct.return_value = mock_q
             mock_q.order_by.return_value = mock_q
             # First call: trading days
-            if not hasattr(mock_query_side_effect, "call_count"):
-                mock_query_side_effect.call_count = 0
-            mock_query_side_effect.call_count += 1
+            call_count += 1
 
-            if mock_query_side_effect.call_count == 1:
+            if call_count == 1:
                 # Trading days: 3 days (return datetime objects)
                 mock_q.all.return_value = [
                     (datetime(2024, 1, 1, 0, 0, 0),),

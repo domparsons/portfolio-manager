@@ -62,6 +62,10 @@ def check_asset_in_watchlist(
     ticker: str, user_id: str, db: Session = Depends(get_db)
 ) -> AssetInWatchlist | None:
     asset = crud.asset.get_asset_by_ticker(db, ticker)
+    if asset is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Asset not found"
+        )
     user_watchlist_items = crud.get_watchlist_items(user_id, db)
     watchlist_ids = [item.asset_id for item in user_watchlist_items]
     percentage_map = {

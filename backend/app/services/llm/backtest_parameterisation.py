@@ -72,7 +72,7 @@ def strategise_natural_language(
     return None
 
 
-def _call_llm(user_input: str, instructions: str) -> LLMBacktestParams:
+def _call_llm(user_input: str, instructions: str) -> LLMBacktestParams | None:
     """Make the actual LLM API call"""
     client = OpenAI(api_key=settings.OPEN_AI_API_KEY)
 

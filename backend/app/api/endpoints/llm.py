@@ -27,7 +27,7 @@ router = APIRouter(prefix="/llm", tags=["llm"])
 def parse_strategy(
     user_input: str,
     db: Session = Depends(get_db),
-) -> LLMBacktestParams:
+) -> LLMBacktestParams | None:
     return backtest_parameterisation.strategise_natural_language(user_input, db)
 
 
@@ -90,5 +90,5 @@ def analyse_backtest(
 def allocation_suggester(
     user_input: str,
     allocation: dict,
-) -> str:
+) -> str | None:
     return allocation_suggestor.suggest_portfolio_allocation(user_input, allocation)

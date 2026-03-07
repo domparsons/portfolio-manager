@@ -49,8 +49,10 @@ class TestBuyHoldStrategyInitialization:
         actions = strategy.on_day(context)
 
         assert len(actions) == 2
+        assert isinstance(actions[0], BuyAction)
         assert actions[0].asset_id == 1
         assert actions[0].dollar_amount == Decimal("600")
+        assert isinstance(actions[1], BuyAction)
         assert actions[1].asset_id == 2
         assert actions[1].dollar_amount == Decimal("400")
 
@@ -123,6 +125,7 @@ class TestBuyAndHoldEdgeCases:
         actions = strategy.on_day(context)
 
         assert len(actions) == 1
+        assert isinstance(actions[0], BuyAction)
         assert actions[0].dollar_amount == 0.0
 
     def test_different_asset_ids(self):

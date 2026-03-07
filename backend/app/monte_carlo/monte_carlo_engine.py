@@ -69,6 +69,8 @@ class MonteCarloEngine:
         logger.info(f"Sample Size: {self.returns_stats['count']} months")
 
     def generate_returns(self, config: MonteCarloConfig) -> np.ndarray:
+        assert self.returns_stats is not None
+        assert self.historical_returns is not None
         returns = None
 
         if config.simulation_method == MonteCarloSimulationMethods.NORMAL_DISTRIBUTION:
@@ -93,6 +95,9 @@ class MonteCarloEngine:
                 size=(config.num_simulations, config.investment_months),
             )
 
+        assert returns is not None, (
+            f"Unsupported simulation method: {config.simulation_method}"
+        )
         return returns
 
     def simulate_dca_strategy(self, config: MonteCarloConfig) -> SimulationResults:

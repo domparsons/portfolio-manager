@@ -13,7 +13,7 @@ def create_watchlist_item(asset_id: int, user_id: str, db: Session) -> Watchlist
     return db_watchlist_item
 
 
-def get_watchlist_items(user_id: str, db: Session) -> list[type[WatchlistItem]]:
+def get_watchlist_items(user_id: str, db: Session) -> list[WatchlistItem]:
     return db.query(WatchlistItem).filter(WatchlistItem.user_id == user_id).all()
 
 
