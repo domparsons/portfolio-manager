@@ -88,7 +88,7 @@ def create_transaction(
 @router.get("/", response_model=list[schemas.transaction.TransactionOut])
 def get_transactions(
     current_user: str = Depends(get_current_user),
-    limit: int = None,
+    limit: int | None = None,
     db: Session = Depends(get_db),
 ):
     user_id = current_user
@@ -104,7 +104,7 @@ def get_transactions(
 def get_transactions_by_asset(
     asset_id: int,
     current_user: str = Depends(get_current_user),
-    limit: int = None,
+    limit: int | None = None,
     db: Session = Depends(get_db),
 ):
     user_id = current_user

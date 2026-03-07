@@ -48,7 +48,7 @@ def get_portfolio_data_for_user(
     if not timestamps:
         raise HTTPException(status_code=404, detail="No valid transaction timestamps")
 
-    start_date = min(timestamps)  # type: ignore[arg-type]
+    start_date = min(timestamps)
     end_date = datetime.now()
 
     trading_days = price_service.get_trading_days(start_date, end_date)

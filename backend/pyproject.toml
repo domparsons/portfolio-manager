@@ -37,4 +37,5 @@ pythonpath = ["."]
 [dependency-groups]
 dev = [
     "debugpy>=1.8.20",
+    "ty>=0.0.1a6",
 ]

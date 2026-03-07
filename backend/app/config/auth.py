@@ -4,7 +4,7 @@ import requests
 from dotenv import load_dotenv
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from jose import JWTError, jwt
+from jose import JWTError, jwt  # type: ignore[import-untyped]
 
 load_dotenv()
 
@@ -45,7 +45,7 @@ def get_current_user_id(
             rsa_key,
             algorithms=ALGORITHMS,
             audience=API_AUDIENCE,
-            issuer=AUTH0_DOMAIN + "/",
+            issuer=f"{AUTH0_DOMAIN}/",
         )
         return payload["sub"]
     except JWTError:

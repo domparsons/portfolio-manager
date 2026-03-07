@@ -94,4 +94,4 @@ def main(new_tickers: list[str]):
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main(sys.argv[1:]))

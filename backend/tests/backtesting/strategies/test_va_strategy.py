@@ -206,6 +206,7 @@ class TestVATargetValueCalculation:
 
         # target = 1000 + (100 * 0) = 1000
         # shortfall = 1000 - 0 = 1000
+        assert isinstance(actions[0], BuyAction)
         assert actions[0].dollar_amount == 1000.0
         assert strategy.period_number == 1  # Incremented after investment
 
@@ -243,6 +244,7 @@ class TestVATargetValueCalculation:
         )
         actions = strategy.on_day(context2)
 
+        assert isinstance(actions[0], BuyAction)
         assert actions[0].dollar_amount == 50.0
 
     def test_higher_shortfall_when_portfolio_underperforms(self):
@@ -272,6 +274,7 @@ class TestVATargetValueCalculation:
         )
         actions = strategy.on_day(context2)
 
+        assert isinstance(actions[0], BuyAction)
         assert actions[0].dollar_amount == 200.0
 
     def test_lower_shortfall_when_portfolio_outperforms(self):
@@ -301,6 +304,7 @@ class TestVATargetValueCalculation:
         )
         actions = strategy.on_day(context2)
 
+        assert isinstance(actions[0], BuyAction)
         assert actions[0].dollar_amount == 10.0
 
 
@@ -426,6 +430,7 @@ class TestVAEdgeCases:
             history=[],
         )
         actions1 = strategy.on_day(context1)
+        assert isinstance(actions1[0], BuyAction)
         assert actions1[0].dollar_amount == 1000.0
 
         # Period 1: target = 1000 + (0 * 1) = 1000

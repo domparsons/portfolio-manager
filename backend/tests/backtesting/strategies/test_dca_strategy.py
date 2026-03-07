@@ -125,18 +125,21 @@ class TestDCADailyFrequency:
         context1 = create_mock_context(current_date=date(2024, 1, 1))
         actions1 = strategy.on_day(context1)
         assert len(actions1) == 1
+        assert isinstance(actions1[0], BuyAction)
         assert actions1[0].dollar_amount == 1000.0
 
         # Day 2: Periodic investment
         context2 = create_mock_context(current_date=date(2024, 1, 2))
         actions2 = strategy.on_day(context2)
         assert len(actions2) == 1
+        assert isinstance(actions2[0], BuyAction)
         assert actions2[0].dollar_amount == 100.0
 
         # Day 3: Another periodic investment
         context3 = create_mock_context(current_date=date(2024, 1, 3))
         actions3 = strategy.on_day(context3)
         assert len(actions3) == 1
+        assert isinstance(actions3[0], BuyAction)
         assert actions3[0].dollar_amount == 100.0
 
     def test_daily_uses_amount_per_period_after_first_day(self):
@@ -156,6 +159,7 @@ class TestDCADailyFrequency:
         context2 = create_mock_context(current_date=date(2024, 1, 2))
         actions = strategy.on_day(context2)
 
+        assert isinstance(actions[0], BuyAction)
         assert actions[0].dollar_amount == 250.0
 
 
@@ -175,6 +179,7 @@ class TestDCAWeeklyFrequency:
         context1 = create_mock_context(current_date=date(2024, 1, 1))
         actions1 = strategy.on_day(context1)
         assert len(actions1) == 1
+        assert isinstance(actions1[0], BuyAction)
         assert actions1[0].dollar_amount == 1000.0
 
         # Day 3 (2 days later): No investment
@@ -191,6 +196,7 @@ class TestDCAWeeklyFrequency:
         context4 = create_mock_context(current_date=date(2024, 1, 8))
         actions4 = strategy.on_day(context4)
         assert len(actions4) == 1
+        assert isinstance(actions4[0], BuyAction)
         assert actions4[0].dollar_amount == 100.0
 
     def test_weekly_updates_last_investment_date(self):
@@ -249,6 +255,7 @@ class TestDCAMonthlyFrequency:
         context1 = create_mock_context(current_date=date(2024, 1, 15))
         actions1 = strategy.on_day(context1)
         assert len(actions1) == 1
+        assert isinstance(actions1[0], BuyAction)
         assert actions1[0].dollar_amount == 1000.0
 
         # Jan 20: No investment (same month)
@@ -260,6 +267,7 @@ class TestDCAMonthlyFrequency:
         context3 = create_mock_context(current_date=date(2024, 2, 1))
         actions3 = strategy.on_day(context3)
         assert len(actions3) == 1
+        assert isinstance(actions3[0], BuyAction)
         assert actions3[0].dollar_amount == 100.0
 
     def test_monthly_no_action_within_same_month(self):
@@ -298,18 +306,21 @@ class TestDCAMonthlyFrequency:
         context1 = create_mock_context(current_date=date(2024, 1, 15))
         actions1 = strategy.on_day(context1)
         assert len(actions1) == 1
+        assert isinstance(actions1[0], BuyAction)
         assert actions1[0].dollar_amount == 1000.0
 
         # Feb: Periodic investment
         context2 = create_mock_context(current_date=date(2024, 2, 10))
         actions2 = strategy.on_day(context2)
         assert len(actions2) == 1
+        assert isinstance(actions2[0], BuyAction)
         assert actions2[0].dollar_amount == 100.0
 
         # Mar: Periodic investment
         context3 = create_mock_context(current_date=date(2024, 3, 5))
         actions3 = strategy.on_day(context3)
         assert len(actions3) == 1
+        assert isinstance(actions3[0], BuyAction)
         assert actions3[0].dollar_amount == 100.0
 
     def test_monthly_handles_year_boundary(self):
@@ -330,6 +341,7 @@ class TestDCAMonthlyFrequency:
         context2 = create_mock_context(current_date=date(2024, 1, 5))
         actions2 = strategy.on_day(context2)
         assert len(actions2) == 1
+        assert isinstance(actions2[0], BuyAction)
         assert actions2[0].dollar_amount == 100.0
 
 
@@ -368,6 +380,7 @@ class TestDCAEdgeCases:
         actions = strategy.on_day(context)
 
         assert len(actions) == 1
+        assert isinstance(actions[0], BuyAction)
         assert actions[0].dollar_amount == 0.0
 
     def test_zero_amount_per_period(self):
@@ -388,6 +401,7 @@ class TestDCAEdgeCases:
         actions = strategy.on_day(context2)
 
         assert len(actions) == 1
+        assert isinstance(actions[0], BuyAction)
         assert actions[0].dollar_amount == 0.0
 
     def test_different_asset_ids(self):

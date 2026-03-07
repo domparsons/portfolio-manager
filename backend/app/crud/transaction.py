@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 
 def get_transactions_by_user(
-    db: Session, user_id: str, limit: int = None
+    db: Session, user_id: str, limit: int | None = None
 ) -> list[TransactionOut]:
     query = (
         db.query(models.Transaction, models.Asset.asset_name, models.Asset.ticker)
@@ -20,7 +20,7 @@ def get_transactions_by_user(
 
 
 def get_transactions_by_user_and_asset(
-    db: Session, user_id: str, asset_id: int, limit: int = None
+    db: Session, user_id: str, asset_id: int, limit: int | None = None
 ) -> list[TransactionOut]:
     query = (
         db.query(models.Transaction, models.Asset.asset_name, models.Asset.ticker)
@@ -47,6 +47,8 @@ def get_transaction_by_id(db: Session, transaction_id: int) -> TransactionOut | 
     asset = (
         db.query(models.Asset).filter(models.Asset.id == transaction.asset_id).first()
     )
+    if asset is None:
+        return None
     return TransactionOut(
         **transaction.__dict__, asset_name=asset.asset_name, ticker=asset.ticker
     )

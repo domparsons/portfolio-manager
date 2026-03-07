@@ -99,7 +99,7 @@ def name(
 ) -> str | None:
     user_id = current_user
     user = crud.get_user_by_id(db, user_id)
-    return user.name
+    return str(user.name) if user else None
 
 
 @router.put("/name", response_model=User)

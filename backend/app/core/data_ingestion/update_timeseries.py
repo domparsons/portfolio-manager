@@ -32,6 +32,8 @@ logger = logging.getLogger(__name__)
 
 def handle_stock_split(ticker: str, db: Session):
     asset = db.query(Asset).filter(Asset.ticker == ticker).first()
+    if asset is None:
+        return
     db.query(Timeseries).filter(Timeseries.asset_id == asset.id).delete()
 
 
