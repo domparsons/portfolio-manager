@@ -1,8 +1,19 @@
 import { Activity, BarChart3, Calendar, TrendingDown } from "lucide-react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import React from "react";
 import { Spinner } from "@/components/ui/spinner";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const RiskMetrics = ({
   sharpe,
@@ -190,7 +201,7 @@ const RiskMetrics = ({
                                     {range.threshold}
                                   </span>
                                 </div>
-                              ),
+                              )
                             )}
                           </div>
                         </div>

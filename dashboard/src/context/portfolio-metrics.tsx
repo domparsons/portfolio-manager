@@ -5,7 +5,7 @@ import { PortfolioContextType, PortfolioMetrics } from "@/types/custom-types";
 import { useAuth0 } from "@auth0/auth0-react";
 
 const PortfolioContext = createContext<PortfolioContextType | undefined>(
-  undefined,
+  undefined
 );
 
 export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -28,7 +28,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       setLoading(true);
       const data = await apiClient.get<PortfolioMetrics>(
-        `/portfolio/portfolio_metrics`,
+        `/portfolio/portfolio_metrics`
       );
       setPortfolioMetrics(data);
       setError(null);
@@ -67,7 +67,7 @@ export const usePortfolioMetrics = () => {
   const context = useContext(PortfolioContext);
   if (context === undefined) {
     throw new Error(
-      "usePortfolioMetrics must be used within PortfolioProvider",
+      "usePortfolioMetrics must be used within PortfolioProvider"
     );
   }
   return context;

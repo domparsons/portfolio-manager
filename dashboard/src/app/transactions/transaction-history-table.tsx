@@ -100,7 +100,7 @@ const TransactionHistoryTable: React.FC<TransactionTableProps> = ({
                         deleteTransaction(
                           transaction.id,
                           onDelete,
-                          refreshMetrics,
+                          refreshMetrics
                         )
                       }
                     >

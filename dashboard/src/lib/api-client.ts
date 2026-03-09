@@ -75,7 +75,7 @@ class ApiClient {
             {
               params: config.params,
               data: config.data,
-            },
+            }
           );
         }
 
@@ -84,7 +84,7 @@ class ApiClient {
       (error) => {
         console.error("[API Request Error]", error);
         return Promise.reject(error);
-      },
+      }
     );
 
     this.client.interceptors.response.use(
@@ -92,7 +92,7 @@ class ApiClient {
         if (import.meta.env.DEV) {
           console.log(
             `[API Response] ${response.status} ${response.config.url}`,
-            response.data,
+            response.data
           );
         }
         return response;
@@ -143,7 +143,7 @@ class ApiClient {
         }
 
         return this.handleError(error);
-      },
+      }
     );
   }
 
@@ -224,12 +224,12 @@ class ApiClient {
   async post<T = any>(
     url: string,
     data?: any,
-    config?: AxiosRequestConfig,
+    config?: AxiosRequestConfig
   ): Promise<T> {
     const response: AxiosResponse<T> = await this.client.post(
       url,
       data,
-      config,
+      config
     );
     return response.data;
   }
@@ -243,7 +243,7 @@ class ApiClient {
   async put<T = any>(
     url: string,
     data?: any,
-    config?: AxiosRequestConfig,
+    config?: AxiosRequestConfig
   ): Promise<T> {
     const response: AxiosResponse<T> = await this.client.put(url, data, config);
     return response.data;
@@ -258,12 +258,12 @@ class ApiClient {
   async patch<T = any>(
     url: string,
     data?: any,
-    config?: AxiosRequestConfig,
+    config?: AxiosRequestConfig
   ): Promise<T> {
     const response: AxiosResponse<T> = await this.client.patch(
       url,
       data,
-      config,
+      config
     );
     return response.data;
   }

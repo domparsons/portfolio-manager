@@ -20,7 +20,7 @@ export const runBacktest = async (params: BacktestParams) => {
 export const getBacktestHistory = async () => {
   try {
     return await apiClient.get<PreviousBacktest[]>(
-      "/backtest/backtest_history",
+      "/backtest/backtest_history"
     );
   } catch (error) {
     const apiError = error as ApiError;

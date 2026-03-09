@@ -13,7 +13,7 @@ import {
   BacktestStrategy,
   LLMBacktestParams,
   STRATEGY_FORMS,
-  STRATEGY_NAMES
+  STRATEGY_NAMES,
 } from "@/types/backtest-types";
 import { Asset, PortfolioHoldings } from "@/types/custom-types";
 import { ApiError } from "@/lib/api-client";
@@ -71,7 +71,7 @@ const Backtesting = () => {
     if (backtestPortfolio) {
       const totalValue = portfolioHoldings.reduce(
         (sum, holding) => sum + holding.net_value,
-        0,
+        0
       );
 
       const allocation = portfolioHoldings.reduce(
@@ -80,11 +80,11 @@ const Backtesting = () => {
           acc[assetId] = holding.net_value / totalValue;
           return acc;
         },
-        {} as Record<number, number>,
+        {} as Record<number, number>
       );
 
       params.asset_ids = portfolioHoldings.map((holding) =>
-        Number(holding.asset_id),
+        Number(holding.asset_id)
       );
       params.tickers = portfolioHoldings.map((holding) => holding.asset_name);
       params.parameters = {

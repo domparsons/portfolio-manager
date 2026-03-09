@@ -11,9 +11,10 @@ import { useLocation } from "react-router-dom";
 
 const DynamicBreadcrumb = () => {
   const location = useLocation();
-  const pathSegments = location.pathname === "/"
-    ? ["dashboard"]
-    : location.pathname.split("/").filter(Boolean);
+  const pathSegments =
+    location.pathname === "/"
+      ? ["dashboard"]
+      : location.pathname.split("/").filter(Boolean);
   const formatSegment = (segment: string) => {
     return segment
       .replace(/-/g, " ")
@@ -30,13 +31,13 @@ const DynamicBreadcrumb = () => {
           return (
             <React.Fragment key={breadcrumbPath}>
               <BreadcrumbItem key={breadcrumbPath}>
-                {isLast
-                  ? <BreadcrumbPage>{formatSegment(segment)}</BreadcrumbPage>
-                  : (
-                    <BreadcrumbLink to={breadcrumbPath}>
-                      {formatSegment(segment)}
-                    </BreadcrumbLink>
-                  )}
+                {isLast ? (
+                  <BreadcrumbPage>{formatSegment(segment)}</BreadcrumbPage>
+                ) : (
+                  <BreadcrumbLink to={breadcrumbPath}>
+                    {formatSegment(segment)}
+                  </BreadcrumbLink>
+                )}
               </BreadcrumbItem>
               {!isLast && <BreadcrumbSeparator />}
             </React.Fragment>

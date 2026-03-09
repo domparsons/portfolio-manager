@@ -14,7 +14,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     apiClient.registerAuthHelpers({
       getToken: () => getAccessTokenSilently(),
-      logout: () => logout({ logoutParams: { returnTo: window.location.origin } }),
+      logout: () =>
+        logout({ logoutParams: { returnTo: window.location.origin } }),
     });
   }, [getAccessTokenSilently, logout]);
 

@@ -32,7 +32,7 @@ const DatePicker = ({
           className={cn(
             "justify-start text-left font-normal",
             !date && "text-muted-foreground",
-            className,
+            className
           )}
         >
           <CalendarIcon />

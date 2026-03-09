@@ -44,17 +44,21 @@ const TimeseriesChart = ({
       <LineChart
         accessibilityLayer
         data={transformedData}
-        margin={isMobile ? {
-          left: 10,
-          right: 10,
-          top: 5,
-          bottom: 5,
-        } : {
-          left: 20,
-          right: 20,
-          top: 5,
-          bottom: 5,
-        }}
+        margin={
+          isMobile
+            ? {
+                left: 10,
+                right: 10,
+                top: 5,
+                bottom: 5,
+              }
+            : {
+                left: 20,
+                right: 20,
+                top: 5,
+                bottom: 5,
+              }
+        }
       >
         <CartesianGrid vertical={false} />
         <YAxis

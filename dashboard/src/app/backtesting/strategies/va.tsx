@@ -16,7 +16,7 @@ const VAForm: React.FC<StrategyFormProps> = ({
   backtestPortfolio,
 }) => {
   const [selectedAsset, setSelectedAsset] = useState<Asset | undefined>(
-    undefined,
+    undefined
   );
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);

@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import { MonteCarloParams, MonteCarloResult } from "@/types/monte-carlo-types";
 
 export const runMonteCarlo = async (
-  params: MonteCarloParams,
+  params: MonteCarloParams
 ): Promise<MonteCarloResult> => {
   try {
     return await apiClient.get<MonteCarloResult>("/monte_carlo/", {

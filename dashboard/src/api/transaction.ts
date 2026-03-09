@@ -6,7 +6,7 @@ import { Asset, Transaction } from "@/types/custom-types";
 export const deleteTransaction = async (
   transactionId: number | undefined | null,
   refreshHistory: () => void,
-  refreshMetrics: (() => Promise<void>) | (() => void),
+  refreshMetrics: (() => Promise<void>) | (() => void)
 ) => {
   try {
     await apiClient.delete("/transaction/", {
@@ -30,7 +30,7 @@ export const deleteTransaction = async (
 };
 
 export const getTransactionHistory = async (
-  setTransactionHistory: React.Dispatch<React.SetStateAction<Transaction[]>>,
+  setTransactionHistory: React.Dispatch<React.SetStateAction<Transaction[]>>
 ) => {
   try {
     const data = await apiClient.get<Transaction[]>("/transaction/", {
@@ -46,14 +46,14 @@ export const getTransactionHistory = async (
 
 export const getTransactionsByAsset = async (
   asset_id: number | null,
-  setTransactionHistory: React.Dispatch<React.SetStateAction<Transaction[]>>,
+  setTransactionHistory: React.Dispatch<React.SetStateAction<Transaction[]>>
 ) => {
   try {
     const data = await apiClient.get<Transaction[]>(
       `/transaction/by_asset/${asset_id}`,
       {
         params: { limit: 10 },
-      },
+      }
     );
     setTransactionHistory(data);
   } catch (error) {
@@ -68,7 +68,7 @@ export const createTransaction = async (
   transactionType: "buy" | "sell",
   numberOfShares: number,
   executionPrice: number,
-  executionDate: Date | undefined,
+  executionDate: Date | undefined
 ) => {
   await apiClient.post("/transaction/create", null, {
     params: {

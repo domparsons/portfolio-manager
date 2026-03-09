@@ -4,7 +4,13 @@ import React, { useState } from "react";
 import { PreviousBacktest } from "@/types/backtest-types";
 import { useAuth0 } from "@auth0/auth0-react";
 import { getBacktestHistory } from "@/api/backtest";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { format } from "date-fns";
@@ -70,16 +76,16 @@ const BacktestHistory = () => {
     if (!backtestHistory || backtestHistory.length === 0) return null;
 
     const profitable = backtestHistory.filter(
-      (b) => b.total_return_pct > 0,
+      (b) => b.total_return_pct > 0
     ).length;
     const avgReturn =
       backtestHistory.reduce((sum, b) => sum + b.total_return_pct * 100, 0) /
       backtestHistory.length;
     const bestReturn = Math.max(
-      ...backtestHistory.map((b) => b.total_return_pct),
+      ...backtestHistory.map((b) => b.total_return_pct)
     );
     const worstReturn = Math.min(
-      ...backtestHistory.map((b) => b.total_return_pct),
+      ...backtestHistory.map((b) => b.total_return_pct)
     );
 
     return { profitable, avgReturn, bestReturn, worstReturn };
@@ -232,7 +238,7 @@ const BacktestHistory = () => {
                     <div className="text-xs">
                       {format(
                         new Date(backtest.created_at),
-                        "MMM dd, yyyy 'at' h:mm a",
+                        "MMM dd, yyyy 'at' h:mm a"
                       )}
                     </div>
                   </CardDescription>

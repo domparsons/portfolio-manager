@@ -71,7 +71,7 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
         pageAsset.id,
         user_id,
         enablePriceAlerts,
-        displayAssetAlertPercentage,
+        displayAssetAlertPercentage
       );
     } catch (error) {
       const apiError = error as ApiError;
@@ -276,7 +276,7 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
                       </span>
                       $
                       {parseFloat(
-                        (transaction.quantity * transaction.price).toFixed(2),
+                        (transaction.quantity * transaction.price).toFixed(2)
                       )}
                       <Badge variant={transaction.type}>
                         {transaction.type === "buy" ? "Buy" : "Sell"}

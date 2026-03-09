@@ -57,7 +57,7 @@ const AssetPageWrapper = () => {
         setPageAssetAlertPercentage(
           assetInWatchlist?.alert_percentage
             ? assetInWatchlist.alert_percentage * 100
-            : undefined,
+            : undefined
         );
       }
 

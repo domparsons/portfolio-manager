@@ -22,17 +22,17 @@ const DCAForm: React.FC<StrategyFormProps> = ({
   backtestPortfolio,
 }) => {
   const [selectedAsset, setSelectedAsset] = useState<Asset | undefined>(
-    undefined,
+    undefined
   );
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   const [initialCash, setInitialCash] = useState<number | undefined>(undefined);
   const [recurringCash, setRecurringCash] = useState<number | undefined>(
-    undefined,
+    undefined
   );
 
   const [frequency, setFrequency] = useState<DCAFrequencies>(
-    DCA_FREQUENCIES.WEEKLY,
+    DCA_FREQUENCIES.WEEKLY
   );
 
   const clearParameters = () => {

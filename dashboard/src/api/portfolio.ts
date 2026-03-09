@@ -6,14 +6,14 @@ import React from "react";
 export const getPortfolioHistory = async (
   setPortfolioHistory: React.Dispatch<
     React.SetStateAction<TimeseriesChartData[]>
-  >,
+  >
 ) => {
   try {
     const data = await apiClient.get<TimeseriesChartData[]>(
       "/portfolio/portfolio_over_time",
       {
         params: { limit: 10 },
-      },
+      }
     );
     const chartData: TimeseriesChartData[] = data.map((item) => ({
       ...item,
@@ -44,12 +44,16 @@ export const getPortfolioHoldings = async () => {
 
 export const runRebalanceSuggestion = async (
   userGoals: string,
-  suggestions: Record<string, number>,
+  suggestions: Record<string, number>
 ) => {
   try {
-    return await apiClient.post<string>("/llm/allocation_suggester", suggestions, {
-      params: { user_input: userGoals },
-    });
+    return await apiClient.post<string>(
+      "/llm/allocation_suggester",
+      suggestions,
+      {
+        params: { user_input: userGoals },
+      }
+    );
   } catch (error) {
     const apiError = error as ApiError;
     console.error("Error running allocation suggester", apiError);
