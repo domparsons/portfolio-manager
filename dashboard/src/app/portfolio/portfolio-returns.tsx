@@ -61,9 +61,7 @@ const PortfolioReturns = ({
                       {formatCurrencyValue(holding.net_value)}
                     </p>
                     <p
-                      className={`text-sm ${
-                        isPositive ? "text-green-600" : "text-red-600"
-                      }`}
+                      className={`text-sm ${isPositive ? "text-green-600" : "text-red-600"}`}
                     >
                       {formatCurrencyValue(holding.unrealised_gain_loss)} (
                       {formatPercentageValue(holding.unrealised_gain_loss_pct)})
