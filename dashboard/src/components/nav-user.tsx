@@ -8,16 +8,28 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
+import {
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar,
+} from "@/components/ui/sidebar";
 import { useAuth0 } from "@auth0/auth0-react";
 import { ChevronsUpDown, LogOut, Moon, Sun, User } from "lucide-react";
 import { toast } from "sonner";
 import React, { useState } from "react";
 import { ApiError } from "@/lib/api-client";
 import { getUsername, updateUsername } from "@/api/user";
-import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 

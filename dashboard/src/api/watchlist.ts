@@ -78,7 +78,7 @@ export const useWatchlistAlerts = () => {
           const direction = isPositive ? "📈" : "📉";
           const change = isPositive ? "higher" : "lower";
           toast(
-            `${direction} ${alert.ticker} closed ${Math.abs(alert.change_pct * 100).toFixed(2)}% ${change} than the previous trading day`,
+            `${direction} ${alert.ticker} closed ${Math.abs(alert.change_pct * 100).toFixed(2)}% ${change} than the previous trading day`
           );
         });
 

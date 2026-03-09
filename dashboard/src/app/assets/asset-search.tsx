@@ -17,7 +17,7 @@ const AssetSearch: React.FC<{
 }> = ({ assets, setFilteredAssets, searchListName }) => {
   const [searchValue, setSearchValue] = useState("");
   const [sortFn, setSortFn] = useState<((a: Asset, b: Asset) => number) | null>(
-    null,
+    null
   );
 
   const sortOptions = [
@@ -55,19 +55,19 @@ const AssetSearch: React.FC<{
     (
       rawAssets: Asset[],
       query: string,
-      sorter: ((a: Asset, b: Asset) => number) | null,
+      sorter: ((a: Asset, b: Asset) => number) | null
     ) => {
       let filtered = rawAssets.filter(
         (asset) =>
           asset.asset_name.toLowerCase().includes(query.toLowerCase()) ||
-          asset.ticker.toLowerCase().includes(query.toLowerCase()),
+          asset.ticker.toLowerCase().includes(query.toLowerCase())
       );
       if (sorter) {
         filtered = [...filtered].sort(sorter);
       }
       setFilteredAssets(filtered);
     },
-    [setFilteredAssets],
+    [setFilteredAssets]
   );
 
   const handleSearch = (e: React.FormEvent<HTMLInputElement>) => {

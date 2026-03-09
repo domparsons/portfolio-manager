@@ -26,7 +26,7 @@ export const getAssetList = async () => {
 export const getTimeseriesDataForAsset = async (
   assetId: number,
   setTimeseries: (data: Portfolio[]) => void,
-  timeseriesRange: string,
+  timeseriesRange: string
 ) => {
   try {
     const data = await apiClient.get<Portfolio[]>(
@@ -36,7 +36,7 @@ export const getTimeseriesDataForAsset = async (
           asset_id: assetId,
           timeseries_range: timeseriesRange,
         },
-      },
+      }
     );
     setTimeseries(data);
   } catch (error) {
@@ -67,7 +67,7 @@ export interface AssetInWatchlist {
 
 export const checkAssetInWatchlist = async (
   ticker: string | undefined,
-  user_id: string | null,
+  user_id: string | null
 ): Promise<AssetInWatchlist | undefined> => {
   if (!ticker || !user_id) return undefined;
 
@@ -79,7 +79,7 @@ export const checkAssetInWatchlist = async (
           ticker,
           user_id,
         },
-      },
+      }
     );
   } catch (error) {
     const apiError = error as ApiError;
@@ -92,7 +92,7 @@ export const saveAlertsChange = async (
   assetId: number | undefined,
   user_id: string | null,
   enablePriceAlerts: boolean,
-  assetAlertPercentage: number,
+  assetAlertPercentage: number
 ) => {
   if (assetId === undefined || user_id === null) {
     toast.error("An error occurred.");
@@ -121,7 +121,7 @@ export const getPriceOnDate = async (date: Date, asset_id: number | null) => {
   const stringDate = format(date, "yyyy-MM-dd");
   try {
     return await apiClient.get<number>(
-      `/asset/price_on_date?asset_id=${asset_id}&date=${stringDate}`,
+      `/asset/price_on_date?asset_id=${asset_id}&date=${stringDate}`
     );
   } catch (error) {
     const apiError = error as ApiError;

@@ -102,7 +102,7 @@ const TransactionHistoryCard = ({ className }: { className?: string }) => {
                   <div>
                     <p className="font-medium">
                       {formatCurrencyValue(
-                        transaction.quantity * transaction.price,
+                        transaction.quantity * transaction.price
                       )}
                     </p>
                     <p className="text-sm text-muted-foreground">

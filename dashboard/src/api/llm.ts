@@ -3,11 +3,11 @@ import { apiClient, ApiError } from "@/lib/api-client";
 import { toast } from "sonner";
 
 export const ParameteriseNaturalLanguageStrategy = async (
-  userInput: string,
+  userInput: string
 ) => {
   try {
     return await apiClient.post<LLMBacktestParams>(
-      `/llm/parse_strategy?user_input=${userInput}`,
+      `/llm/parse_strategy?user_input=${userInput}`
     );
   } catch (error) {
     const apiError = error as ApiError;
@@ -17,12 +17,12 @@ export const ParameteriseNaturalLanguageStrategy = async (
 };
 
 export const AnalyseBacktestResultsWithLLM = async (
-  backtestResult: BacktestResult,
+  backtestResult: BacktestResult
 ) => {
   try {
     return await apiClient.post<string>(
       `/llm/analyse_backtest`,
-      backtestResult,
+      backtestResult
     );
   } catch (error) {
     const apiError = error as ApiError;

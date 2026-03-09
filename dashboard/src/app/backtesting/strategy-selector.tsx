@@ -35,7 +35,7 @@ const StrategySelector = ({
               <SelectItem key={strategy} value={strategy}>
                 {strategyNames[strategy]}
               </SelectItem>
-            ),
+            )
           )}
         </SelectGroup>
       </SelectContent>

@@ -114,7 +114,7 @@ const PortfolioRebalancing = () => {
     setIsLoadingSuggestions(true);
     const totalValue = portfolioHoldings.reduce(
       (sum, holding) => sum + holding.net_value,
-      0,
+      0
     );
 
     const allocation = portfolioHoldings.reduce(
@@ -123,7 +123,7 @@ const PortfolioRebalancing = () => {
         acc[assetName] = holding.net_value / totalValue;
         return acc;
       },
-      {} as Record<string, number>,
+      {} as Record<string, number>
     );
 
     try {
@@ -181,7 +181,9 @@ const PortfolioRebalancing = () => {
 
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-base">Suggested Allocation</CardTitle>
+                <CardTitle className="text-base">
+                  Suggested Allocation
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 {rebalancingResults.allocations.map((a) => (

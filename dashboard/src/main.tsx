@@ -25,6 +25,6 @@ createRoot(document.getElementById("root")!).render(
     useRefreshTokens={true}
   >
     <App />
-  </Auth0Provider>,
+  </Auth0Provider>
   // </StrictMode>,
 );

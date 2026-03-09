@@ -36,7 +36,7 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
 }) => {
   const [numberOfShares, setNumberOfShares] = React.useState<number>(1);
   const [executionPrice, setExecutionPrice] = React.useState<number>(
-    asset.latest_price,
+    asset.latest_price
   );
   const [executionDate, setExecutionDate] = React.useState<Date>();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -65,7 +65,7 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
         transactionType,
         numberOfShares,
         executionPrice,
-        executionDate,
+        executionDate
       );
       toast("Transaction created successfully!");
       onTransactionSuccess?.();

@@ -1,7 +1,27 @@
 import React from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChartConfig, ChartContainer, ChartTooltip } from "@/components/ui/chart";
-import { Area, Bar, BarChart, CartesianGrid, ComposedChart, Line, ReferenceLine, XAxis, YAxis } from "recharts";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+} from "@/components/ui/chart";
+import {
+  Area,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ComposedChart,
+  Line,
+  ReferenceLine,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { MonteCarloResult } from "@/types/monte-carlo-types";
 
 const fmt = (n: number) =>
@@ -43,7 +63,7 @@ const MonteCarloResults = ({ results }: { results: MonteCarloResult }) => {
     inner_span: d.p75 - d.p25,
     // 20 sampled individual paths
     ...Object.fromEntries(
-      results.sample_paths.map((path, idx) => [`s${idx}`, path[i]]),
+      results.sample_paths.map((path, idx) => [`s${idx}`, path[i]])
     ),
   }));
 
