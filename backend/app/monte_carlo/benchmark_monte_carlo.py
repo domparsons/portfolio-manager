@@ -74,9 +74,7 @@ def simulate_vectorised(
     return_scenarios: np.ndarray,
     investment_months: int,
 ) -> np.ndarray:
-    portfolio_paths = np.zeros(
-        (return_scenarios.shape[0], investment_months + 1)
-    )
+    portfolio_paths = np.zeros((return_scenarios.shape[0], investment_months + 1))
     price_paths = INITIAL_PRICE * np.cumprod(1 + return_scenarios, axis=1)
     cumulative_shares = np.cumsum(MONTHLY_INVESTMENT / price_paths, axis=1)
     portfolio_paths[:, 1:] = cumulative_shares * price_paths
@@ -109,7 +107,9 @@ def run_benchmark():
     mean = float(np.mean(historical_returns))
     std = float(np.std(historical_returns))
 
-    print(f"\n{'Simulations':>12}  {'Loop (s)':>10}  {'Vectorised (s)':>16}  {'Speedup':>8}")
+    print(
+        f"\n{'Simulations':>12}  {'Loop (s)':>10}  {'Vectorised (s)':>16}  {'Speedup':>8}"
+    )
     print("-" * 54)
 
     results = []
