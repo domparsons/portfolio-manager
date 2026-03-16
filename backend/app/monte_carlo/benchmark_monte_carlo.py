@@ -7,8 +7,6 @@ import time
 
 import numpy as np
 import polars as pl
-from scipy import stats
-
 
 # ---------------------------------------------------------------------------
 # Shared config
