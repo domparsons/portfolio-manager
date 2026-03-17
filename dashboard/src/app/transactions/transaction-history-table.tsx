@@ -66,7 +66,7 @@ const TransactionHistoryTable: React.FC<TransactionTableProps> = ({
             <TableCell className="hidden md:table-cell p-1 sm:p-2">
               {formatTimestampLong(transaction.timestamp)}
             </TableCell>
-            <TableCell className="p-1 sm:p-2">
+            <TableCell className="hidden md:table-cell p-1 sm:p-2">
               {formatCurrencyValue(transaction.quantity * transaction.price)}
             </TableCell>
             <TableCell className="p-1 sm:p-2">{transaction.quantity}</TableCell>
