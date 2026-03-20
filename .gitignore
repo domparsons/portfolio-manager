@@ -37,3 +37,4 @@ htmlcov/
 .zed/*
 pyrightconfig.json
 .gitnexus
+.claude/

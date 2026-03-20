@@ -15,7 +15,8 @@ const DynamicBreadcrumb = () => {
     location.pathname === "/"
       ? ["dashboard"]
       : location.pathname.split("/").filter(Boolean);
-  const formatSegment = (segment: string) => {
+  const formatSegment = (segment: string, index: number) => {
+    if (pathSegments[index - 1] === "assets") return segment.toUpperCase();
     return segment
       .replace(/-/g, " ")
       .replace(/\b\w/g, (char) => char.toUpperCase());
@@ -32,10 +33,12 @@ const DynamicBreadcrumb = () => {
             <React.Fragment key={breadcrumbPath}>
               <BreadcrumbItem key={breadcrumbPath}>
                 {isLast ? (
-                  <BreadcrumbPage>{formatSegment(segment)}</BreadcrumbPage>
+                  <BreadcrumbPage>
+                    {formatSegment(segment, index)}
+                  </BreadcrumbPage>
                 ) : (
                   <BreadcrumbLink to={breadcrumbPath}>
-                    {formatSegment(segment)}
+                    {formatSegment(segment, index)}
                   </BreadcrumbLink>
                 )}
               </BreadcrumbItem>
