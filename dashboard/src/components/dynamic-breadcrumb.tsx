@@ -33,7 +33,9 @@ const DynamicBreadcrumb = () => {
             <React.Fragment key={breadcrumbPath}>
               <BreadcrumbItem key={breadcrumbPath}>
                 {isLast ? (
-                  <BreadcrumbPage>{formatSegment(segment, index)}</BreadcrumbPage>
+                  <BreadcrumbPage>
+                    {formatSegment(segment, index)}
+                  </BreadcrumbPage>
                 ) : (
                   <BreadcrumbLink to={breadcrumbPath}>
                     {formatSegment(segment, index)}
