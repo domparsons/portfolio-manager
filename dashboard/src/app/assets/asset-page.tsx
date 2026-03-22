@@ -69,7 +69,6 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
     try {
       await saveAlertsChange(
         pageAsset.id,
-        user_id,
         enablePriceAlerts,
         displayAssetAlertPercentage
       );
