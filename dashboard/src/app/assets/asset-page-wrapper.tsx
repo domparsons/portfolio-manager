@@ -52,7 +52,7 @@ const AssetPageWrapper = () => {
       setPageAsset(asset);
 
       if (user_id) {
-        const assetInWatchlist = await checkAssetInWatchlist(ticker, user_id);
+        const assetInWatchlist = await checkAssetInWatchlist(ticker);
         setPageAssetInWatchlist(assetInWatchlist?.asset_in_watchlist);
         setPageAssetAlertPercentage(
           assetInWatchlist?.alert_percentage

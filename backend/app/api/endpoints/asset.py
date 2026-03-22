@@ -5,6 +5,7 @@ from app import crud
 from app.crud import update_watchlist_item_alert_percentage
 from app.database import get_db
 from app.logger import logger
+from app.core.auth.dependencies import get_current_user
 from app.schemas.asset import AssetInWatchlist, AssetListSchema, AssetSchema
 from app.services.asset_service import generate_asset_list
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -59,8 +60,11 @@ def price_on_date(
 
 @router.get("/check_asset_in_watchlist", response_model=AssetInWatchlist)
 def check_asset_in_watchlist(
-    ticker: str, user_id: str, db: Session = Depends(get_db)
+    ticker: str,
+    db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
 ) -> AssetInWatchlist | None:
+    user_id = current_user
     asset = crud.asset.get_asset_by_ticker(db, ticker)
     if asset is None:
         raise HTTPException(
@@ -82,11 +86,12 @@ def check_asset_in_watchlist(
 @router.post("/watchlist_alerts")
 def watchlist_alerts(
     asset_id: int,
-    user_id: str,
     enable_price_alerts: bool,
     asset_alert_percentage: int,
     db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
 ):
+    user_id = current_user
     user_watchlist_items = crud.get_watchlist_items(user_id, db)
     watchlist_ids = [item.asset_id for item in user_watchlist_items]
 

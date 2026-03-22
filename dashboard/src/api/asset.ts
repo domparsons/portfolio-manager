@@ -66,10 +66,9 @@ export interface AssetInWatchlist {
 }
 
 export const checkAssetInWatchlist = async (
-  ticker: string | undefined,
-  user_id: string | null
+  ticker: string | undefined
 ): Promise<AssetInWatchlist | undefined> => {
-  if (!ticker || !user_id) return undefined;
+  if (!ticker) return undefined;
 
   try {
     return await apiClient.get<AssetInWatchlist>(
@@ -77,7 +76,6 @@ export const checkAssetInWatchlist = async (
       {
         params: {
           ticker,
-          user_id,
         },
       }
     );
@@ -90,11 +88,10 @@ export const checkAssetInWatchlist = async (
 
 export const saveAlertsChange = async (
   assetId: number | undefined,
-  user_id: string | null,
   enablePriceAlerts: boolean,
   assetAlertPercentage: number
 ) => {
-  if (assetId === undefined || user_id === null) {
+  if (assetId === undefined) {
     toast.error("An error occurred.");
     return;
   }
@@ -103,7 +100,6 @@ export const saveAlertsChange = async (
     await apiClient.post("/asset/watchlist_alerts", null, {
       params: {
         asset_id: assetId,
-        user_id: user_id,
         enable_price_alerts: enablePriceAlerts,
         asset_alert_percentage: assetAlertPercentage,
       },
