@@ -6,6 +6,7 @@ from pathlib import Path
 import pandas as pd
 import pytz
 import yfinance as yf
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app import crud
@@ -60,16 +61,23 @@ def get_timeseries_data(ticker, db, last_timestamp=None):
 
 def update_all_assets(db: Session):
     assets = db.query(Asset).all()
-    for asset in assets:
-        latest_timeseries = (
-            db.query(Timeseries)
-            .filter(Timeseries.asset_id == asset.id)
-            .order_by(Timeseries.timestamp.desc())
-            .first()
-        )
 
-        last_timestamp = latest_timeseries.timestamp if latest_timeseries else None
+    latest_timestamps: dict[int, datetime] = dict(
+        db.query(Timeseries.asset_id, func.max(Timeseries.timestamp))
+        .group_by(Timeseries.asset_id)
+        .all()
+    )
+
+    for asset in assets:
+        last_timestamp = latest_timestamps.get(asset.id)
         timeseries_data = get_timeseries_data(asset.ticker, db, last_timestamp)
+
+        existing_timestamps: set[datetime] = set(
+            row[0]
+            for row in db.query(Timeseries.timestamp)
+            .filter(Timeseries.asset_id == asset.id)
+            .all()
+        )
 
         new_entries = []
 
@@ -78,15 +86,7 @@ def update_all_assets(db: Session):
             if timestamp.date() == datetime.now().date():
                 continue
 
-            exists = (
-                db.query(Timeseries)
-                .filter(
-                    Timeseries.asset_id == asset.id, Timeseries.timestamp == timestamp
-                )
-                .first()
-            )
-
-            if not exists:
+            if timestamp not in existing_timestamps:
                 new_entries.append(
                     Timeseries(
                         asset_id=asset.id,
