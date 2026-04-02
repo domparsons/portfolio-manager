@@ -48,23 +48,30 @@ const AssetChart = ({ data }: { data: Portfolio[] | null }) => {
         <LineChart
           accessibilityLayer
           data={chartData}
-          margin={{ top: 10, right: 60, bottom: 10, left: 0 }}
+          margin={{ top: 10, right: 20, bottom: 10, left: 0 }}
         >
           <ChartTooltip content={<ChartTooltipContent />} />
           <YAxis
             dataKey="close"
-            tick={false}
             axisLine={false}
             tickLine={false}
-            tickMargin={0}
+            tickMargin={8}
             domain={[minDomain, maxDomain]}
-            tickFormatter={(value) => value.toFixed(2)}
+            tickFormatter={(value) =>
+              value >= 1000
+                ? `$${(value / 1000).toFixed(1)}k`
+                : `$${value.toFixed(0)}`
+            }
+            tick={{ fontSize: 11 }}
+            width={55}
           />
           <XAxis
             dataKey="timestamp"
-            tick={false}
             axisLine={false}
             tickLine={false}
+            tickMargin={8}
+            interval={Math.floor(chartData.length / 4)}
+            tick={{ fontSize: 11 }}
           />
           <Line
             dataKey="close"
