@@ -586,6 +586,7 @@ class TestBacktestEngineIntegration:
         mock_query.filter.return_value = mock_query
         mock_query.distinct.return_value = mock_query
         mock_query.order_by.return_value = mock_query
+        mock_query.group_by.return_value = mock_query
         mock_query.all.return_value = []  # No trading days
 
         engine = BacktestEngine(mock_db)

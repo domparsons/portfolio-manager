@@ -20,6 +20,7 @@ import { createTransaction } from "@/api/transaction";
 import { ApiError } from "@/lib/api-client";
 import { DatePicker } from "@/app/date-picker";
 import { getPriceOnDate } from "@/api/asset";
+import { getPortfolioHoldings } from "@/api/portfolio";
 
 type TransactionButtonsProps = {
   transactionType: "buy" | "sell";
@@ -41,8 +42,11 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
   const [executionDate, setExecutionDate] = React.useState<Date>();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [modalOpen, setModalOpen] = React.useState(false);
+  const [ownedShares, setOwnedShares] = React.useState<number>(0);
   const today = new Date();
-  const numberOfSharesValid = numberOfShares > 0;
+  const numberOfSharesValid =
+    numberOfShares > 0 &&
+    (transactionType === "buy" || numberOfShares <= ownedShares);
   const executionPriceValid = executionPrice > 0;
   const executionDateValid =
     executionDate !== undefined &&
@@ -139,6 +143,9 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
           <span className={numberOfSharesValid ? "" : invalidClass}>
             <strong>{numberOfShares}</strong>{" "}
             {numberOfShares === 1 ? "share" : "shares"}
+            {transactionType === "sell" && !numberOfSharesValid && numberOfShares > 0 && (
+              <span> (exceeds {ownedShares} owned)</span>
+            )}
           </span>{" "}
           of <strong>{asset.asset_name}</strong> on{" "}
           <span className={executionDateValid ? "" : invalidClass}>
@@ -175,9 +182,16 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
       <DialogTrigger asChild>
         <Button
           className={"bg-red-600"}
-          onClick={() => {
+          onClick={async () => {
             setTransactionType("sell");
             setModalOpen(true);
+            const holdings = await getPortfolioHoldings();
+            if (holdings) {
+              const holding = (holdings as { asset_id: string | number; net_quantity_shares: number }[]).find(
+                (h) => Number(h.asset_id) === asset.id
+              );
+              setOwnedShares(holding?.net_quantity_shares ?? 0);
+            }
           }}
         >
           Sell
@@ -187,6 +201,11 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
         <DialogHeader>
           <DialogTitle>
             {transactionType.charAt(0).toUpperCase() + transactionType.slice(1)}
+            {transactionType === "sell" && (
+              <span className="text-sm font-normal text-muted-foreground ml-2">
+                ({ownedShares} shares available)
+              </span>
+            )}
           </DialogTitle>
           <DialogDescription className="text-muted-foreground text-sm mt-1">
             {renderTransactionDescription()}
