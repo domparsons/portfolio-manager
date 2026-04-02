@@ -1,4 +1,4 @@
-import AssetChart from "@/app/charts/asset-chart";
+import { TimeseriesChart } from "@/app/metrics/timeseries-chart";
 import TransactionButtons from "@/app/transactions/transaction-buttons";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,7 +8,7 @@ import React from "react";
 import { AssetSheetPopoverProps, Transaction } from "@/types/custom-types";
 import { saveAlertsChange, useTransactionType } from "@/api/asset";
 import { getTransactionsByAsset } from "@/api/transaction";
-import { formatTimestampShort } from "@/utils/formatters";
+import { formatCurrencyValue, formatTimestampShort } from "@/utils/formatters";
 import { Badge } from "@/components/ui/badge";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Input } from "@/components/ui/input";
@@ -180,7 +180,9 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
       {timeseries.length > 0 ? (
         <Card>
           <CardHeader className={"flex flex-row items-center justify-between"}>
-            <CardTitle>{pageAsset?.latest_price.toFixed(2)}</CardTitle>
+            <CardTitle>
+              {formatCurrencyValue(pageAsset?.latest_price)}
+            </CardTitle>
             <Tabs defaultValue={timeseriesRange} className="w-[250px]">
               <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger
@@ -211,7 +213,14 @@ const AssetPage: React.FC<AssetSheetPopoverProps> = ({
             </Tabs>
           </CardHeader>
           <CardContent className="flex flex-1 flex-col gap-4 max-w-full overflow-hidden">
-            <AssetChart data={timeseries} />
+            <TimeseriesChart
+              chartData={timeseries.map((item) => ({
+                date: item.timestamp,
+                value: item.close,
+              }))}
+              minDomain={Math.min(...timeseries.map((i) => i.close)) * 0.97}
+              maxDomain={Math.max(...timeseries.map((i) => i.close)) * 1.03}
+            />
           </CardContent>
         </Card>
       ) : (

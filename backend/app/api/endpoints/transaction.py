@@ -9,6 +9,7 @@ from app.core.auth.dependencies import get_current_user
 from app.crud.asset import get_asset_by_id
 from app.database import get_db
 from app.logger import logger
+from app.services.portfolio_engine import get_current_holdings
 from app.utils.convert_to_utc import convert_to_utc
 
 router = APIRouter(prefix="/transaction", tags=["transaction"])
@@ -49,6 +50,21 @@ def create_transaction(
             status_code=400,
             detail=f"Purchase date {utc_date} cannot be in the future or today",
         )
+
+    if type == models.transaction.TransactionType.sell:
+        existing_transactions = crud.transaction.get_transactions_by_user_and_asset(
+            db, user_id=user_id, asset_id=asset_id
+        )
+        holdings = get_current_holdings(existing_transactions)
+        owned = holdings.get(asset_id, 0)
+        if quantity > owned:
+            logger.warning(
+                f"Sell rejected: user owns {owned} shares of asset {asset_id}, attempted to sell {quantity}"
+            )
+            raise HTTPException(
+                status_code=400,
+                detail=f"Insufficient holdings: you own {owned} shares but attempted to sell {quantity}",
+            )
 
     transaction = models.Transaction(
         user_id=user_id,
