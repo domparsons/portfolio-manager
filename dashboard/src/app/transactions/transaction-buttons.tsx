@@ -143,9 +143,9 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
           <span className={numberOfSharesValid ? "" : invalidClass}>
             <strong>{numberOfShares}</strong>{" "}
             {numberOfShares === 1 ? "share" : "shares"}
-            {transactionType === "sell" && !numberOfSharesValid && numberOfShares > 0 && (
-              <span> (exceeds {ownedShares} owned)</span>
-            )}
+            {transactionType === "sell" &&
+              !numberOfSharesValid &&
+              numberOfShares > 0 && <span> (exceeds {ownedShares} owned)</span>}
           </span>{" "}
           of <strong>{asset.asset_name}</strong> on{" "}
           <span className={executionDateValid ? "" : invalidClass}>
@@ -187,9 +187,12 @@ const TransactionButtons: React.FC<TransactionButtonsProps> = ({
             setModalOpen(true);
             const holdings = await getPortfolioHoldings();
             if (holdings) {
-              const holding = (holdings as { asset_id: string | number; net_quantity_shares: number }[]).find(
-                (h) => Number(h.asset_id) === asset.id
-              );
+              const holding = (
+                holdings as {
+                  asset_id: string | number;
+                  net_quantity_shares: number;
+                }[]
+              ).find((h) => Number(h.asset_id) === asset.id);
               setOwnedShares(holding?.net_quantity_shares ?? 0);
             }
           }}
