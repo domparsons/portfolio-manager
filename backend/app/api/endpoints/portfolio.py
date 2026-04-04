@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -95,10 +97,12 @@ def get_portfolio_over_time(
 ) -> list[schemas.PortfolioValueHistory]:
     """
     Calculate daily portfolio values for a user based on their transaction history.
+    Returns up to 1 year of history; holdings from earlier transactions are included.
     """
     user_id = current_user
+    start_date = datetime.now() - timedelta(days=365)
     try:
-        _, history = get_portfolio_data_for_user(user_id, db)
+        _, history = get_portfolio_data_for_user(user_id, db, start_date=start_date)
         logger.info(f"Fetched portfolio timeseries data for user {user_id[-8:]}")
         return history
     except ValueError as e:
@@ -113,10 +117,15 @@ def get_portfolio_metrics(
 ) -> schemas.PortfolioMetrics:
     """
     Calculate performance metrics for a user's portfolio.
+    Sharpe, volatility and drawdown are computed over the last year.
+    Total return uses all-time transactions vs current value.
     """
     user_id = current_user
+    start_date = datetime.now() - timedelta(days=365)
     try:
-        transactions, history = get_portfolio_data_for_user(user_id, db)
+        transactions, history = get_portfolio_data_for_user(
+            user_id, db, start_date=start_date
+        )
         metrics = calculate_metrics(transactions, history)
 
         if metrics is None:
