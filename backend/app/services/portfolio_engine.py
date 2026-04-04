@@ -1,4 +1,4 @@
-from datetime import date, datetime, timezone
+from datetime import date, datetime
 from decimal import Decimal
 
 import polars as pl
@@ -56,7 +56,9 @@ def get_portfolio_data_for_user(
 
     # Use start_date if provided, but never go before the first transaction
     effective_start = (
-        max(start_date, first_transaction_date) if start_date else first_transaction_date
+        max(start_date, first_transaction_date)
+        if start_date
+        else first_transaction_date
     )
 
     trading_days = price_service.get_trading_days(effective_start, end_date)
