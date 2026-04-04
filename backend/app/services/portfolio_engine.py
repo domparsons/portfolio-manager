@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from decimal import Decimal
 
 import polars as pl
@@ -14,7 +14,7 @@ from app.backtesting.metrics import (
 
 
 def get_portfolio_data_for_user(
-    user_id: str, db: Session
+    user_id: str, db: Session, start_date: datetime | None = None
 ) -> tuple[list, list[schemas.PortfolioValueHistory]]:
     """
     Fetch all data needed for portfolio calculations.
@@ -22,6 +22,9 @@ def get_portfolio_data_for_user(
     Args:
         user_id: User ID
         db: Database session
+        start_date: Optional earliest date for price history. Transactions before this
+                    date are used to pre-compute initial holdings but prices are not
+                    loaded, reducing memory usage significantly.
 
     Returns:
         Tuple of (transactions, portfolio_history)
@@ -48,10 +51,15 @@ def get_portfolio_data_for_user(
     if not timestamps:
         raise HTTPException(status_code=404, detail="No valid transaction timestamps")
 
-    start_date = min(timestamps)
+    first_transaction_date = min(timestamps)
     end_date = datetime.now()
 
-    trading_days = price_service.get_trading_days(start_date, end_date)
+    # Use start_date if provided, but never go before the first transaction
+    effective_start = (
+        max(start_date, first_transaction_date) if start_date else first_transaction_date
+    )
+
+    trading_days = price_service.get_trading_days(effective_start, end_date)
 
     if not trading_days:
         raise HTTPException(status_code=404, detail="No trading data available")
@@ -60,11 +68,19 @@ def get_portfolio_data_for_user(
 
     price_lookup = price_service.get_price_lookup(
         unique_asset_ids,  # type: ignore[arg-type]
-        start_date,
+        effective_start,
         end_date,
     )
 
-    history = calculate_portfolio_history(transactions, trading_days, price_lookup)
+    # Pre-compute holdings from transactions before the effective start date so that
+    # existing positions are correctly reflected without loading years of price history
+    pre_start_txns = [t for t in transactions if t.timestamp < effective_start]
+    in_range_txns = [t for t in transactions if t.timestamp >= effective_start]
+    initial_holdings = get_current_holdings(pre_start_txns) if pre_start_txns else {}
+
+    history = calculate_portfolio_history(
+        in_range_txns, trading_days, price_lookup, initial_holdings
+    )
 
     return transactions, history
 
@@ -73,6 +89,7 @@ def calculate_portfolio_history(
     transactions: list,
     trading_days: list[date],
     price_lookup: dict[tuple[int, date], float],
+    initial_holdings: dict | None = None,
 ) -> list[schemas.PortfolioValueHistory]:
     """
     Calculate portfolio value for each trading day.
@@ -81,11 +98,12 @@ def calculate_portfolio_history(
         transactions: list of transaction objects (sorted by timestamp)
         trading_days: list of trading days to calculate for
         price_lookup: dictionary mapping (asset_id, date) to price
+        initial_holdings: pre-computed holdings before the first trading day
 
     Returns:
         list of PortfolioValueHistory with date, value, daily_return_pct
     """
-    holdings = {}
+    holdings = dict(initial_holdings) if initial_holdings else {}
     results = []
     transaction_index = 0
 
